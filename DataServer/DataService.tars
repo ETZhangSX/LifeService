@@ -1,16 +1,7 @@
+#include "UserInfoService.tars"
 
 module LifeService
 {
-    struct UserInfo
-    {
-        0 require string name;
-        1 require string phone;
-        2 require string gender;
-        3 require string avatar_url;
-        4 require string registration_time;
-        5 require int    group;
-    };
-
     struct Column
     {
         0 require string columnName;
@@ -21,6 +12,7 @@ module LifeService
     interface DataService
     {
         int hasUser(string wx_id, out bool sRsp);
+        int createUser(string wx_id, UserInfo UserInfo);
         int getUserInfo(string wx_id, out UserInfo sRsp);
         int getGroupInfo(out map<int, string> groupInfo);
         int getGroupByUserId(string wx_id, out string group);

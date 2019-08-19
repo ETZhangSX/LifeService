@@ -1,6 +1,8 @@
 #include "DbHandle.h"
 #include "Config.h"
 #include "servant/TarsLogger.h"
+#include "util.h"
+#include "MysqlHandler.h"
 
 using namespace std;
 using namespace tars;
@@ -16,6 +18,8 @@ int UserHandle::LoadDataFromDb()
     
     {
         TC_Mysql::MysqlData oResults;
+        vector<string> columns = {"wx_id", "name", "phone", "gender", "avatar_url", "registration_time", "group_id"};
+        string sql = buildSelectSQL("users", columns, "");
         try
         {
             /*
@@ -23,7 +27,7 @@ int UserHandle::LoadDataFromDb()
             *       users:       wx_id, name, phone, gender, registration_time, group_id
             *       
             */
-            oResults = mysql.queryRecord("");
+            oResults = mysql.queryRecord(sql);
         }
         catch (exception &e)
         {
@@ -51,6 +55,8 @@ int UserHandle::LoadDataFromDb()
     }
     {
         TC_Mysql::MysqlData oResults;
+        vector<string> columns = {"group_id", "user_type"};
+        string sql = buildSelectSQL("user_group", columns, "");
         try
         {
             /*
@@ -75,12 +81,22 @@ int UserHandle::LoadDataFromDb()
     return 0;
 }
 
-int UserHandle::UpdateUserData(string wx_id, LifeService::UserInfo userInfo)
+int UserHandle::InsertUserData(const string &wx_id, const LifeService::UserInfo &userInfo)
 {
     {
         TC_ThreadLock::Lock lock(_pLocker);
         mUserInfo.insert(make_pair(wx_id, userInfo));
     }
+
+    map<string, pair<TC_Mysql::FT, string>> columns;
+    columns.insert(make_pair(            "wx_id", make_pair(TC_Mysql::DB_STR, wx_id)));
+    columns.insert(make_pair(             "name", make_pair(TC_Mysql::DB_STR, userInfo.name)));
+    columns.insert(make_pair(            "phone", make_pair(TC_Mysql::DB_STR, userInfo.phone)));
+    columns.insert(make_pair(           "gender", make_pair(TC_Mysql::DB_INT, userInfo.gender)));
+    columns.insert(make_pair(       "avatar_url", make_pair(TC_Mysql::DB_STR, userInfo.avatar_url)));
+    columns.insert(make_pair("registration_time", make_pair(TC_Mysql::DB_STR, userInfo.registration_time)));
+
+    MDbQueryRecord::getInstance()->InsertData("users", columns);
 
     LOG->debug() << "UserHandle::UpdateUserData : " 
                  << wx_id << "\t"
@@ -90,3 +106,10 @@ int UserHandle::UpdateUserData(string wx_id, LifeService::UserInfo userInfo)
     return 0;
 }
 
+bool UserHandle::hasUser(const string &wx_id)
+{
+    if (mUserInfo.count(wx_id) == 0)
+        return false;
+    
+    return true;
+}

@@ -23,21 +23,29 @@ void DataServiceImp::destroy()
 //////////////////////////////////////////////////////
 int DataServiceImp::hasUser(const string &wx_id, bool &sRsp, tars::TarsCurrentPtr current)
 {
-    if (UserHandle::getInstance()->mUserInfo.count(wx_id) == 0)
+    sRsp = UserHandle::getInstance()->hasUser(wx_id);
+    return 0;
+}
+
+//////////////////////////////////////////////////////
+int DataServiceImp::createUser(const string &wx_id, const LifeService::UserInfo &userInfo, tars::TarsCurrentPtr current)
+{
+    if (UserHandle::getInstance()->hasUser(wx_id))
     {
-        sRsp = false;
+        LOG->error() << "User exist";
+        return -1;
     }
-    else
-    {
-        sRsp = true;
-    }
+    
+    vector<LifeService::Column> columns;
+    UserHandle::getInstance()->InsertUserData(wx_id, userInfo);
+    LOG->debug() << "Create user successfully" << endl;
     return 0;
 }
 
 //////////////////////////////////////////////////////
 int DataServiceImp::getUserInfo(const string &wx_id, LifeService::UserInfo &sRsp, tars::TarsCurrentPtr current)
 {
-    if (UserHandle::getInstance()->mUserInfo.count(wx_id) != 0)
+    if (UserHandle::getInstance()->hasUser(wx_id))
     {
         sRsp = UserHandle::getInstance()->mUserInfo[wx_id];
         return 0;
@@ -55,7 +63,7 @@ int DataServiceImp::getGroupInfo(map<tars::Int32, string> &groupInfo, tars::Tars
 //////////////////////////////////////////////////////
 int DataServiceImp::getGroupByUserId(const string &wx_id, string &group, tars::TarsCurrentPtr current)
 {
-    if (UserHandle::getInstance()->mUserInfo.count(wx_id) != 0)
+    if (UserHandle::getInstance()->hasUser(wx_id))
     {
         int group_id = UserHandle::getInstance()->mUserInfo[wx_id].group;
         if (UserHandle::getInstance()->mGroupInfo.count(group_id) == 0) 

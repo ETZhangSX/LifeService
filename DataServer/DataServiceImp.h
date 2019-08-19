@@ -33,6 +33,11 @@ public:
     virtual int hasUser(const std::string &wx_id, bool &sRsp, tars::TarsCurrentPtr current);
 
     /**
+     * @brief 创建用户
+     */
+    virtual int createUser(const std::string &wx_id, const LifeService::UserInfo &userInfo, tars::TarsCurrentPtr current);
+    
+    /**
      * @brief 获取用户信息
      */
     virtual int getUserInfo(const std::string &wx_id, LifeService::UserInfo &sRsp, tars::TarsCurrentPtr current);

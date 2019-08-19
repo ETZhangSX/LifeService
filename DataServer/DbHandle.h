@@ -25,7 +25,8 @@ public:
      * @param wx_id     用户wx_id
      * @param userInfo  用户信息
      */
-    int UpdateUserData(string wx_id, LifeService::UserInfo userInfo);
+    int InsertUserData(const string &wx_id, const LifeService::UserInfo &userInfo);
+    bool hasUser(const string &wx_id);
 public:
     map<string, LifeService::UserInfo>  mUserInfo;
     map<tars::Int32, string>            mGroupInfo;

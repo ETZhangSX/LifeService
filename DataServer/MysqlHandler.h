@@ -23,6 +23,7 @@ public:
     tars::TC_Mysql * GetMysqlObject();
 
     void InsertData(const std::string &tableName,const vector<LifeService::Column> &columns);
+    void InsertData(const std::string &tableName,const map<string, pair<TC_Mysql::FT, string>> &columns);
     // TC_Mysql::MysqlData QueryData(const std::string &tableName, const vector<std::string> &columns, const std::string &conditions);
 private:
     tars::TC_DBConf                     _tcDbConfig;
