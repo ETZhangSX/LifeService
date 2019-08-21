@@ -28,7 +28,7 @@ public:
         strPassWord = tcConfig.get(s1 + "<strPassWordConfig>", "tars@lifeservice").c_str();
         strDbName   = tcConfig.get(s1 + "<strDbNameConfig>", "db_life_service").c_str();
 
-        maxMatch    = atoi(tcConfig.get(s1 + "maxMatch>", "1000").c_str());
+        maxMatch    = atoi(tcConfig.get(s1 + "<maxMatch>", "1000").c_str());
     }
 };
 
