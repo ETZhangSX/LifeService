@@ -7,9 +7,12 @@ const TarsStream = require("@tars/stream");
 const Tars = require("@tars/rpc").client;
 // 引入tars
 const LifeService = require("./UserInfoServiceProxy").LifeService;
+// 创建KOA实例
 const app = new Koa();
-const objName = "LifeService.UserInfoServer.UserInfoServiceObj";
-const hostname = '0.0.0.0';
+// 调用的服务Obj
+const userInfoObjName = "LifeService.UserInfoServer.UserInfoServiceObj";
+
+const hostname = process.env.IP || '127.0.0.1';
 const port = process.env.PORT || 8888;
 
 app.use(koaBody({
@@ -22,7 +25,7 @@ app.use(koaBody({
 router.get('/signIn', async ctx => {
     let {wx_id} = ctx.query;
     try {
-        const prx = Tars.stringToProxy(LifeService.UserInfoServiceProxy, objName);
+        const prx = Tars.stringToProxy(LifeService.UserInfoServiceProxy, userInfoObjName);
         
         let result = await prx.signIn(wx_id);
         let info = result.response.arguments.sRsp;
@@ -45,16 +48,16 @@ router.get('/signIn', async ctx => {
 // 获取用户权限组列表
 .get('/getGroupList', async ctx => {
     try {
-        const prx = Tars.stringToProxy(LifeService.UserInfoServiceProxy, objName);
+        const prx = Tars.stringToProxy(LifeService.UserInfoServiceProxy, userInfoObjName);
 
-        let result = await prx.getGroupList();
-        let groupinfo = result.response.arguments.groupInfo;
+        const result = await prx.getGroupList();
+        let groupInfo = result.response.arguments.groupInfo;
         let info = JSON.stringify(groupInfo.value);
         ctx.body = info;
     }
     catch(e) {
         console.log(e);
-        ctx.body = 'error';
+        ctx.body = 'Error: \n' + e;
     }
 })
 
@@ -78,7 +81,7 @@ router.get('/signIn', async ctx => {
     })
 
     try {
-        const prx = Tars.stringToProxy(LifeService.UserInfoServiceProxy, objName);
+        const prx = Tars.stringToProxy(LifeService.UserInfoServiceProxy, userInfoObjName);
         let result = await prx.signUp(wx_id, userInfo);
         let info = result.response.arguments.retCode;
         ctx.body = info;

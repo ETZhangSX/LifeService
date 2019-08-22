@@ -4,8 +4,11 @@
   "description": "Description",
   "main": "app.js",
   "dependencies": {
+    "@tars/config": "^2.0.3",
+    "@tars/logs": "^2.1.0",
     "@tars/rpc": "^2.0.10",
     "@tars/stream": "^2.0.1",
+    "@tars/utils": "^2.0.0",
     "request": "^2.88.0"
   },
   "devDependencies": {

@@ -64,7 +64,7 @@ int UserHandle::LoadDataFromDb()
             *       user_groups:       group_id, user_type
             *       
             */
-            oResults = mysql.queryRecord("");
+            oResults = mysql.queryRecord(sql);
         }
         catch (exception &e)
         {
