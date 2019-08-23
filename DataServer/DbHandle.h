@@ -34,4 +34,20 @@ private:
     tars::TC_ThreadLock _pLocker;
 };
 
+class CommunityHandle: public tars::TC_Singleton<CommunityHandle>
+{
+public:
+    /**
+     * @brief 从数据加载数据到内存
+     */
+    int LoadDataFromDb();
+    /**
+     * @brief 新建社团信息
+     */
+    int InsertCommData(LifeService::CommunityInfo commInfo);
+
+public:
+    vector<LifeService::CommunityInfo> vCommInfo;
+};
+
 #endif

@@ -22,11 +22,6 @@ int UserHandle::LoadDataFromDb()
         string sql = buildSelectSQL("users", columns, "");
         try
         {
-            /*
-            * TODO: 选取字段: 
-            *       users:       wx_id, name, phone, gender, registration_time, group_id
-            *       
-            */
             oResults = mysql.queryRecord(sql);
         }
         catch (exception &e)
@@ -59,11 +54,6 @@ int UserHandle::LoadDataFromDb()
         string sql = buildSelectSQL("user_group", columns, "");
         try
         {
-            /*
-            * TODO: 选取字段: 
-            *       user_groups:       group_id, user_type
-            *       
-            */
             oResults = mysql.queryRecord(sql);
         }
         catch (exception &e)
@@ -92,7 +82,8 @@ int UserHandle::InsertUserData(const string &wx_id, const LifeService::UserInfo 
     columns.insert(make_pair(            "wx_id", make_pair(TC_Mysql::DB_STR, wx_id)));
     columns.insert(make_pair(             "name", make_pair(TC_Mysql::DB_STR, userInfo.name)));
     columns.insert(make_pair(            "phone", make_pair(TC_Mysql::DB_STR, userInfo.phone)));
-    columns.insert(make_pair(           "gender", make_pair(TC_Mysql::DB_INT, userInfo.gender)));
+    columns.insert(make_pair(           "gender", make_pair(TC_Mysql::DB_STR, userInfo.gender)));
+    columns.insert(make_pair(         "group_id", make_pair(TC_Mysql::DB_INT, TC_Common::tostr<tars::Int32>(userInfo.group))));
     columns.insert(make_pair(       "avatar_url", make_pair(TC_Mysql::DB_STR, userInfo.avatar_url)));
     columns.insert(make_pair("registration_time", make_pair(TC_Mysql::DB_STR, userInfo.registration_time)));
 
@@ -112,4 +103,44 @@ bool UserHandle::hasUser(const string &wx_id)
         return false;
     
     return true;
+}
+
+
+int CommunityHandle::LoadDataFromDb()
+{
+    TC_Mysql mysql(SConfig::getInstance()->strDbHost, \
+                   SConfig::getInstance()->strUserName,\
+                   SConfig::getInstance()->strPassWord, \
+                   SConfig::getInstance()->strDbName, \
+                   "utf8", \
+                   SConfig::getInstance()->usPort);
+    
+    {
+        TC_Mysql::MysqlData oResults;
+        vector<string> columns = {"community_id", "name", "create_time", "chairman", "introduction"};
+        string sql = buildSelectSQL("communities", columns, "");
+        try
+        {
+            oResults = mysql.queryRecord(sql);
+        }
+        catch (exception &e)
+        {
+            LOG->error() << "Community Info error query: " << e.what() << endl;
+            return -1;
+        }
+        size_t oResultsCount = oResults.size();
+
+        for (size_t i = 0; i < oResultsCount; i++) 
+        {
+            LifeService::CommunityInfo commInfo;
+            commInfo.commId         = oResults[i][columns[0]];
+            commInfo.name           = oResults[i][columns[1]];
+            commInfo.createTime     = oResults[i][columns[2]];
+            commInfo.chairman       = oResults[i][columns[3]];
+            commInfo.introduction   = oResults[i][columns[4]];
+
+            vCommInfo.push_back(commInfo);
+        }
+    }
+    return 0;
 }
