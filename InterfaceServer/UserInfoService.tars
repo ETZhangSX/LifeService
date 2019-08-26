@@ -1,0 +1,12 @@
+#include "DataService.tars"
+
+module LifeService{
+    
+    interface UserInfoService{
+        int SignUp(string wx_id, UserInfo userInfo, out int retCode);
+        int SignIn(string wx_id, out UserInfo sRsp);
+        int GetUserPermissionInfo(string wx_id);
+        int GetGroupList(out map<int, string> groupInfo);
+        int Test(out string TestStr);
+    };
+};

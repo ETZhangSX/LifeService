@@ -3,15 +3,21 @@ const Koa = require('koa');
 const router = require('koa-router')();
 const koaBody = require('koa-bodyparser');
 const TarsStream = require("@tars/stream");
+
 // Tars工具
 const Tars = require("@tars/rpc").client;
+
 // 引入tars
-const LifeService = require("./UserInfoServiceProxy").LifeService;
+const UserInfoService = require("./UserInfoServiceProxy");
+const DataService     = require("./DataServiceTars");
+
 // 创建KOA实例
 const app = new Koa();
+
 // 调用的服务Obj
 const userInfoObjName = "LifeService.UserInfoServer.UserInfoServiceObj";
 
+// 拉取配置IP和端口
 const hostname = process.env.IP || '127.0.0.1';
 const port = process.env.PORT || 8888;
 
@@ -25,9 +31,9 @@ app.use(koaBody({
 router.get('/signIn', async ctx => {
     let {wx_id} = ctx.query;
     try {
-        const prx = Tars.stringToProxy(LifeService.UserInfoServiceProxy, userInfoObjName);
+        const prx = Tars.stringToProxy(UserInfoService.LifeService.UserInfoServiceProxy, userInfoObjName);
         
-        let result = await prx.signIn(wx_id);
+        let result = await prx.SignIn(wx_id);
         let info = result.response.arguments.sRsp;
         ctx.body = info;
 
@@ -39,18 +45,26 @@ router.get('/signIn', async ctx => {
 
 // 测试
 .get('/test', async ctx => {
-    var m = new TarsStream.Map(TarsStream.String, TarsStream.String);
-    m.put("a1", "value1");
-    m.put("a2", "value2");
-    ctx.body = m.value;
+    try {
+        const prx = Tars.stringToProxy(UserInfoService.LifeService.UserInfoServiceProxy, userInfoObjName);
+
+        const result = await prx.Test();
+        let testStr = result.response.arguments.TestStr;
+
+        ctx.body = testStr;
+    }
+    catch(e) {
+        console.log(e);
+        ctx.body = "Error: \n" + e;
+    }
 })
 
 // 获取用户权限组列表
 .get('/getGroupList', async ctx => {
     try {
-        const prx = Tars.stringToProxy(LifeService.UserInfoServiceProxy, userInfoObjName);
+        const prx = Tars.stringToProxy(UserInfoService.LifeService.UserInfoServiceProxy, userInfoObjName);
 
-        const result = await prx.getGroupList();
+        const result = await prx.GetGroupList();
         let groupInfo = result.response.arguments.groupInfo;
         let info = JSON.stringify(groupInfo.value);
         ctx.body = info;
@@ -71,7 +85,7 @@ router.get('/signIn', async ctx => {
         avatar_url,
     } = ctx.request.body;
 
-    const userInfo = new LifeService.UserInfo();
+    const userInfo = new DataService.LifeService.UserInfo();
 
     userInfo.readFromObject({
         name,
@@ -81,8 +95,8 @@ router.get('/signIn', async ctx => {
     })
 
     try {
-        const prx = Tars.stringToProxy(LifeService.UserInfoServiceProxy, userInfoObjName);
-        let result = await prx.signUp(wx_id, userInfo);
+        const prx = Tars.stringToProxy(UserInfoService.LifeService.UserInfoServiceProxy, userInfoObjName);
+        let result = await prx.SignUp(wx_id, userInfo);
         let info = result.response.arguments.retCode;
         ctx.body = info;
     }
