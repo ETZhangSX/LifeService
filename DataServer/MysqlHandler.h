@@ -22,7 +22,20 @@ class MDbQueryRecord: public TC_Singleton<MDbQueryRecord>
 public:
     tars::TC_Mysql * GetMysqlObject();
 
+    /**
+     * @brief 插入数据
+     * 
+     * @param tableName string 表名
+     * @param columns   vector 列
+     */
     void InsertData(const std::string &tableName,const vector<LifeService::Column> &columns);
+    
+    /**
+     * @brief 插入数据
+     * 
+     * @param tableName string 表名
+     * @param columns   map    列
+     */
     void InsertData(const std::string &tableName,const map<string, pair<TC_Mysql::FT, string>> &columns);
     // TC_Mysql::MysqlData QueryData(const std::string &tableName, const vector<std::string> &columns, const std::string &conditions);
 private:

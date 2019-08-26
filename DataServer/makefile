@@ -8,7 +8,7 @@ STRIP_FLAG:= N
 TARS2CPP_FLAG:= 
 
 INCLUDE   += 
-LIB       += 
+LIB       += -lmysqlclient
 
 #-----------------------------------------------------------------------
 

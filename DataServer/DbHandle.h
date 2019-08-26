@@ -34,7 +34,7 @@ private:
     tars::TC_ThreadLock _pLocker;
 };
 
-class CommunityHandle: public tars::TC_Singleton<CommunityHandle>
+class ClubHandle: public tars::TC_Singleton<ClubHandle>
 {
 public:
     /**
@@ -44,10 +44,12 @@ public:
     /**
      * @brief 新建社团信息
      */
-    int InsertCommData(LifeService::CommunityInfo commInfo);
+    int InsertClubData(const LifeService::ClubInfo &clubInfo);
 
 public:
-    vector<LifeService::CommunityInfo> vCommInfo;
+    vector<LifeService::ClubInfo> vClubInfo;
+private:
+    tars::TC_ThreadLock _pLocker;
 };
 
 #endif

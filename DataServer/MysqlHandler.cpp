@@ -64,13 +64,6 @@ void MDbQueryRecord::InsertData(const string &tableName,const map<string, pair<T
     MDbExecuteRecord::getInstance()->AddExecuteSql(sql);
 }
 
-// TC_Mysql::MysqlData MDbQueryRecord::QueryData(const string &tableName, const vector<string> &columns, const string &conditions)
-// {
-//     string sql = buildSelectSQL(tableName, columns, conditions);
-//     LOG->debug() << "Select report info: " << sql << endl;
-
-// }
-
 bool MDbExecuteRecord::Init()
 {
     _tcDbConfig._port = SConfig::getInstance()->usPort;

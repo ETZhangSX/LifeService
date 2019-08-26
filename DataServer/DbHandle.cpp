@@ -18,8 +18,10 @@ int UserHandle::LoadDataFromDb()
     
     {
         TC_Mysql::MysqlData oResults;
-        vector<string> columns = {"wx_id", "name", "phone", "gender", "avatar_url", "registration_time", "group_id"};
-        string sql = buildSelectSQL("users", columns, "");
+        vector<string> vColumns = {
+            "wx_id", "name", "phone", "gender", "avatar_url", "registration_time", "group_id"
+        };
+        string sql = buildSelectSQL("users", vColumns, "");
         try
         {
             oResults = mysql.queryRecord(sql);
@@ -34,14 +36,14 @@ int UserHandle::LoadDataFromDb()
         for (size_t i = 0; i < oResultsCount; i++)
         {
             LifeService::UserInfo userInfo;
-            userInfo.name               = oResults[i]["name"];
-            userInfo.phone              = oResults[i]["phone"];
-            userInfo.gender             = oResults[i]["gender"];
-            userInfo.avatar_url         = oResults[i]["avatar_url"];
-            userInfo.registration_time  = oResults[i]["registration_time"];
-            userInfo.group              = TC_Common::strto<tars::Int32>(oResults[i]["group_id"]);
+            userInfo.name               = oResults[i][vColumns[1]];
+            userInfo.phone              = oResults[i][vColumns[2]];
+            userInfo.gender             = oResults[i][vColumns[3]];
+            userInfo.avatar_url         = oResults[i][vColumns[4]];
+            userInfo.registration_time  = oResults[i][vColumns[5]];
+            userInfo.group              = TC_Common::strto<tars::Int32>(oResults[i][vColumns[6]]);
 
-            mUserInfo.insert(make_pair(oResults[i]["wx_id"], userInfo));
+            mUserInfo.insert(make_pair(oResults[i][vColumns[0]], userInfo));
             LOG->debug() << "UserHandle::LoadDataFromDb : "
                          << oResults[i]["wx_id"] << "\t" 
                          << oResults[i]["name"] << "\t"
@@ -50,8 +52,8 @@ int UserHandle::LoadDataFromDb()
     }
     {
         TC_Mysql::MysqlData oResults;
-        vector<string> columns = {"group_id", "user_type"};
-        string sql = buildSelectSQL("user_group", columns, "");
+        vector<string> vColumns = {"group_id", "user_type"};
+        string sql = buildSelectSQL("user_group", vColumns, "");
         try
         {
             oResults = mysql.queryRecord(sql);
@@ -78,16 +80,16 @@ int UserHandle::InsertUserData(const string &wx_id, const LifeService::UserInfo 
         mUserInfo.insert(make_pair(wx_id, userInfo));
     }
 
-    map<string, pair<TC_Mysql::FT, string>> columns;
-    columns.insert(make_pair(            "wx_id", make_pair(TC_Mysql::DB_STR, wx_id)));
-    columns.insert(make_pair(             "name", make_pair(TC_Mysql::DB_STR, userInfo.name)));
-    columns.insert(make_pair(            "phone", make_pair(TC_Mysql::DB_STR, userInfo.phone)));
-    columns.insert(make_pair(           "gender", make_pair(TC_Mysql::DB_STR, userInfo.gender)));
-    columns.insert(make_pair(         "group_id", make_pair(TC_Mysql::DB_INT, TC_Common::tostr<tars::Int32>(userInfo.group))));
-    columns.insert(make_pair(       "avatar_url", make_pair(TC_Mysql::DB_STR, userInfo.avatar_url)));
-    columns.insert(make_pair("registration_time", make_pair(TC_Mysql::DB_STR, userInfo.registration_time)));
+    map<string, pair<TC_Mysql::FT, string>> vColumns;
+    vColumns.insert(make_pair(            "wx_id", make_pair(TC_Mysql::DB_STR, wx_id)));
+    vColumns.insert(make_pair(             "name", make_pair(TC_Mysql::DB_STR, userInfo.name)));
+    vColumns.insert(make_pair(            "phone", make_pair(TC_Mysql::DB_STR, userInfo.phone)));
+    vColumns.insert(make_pair(           "gender", make_pair(TC_Mysql::DB_STR, userInfo.gender)));
+    vColumns.insert(make_pair(         "group_id", make_pair(TC_Mysql::DB_INT, TC_Common::tostr<tars::Int32>(userInfo.group))));
+    vColumns.insert(make_pair(       "avatar_url", make_pair(TC_Mysql::DB_STR, userInfo.avatar_url)));
+    vColumns.insert(make_pair("registration_time", make_pair(TC_Mysql::DB_STR, userInfo.registration_time)));
 
-    MDbQueryRecord::getInstance()->InsertData("users", columns);
+    MDbQueryRecord::getInstance()->InsertData("users", vColumns);
 
     LOG->debug() << "UserHandle::UpdateUserData : " 
                  << wx_id << "\t"
@@ -106,7 +108,7 @@ bool UserHandle::hasUser(const string &wx_id)
 }
 
 
-int CommunityHandle::LoadDataFromDb()
+int ClubHandle::LoadDataFromDb()
 {
     TC_Mysql mysql(SConfig::getInstance()->strDbHost, \
                    SConfig::getInstance()->strUserName,\
@@ -117,30 +119,54 @@ int CommunityHandle::LoadDataFromDb()
     
     {
         TC_Mysql::MysqlData oResults;
-        vector<string> columns = {"community_id", "name", "create_time", "chairman", "introduction"};
-        string sql = buildSelectSQL("communities", columns, "");
+        vector<string> vColumns = {
+            "club_id", "name", "create_time", "chairman", "introduction"
+        };
+        string sql = buildSelectSQL("clubs", vColumns, "");
         try
         {
             oResults = mysql.queryRecord(sql);
         }
         catch (exception &e)
         {
-            LOG->error() << "Community Info error query: " << e.what() << endl;
+            LOG->error() << "Club Info error query: " << e.what() << endl;
             return -1;
         }
         size_t oResultsCount = oResults.size();
 
         for (size_t i = 0; i < oResultsCount; i++) 
         {
-            LifeService::CommunityInfo commInfo;
-            commInfo.commId         = oResults[i][columns[0]];
-            commInfo.name           = oResults[i][columns[1]];
-            commInfo.createTime     = oResults[i][columns[2]];
-            commInfo.chairman       = oResults[i][columns[3]];
-            commInfo.introduction   = oResults[i][columns[4]];
+            LifeService::ClubInfo clubInfo;
+            clubInfo.clubId         = oResults[i][vColumns[0]];
+            clubInfo.name           = oResults[i][vColumns[1]];
+            clubInfo.createTime     = oResults[i][vColumns[2]];
+            clubInfo.chairman       = oResults[i][vColumns[3]];
+            clubInfo.introduction   = oResults[i][vColumns[4]];
 
-            vCommInfo.push_back(commInfo);
+            vClubInfo.push_back(clubInfo);
         }
     }
+    return 0;
+}
+
+int ClubHandle::InsertClubData(const LifeService::ClubInfo &clubInfo)
+{
+    {
+        TC_ThreadLock::Lock lock(_pLocker);
+        vClubInfo.push_back(clubInfo);
+    }
+
+    map<string, pair<TC_Mysql::FT, string>> vColumns;
+
+    vColumns.insert(make_pair(     "club_id", make_pair(TC_Mysql::DB_INT, clubInfo.clubId)));
+    vColumns.insert(make_pair(        "name", make_pair(TC_Mysql::DB_STR, clubInfo.name)));
+    vColumns.insert(make_pair( "create_time", make_pair(TC_Mysql::DB_STR, clubInfo.createTime)));
+    vColumns.insert(make_pair(    "chairman", make_pair(TC_Mysql::DB_STR, clubInfo.chairman)));
+    vColumns.insert(make_pair("introduction", make_pair(TC_Mysql::DB_STR, clubInfo.introduction)));
+
+    MDbQueryRecord::getInstance()->InsertData("clubs", vColumns);
+
+    LOG->debug() << "Insert Club Data: " << clubInfo.name << endl;
+
     return 0;
 }

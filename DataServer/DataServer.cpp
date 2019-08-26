@@ -20,6 +20,7 @@ DataServer::initialize()
     SConfig::getInstance()->LoadConfig(strConfFileName);
 
     UserHandle::getInstance()->LoadDataFromDb();
+    ClubHandle::getInstance()->LoadDataFromDb();
 
     // InitDbConf(SConfig::getInstance()->strDbHost.c_str(),
     //            SConfig::getInstance()->usPort,

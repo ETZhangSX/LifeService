@@ -58,6 +58,26 @@ public:
     virtual int getGroupByGroupId(tars::Int32 groupId, std::string &group, tars::TarsCurrentPtr current);
     
     /**
+     * @brief 创建社团
+     */
+    virtual int createClub(const LifeService::ClubInfo &clubInfo, tars::Int32 &iRetCode, tars::TarsCurrentPtr current);
+    
+    /**
+     * @brief 获取社团列表
+     */
+    virtual int getClubList(vector<LifeService::ClubInfo> &clubInfoList, tars::TarsCurrentPtr current);
+
+    /**
+     * @brief 获取活动列表
+     */
+    // virtual int getActivityList(vector<map<std::string, std::string>> activityList, tars::TarsCurrentPtr current);
+    
+    /**
+     * @brief 获取活动详情
+     */
+    // virtual int getActivityDetail(std::string activityId, LifeService::ActivityInfo activityInfo, tars::TarsCurrentPtr current);
+    
+    /**
      * @brief 向数据库插入数据
      */
     virtual int insertData(const std::string &sTableName, const vector<LifeService::Column> &sColumns, tars::TarsCurrentPtr current);

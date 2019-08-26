@@ -36,7 +36,6 @@ int DataServiceImp::createUser(const string &wx_id, const LifeService::UserInfo 
         return -1;
     }
     
-    vector<LifeService::Column> columns;
     UserHandle::getInstance()->InsertUserData(wx_id, userInfo);
     LOG->debug() << "Create user successfully" << endl;
     return 0;
@@ -91,9 +90,25 @@ int DataServiceImp::getGroupByGroupId(tars::Int32 groupId, string &group, tars::
 }
 
 //////////////////////////////////////////////////////
+int DataServiceImp::createClub(const LifeService::ClubInfo &clubInfo, tars::Int32 &iRetCode, tars::TarsCurrentPtr current)
+{
+    ClubHandle::getInstance()->InsertClubData(clubInfo);
+    LOG->debug() << "Create Club Successfully" << endl;
+    return 0;
+}
+
+//////////////////////////////////////////////////////
+int DataServiceImp::getClubList(vector<LifeService::ClubInfo> &clubInfoList, tars::TarsCurrentPtr current)
+{
+    clubInfoList = ClubHandle::getInstance()->vClubInfo;
+    return 0;
+}
+
+//////////////////////////////////////////////////////
 int DataServiceImp::insertData(const string &sTableName, const vector<LifeService::Column> &sColumns, tars::TarsCurrentPtr current)
 {
     MDbQueryRecord::getInstance()->InsertData(sTableName, sColumns);
+    LOG->debug() << "Insert Data Successfully" << endl;
     return 0;
 }
 
