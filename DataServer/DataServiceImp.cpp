@@ -24,6 +24,14 @@ void DataServiceImp::destroy()
 int DataServiceImp::hasUser(const string &wx_id, bool &sRsp, tars::TarsCurrentPtr current)
 {
     sRsp = UserHandle::getInstance()->hasUser(wx_id);
+    if (sRsp)
+    {
+        LOG->debug() << "hasUser: User exist" << endl;
+    }
+    else
+    {
+        LOG->debug() << "hasUser: User not exist" << endl;
+    }
     return 0;
 }
 
@@ -32,7 +40,7 @@ int DataServiceImp::createUser(const string &wx_id, const LifeService::UserInfo 
 {
     if (UserHandle::getInstance()->hasUser(wx_id))
     {
-        LOG->error() << "User exist";
+        LOG->error() << "createUser: User exist" << endl;
         return -1;
     }
     
@@ -47,8 +55,10 @@ int DataServiceImp::getUserInfo(const string &wx_id, LifeService::UserInfo &sRsp
     if (UserHandle::getInstance()->hasUser(wx_id))
     {
         sRsp = UserHandle::getInstance()->mUserInfo[wx_id];
+        LOG->debug() << "getUserInfo: " << wx_id << " successfully" << endl;
         return 0;
     }
+    LOG->error() << "getUserInfo: User not exist." << endl;
     return -1;
 }
 
@@ -56,6 +66,7 @@ int DataServiceImp::getUserInfo(const string &wx_id, LifeService::UserInfo &sRsp
 int DataServiceImp::getGroupInfo(map<tars::Int32, string> &groupInfo, tars::TarsCurrentPtr current)
 {
     groupInfo = UserHandle::getInstance()->mGroupInfo;
+    LOG->debug() << "getGroupInfo successfully" << endl;
     return 0;
 }
 
@@ -129,5 +140,21 @@ int DataServiceImp::queryData(const string &sTableName, const vector<string> &sC
         return -1;
     }
     sRsp = mysql_data.data();
+    return 0;
+}
+
+//////////////////////////////////////////////////////
+int DataServiceImp::getRecordCount(const string &sTableName, const string &sCondition, tars::Int32 &iCount, tars::TarsCurrentPtr current)
+{
+    try
+    {
+        iCount = MDbQueryRecord::getInstance()->GetMysqlObject()->getRecordCount(sTableName, sCondition);
+    }
+    catch (exception &e)
+    {
+        LOG->error() << "DataServiceImp::getRecordCount: " << e.what() << endl;
+        iCount = -1;
+        return -1;
+    }
     return 0;
 }

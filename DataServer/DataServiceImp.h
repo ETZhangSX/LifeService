@@ -86,6 +86,8 @@ public:
      * @brief 查询数据
      */
     virtual int queryData(const std::string &sTableName, const vector<std::string> &sColumns, const std::string &sCondition, vector<map<std::string, std::string>> &sRsp, tars::TarsCurrentPtr current);
+
+    virtual int getRecordCount(const std::string &sTableName, const std::string &sCondition, tars::Int32 &iCount, tars::TarsCurrentPtr current);
 };
 /////////////////////////////////////////////////////
 #endif
