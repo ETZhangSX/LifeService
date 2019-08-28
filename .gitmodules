@@ -1,3 +1,6 @@
 [submodule "UserInfoServer"]
 	path = UserInfoServer
 	url = https://github.com/ETZhangSX/UserInfoServer.git
+[submodule "ClubActivityServer"]
+	path = ClubActivityServer
+	url = https://github.com/ETZhangSX/ClubActivityServer.git
