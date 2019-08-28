@@ -1,0 +1,3 @@
+[submodule "UserInfoServer"]
+	path = UserInfoServer
+	url = https://github.com/ETZhangSX/UserInfoServer.git

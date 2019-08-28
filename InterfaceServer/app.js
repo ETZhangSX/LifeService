@@ -1,21 +1,22 @@
 // const https = require('https');
-const Koa = require('koa');
-const router = require('koa-router')();
+const Koa     = require('koa');
+const router  = require('koa-router')();
 const koaBody = require('koa-bodyparser');
-const TarsStream = require("@tars/stream");
 
 // Tars工具
 const Tars = require("@tars/rpc").client;
 
 // 引入tars
-const UserInfoService = require("./UserInfoServiceProxy");
-const DataService     = require("./DataServiceTars");
+const UserInfoServicePrx = require("./UserInfoServiceProxy");
+const DataServicePrx     = require("./DataServiceProxy");
+const DataServiceTars    = require("./DataServiceTars");
 
 // 创建KOA实例
 const app = new Koa();
 
 // 调用的服务Obj
-const userInfoObjName = "LifeService.UserInfoServer.UserInfoServiceObj";
+const dataServiceObjName = "LifeService.DataServer.DataServiceObj";
+const userInfoObjName    = "LifeService.UserInfoServer.UserInfoServiceObj";
 
 // 拉取配置IP和端口
 const hostname = process.env.IP || '127.0.0.1';
@@ -31,7 +32,7 @@ app.use(koaBody({
 router.get('/signIn', async ctx => {
     let {wx_id} = ctx.query;
     try {
-        const prx = Tars.stringToProxy(UserInfoService.LifeService.UserInfoServiceProxy, userInfoObjName);
+        const prx = Tars.stringToProxy(UserInfoServicePrx.LifeService.UserInfoServiceProxy, userInfoObjName);
         
         let result = await prx.SignIn(wx_id);
         let info = result.response.arguments.sRsp;
@@ -46,7 +47,7 @@ router.get('/signIn', async ctx => {
 // 测试
 .get('/test', async ctx => {
     try {
-        const prx = Tars.stringToProxy(UserInfoService.LifeService.UserInfoServiceProxy, userInfoObjName);
+        const prx = Tars.stringToProxy(UserInfoServicePrx.LifeService.UserInfoServiceProxy, userInfoObjName);
 
         const result = await prx.Test();
         let testStr = result.response.arguments.TestStr;
@@ -62,7 +63,7 @@ router.get('/signIn', async ctx => {
 // 获取用户权限组列表
 .get('/getGroupList', async ctx => {
     try {
-        const prx = Tars.stringToProxy(UserInfoService.LifeService.UserInfoServiceProxy, userInfoObjName);
+        const prx = Tars.stringToProxy(UserInfoServicePrx.LifeService.UserInfoServiceProxy, userInfoObjName);
 
         const result = await prx.GetGroupList();
         let groupInfo = result.response.arguments.groupInfo;
@@ -72,6 +73,23 @@ router.get('/signIn', async ctx => {
     catch(e) {
         console.log(e);
         ctx.body = 'Error: \n' + e;
+    }
+})
+
+// 测试数据层接口
+.get('/hasUser', async ctx => {
+    let {wx_id} = ctx.query;
+    try {
+        const prx = Tars.stringToProxy(DataServicePrx.LifeService.DataServiceProxy, dataServiceObjName);
+
+        let result = await prx.hasUser(wx_id);
+        let userExist = result.response.arguments.sRsp;
+        var info = {};
+        info["hasUser"] = userExist;
+        ctx.body = info;
+    } catch(e) {
+        console.log(e);
+        ctx.body = "Error: \n" + e;
     }
 })
 
@@ -85,7 +103,7 @@ router.get('/signIn', async ctx => {
         avatar_url,
     } = ctx.request.body;
 
-    const userInfo = new DataService.LifeService.UserInfo();
+    const userInfo = new DataServiceTars.LifeService.UserInfo();
 
     userInfo.readFromObject({
         name,
@@ -95,7 +113,8 @@ router.get('/signIn', async ctx => {
     })
 
     try {
-        const prx = Tars.stringToProxy(UserInfoService.LifeService.UserInfoServiceProxy, userInfoObjName);
+        const prx = Tars.stringToProxy(UserInfoServicePrx.LifeService.UserInfoServiceProxy, userInfoObjName);
+        
         let result = await prx.SignUp(wx_id, userInfo);
         let info = result.response.arguments.retCode;
         ctx.body = info;
