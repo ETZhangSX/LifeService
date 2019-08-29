@@ -137,9 +137,9 @@ int ClubHandle::LoadDataFromDb()
         for (size_t i = 0; i < oResultsCount; i++) 
         {
             LifeService::ClubInfo clubInfo;
-            clubInfo.clubId         = oResults[i][vColumns[0]];
+            clubInfo.club_id        = oResults[i][vColumns[0]];
             clubInfo.name           = oResults[i][vColumns[1]];
-            clubInfo.createTime     = oResults[i][vColumns[2]];
+            clubInfo.create_time    = oResults[i][vColumns[2]];
             clubInfo.chairman       = oResults[i][vColumns[3]];
             clubInfo.introduction   = oResults[i][vColumns[4]];
 
@@ -158,9 +158,9 @@ int ClubHandle::InsertClubData(const LifeService::ClubInfo &clubInfo)
 
     map<string, pair<TC_Mysql::FT, string>> vColumns;
 
-    vColumns.insert(make_pair(     "club_id", make_pair(TC_Mysql::DB_INT, clubInfo.clubId)));
+    vColumns.insert(make_pair(     "club_id", make_pair(TC_Mysql::DB_INT, clubInfo.club_id)));
     vColumns.insert(make_pair(        "name", make_pair(TC_Mysql::DB_STR, clubInfo.name)));
-    vColumns.insert(make_pair( "create_time", make_pair(TC_Mysql::DB_STR, clubInfo.createTime)));
+    vColumns.insert(make_pair( "create_time", make_pair(TC_Mysql::DB_STR, clubInfo.create_time)));
     vColumns.insert(make_pair(    "chairman", make_pair(TC_Mysql::DB_STR, clubInfo.chairman)));
     vColumns.insert(make_pair("introduction", make_pair(TC_Mysql::DB_STR, clubInfo.introduction)));
 

@@ -182,10 +182,10 @@ LifeService.Column.create = function (is) {
 };
 
 LifeService.ClubInfo = function() {
-    this.clubId = "";
+    this.club_id = "";
     this.name = "";
     this.chairman = "";
-    this.createTime = "";
+    this.create_time = "";
     this.introduction = "";
     this._classname = "LifeService.ClubInfo";
 };
@@ -194,18 +194,18 @@ LifeService.ClubInfo._write = function (os, tag, value) { os.writeStruct(tag, va
 LifeService.ClubInfo._read  = function (is, tag, def) { return is.readStruct(tag, true, def); };
 LifeService.ClubInfo._readFrom = function (is) {
     var tmp = new LifeService.ClubInfo;
-    tmp.clubId = is.readString(0, true, "");
+    tmp.club_id = is.readString(0, true, "");
     tmp.name = is.readString(1, true, "");
     tmp.chairman = is.readString(2, true, "");
-    tmp.createTime = is.readString(3, true, "");
+    tmp.create_time = is.readString(3, true, "");
     tmp.introduction = is.readString(4, true, "");
     return tmp;
 };
 LifeService.ClubInfo.prototype._writeTo = function (os) {
-    os.writeString(0, this.clubId);
+    os.writeString(0, this.club_id);
     os.writeString(1, this.name);
     os.writeString(2, this.chairman);
-    os.writeString(3, this.createTime);
+    os.writeString(3, this.create_time);
     os.writeString(4, this.introduction);
 };
 LifeService.ClubInfo.prototype._equal = function () {
@@ -219,18 +219,18 @@ LifeService.ClubInfo.prototype._genKey = function () {
 };
 LifeService.ClubInfo.prototype.toObject = function() { 
     return {
-        "clubId" : this.clubId,
+        "club_id" : this.club_id,
         "name" : this.name,
         "chairman" : this.chairman,
-        "createTime" : this.createTime,
+        "create_time" : this.create_time,
         "introduction" : this.introduction
     };
 };
 LifeService.ClubInfo.prototype.readFromObject = function(json) { 
-    _hasOwnProperty.call(json, "clubId") && (this.clubId = json.clubId);
+    _hasOwnProperty.call(json, "club_id") && (this.club_id = json.club_id);
     _hasOwnProperty.call(json, "name") && (this.name = json.name);
     _hasOwnProperty.call(json, "chairman") && (this.chairman = json.chairman);
-    _hasOwnProperty.call(json, "createTime") && (this.createTime = json.createTime);
+    _hasOwnProperty.call(json, "create_time") && (this.create_time = json.create_time);
     _hasOwnProperty.call(json, "introduction") && (this.introduction = json.introduction);
     return this;
 };
@@ -247,15 +247,16 @@ LifeService.ClubInfo.create = function (is) {
 };
 
 LifeService.ActivityInfo = function() {
-    this.activityId = "";
+    this.activity_id = "";
+    this.name = "";
     this.sponsor = "";
-    this.clubId = "";
-    this.targetId = "";
-    this.createTime = "";
-    this.startTime = "";
-    this.stopTime = "";
-    this.registryStartTime = "";
-    this.registryStopTime = "";
+    this.club_id = "";
+    this.target_id = "";
+    this.create_time = "";
+    this.start_time = "";
+    this.stop_time = "";
+    this.registry_start_time = "";
+    this.registry_stop_time = "";
     this.content = "";
     this._classname = "LifeService.ActivityInfo";
 };
@@ -264,29 +265,31 @@ LifeService.ActivityInfo._write = function (os, tag, value) { os.writeStruct(tag
 LifeService.ActivityInfo._read  = function (is, tag, def) { return is.readStruct(tag, true, def); };
 LifeService.ActivityInfo._readFrom = function (is) {
     var tmp = new LifeService.ActivityInfo;
-    tmp.activityId = is.readString(0, true, "");
-    tmp.sponsor = is.readString(1, true, "");
-    tmp.clubId = is.readString(2, true, "");
-    tmp.targetId = is.readString(3, true, "");
-    tmp.createTime = is.readString(4, false, "");
-    tmp.startTime = is.readString(5, false, "");
-    tmp.stopTime = is.readString(6, false, "");
-    tmp.registryStartTime = is.readString(7, false, "");
-    tmp.registryStopTime = is.readString(8, false, "");
-    tmp.content = is.readString(9, false, "");
+    tmp.activity_id = is.readString(0, true, "");
+    tmp.name = is.readString(1, true, "");
+    tmp.sponsor = is.readString(2, true, "");
+    tmp.club_id = is.readString(3, true, "");
+    tmp.target_id = is.readString(4, false, "");
+    tmp.create_time = is.readString(5, false, "");
+    tmp.start_time = is.readString(6, false, "");
+    tmp.stop_time = is.readString(7, false, "");
+    tmp.registry_start_time = is.readString(8, false, "");
+    tmp.registry_stop_time = is.readString(9, false, "");
+    tmp.content = is.readString(10, false, "");
     return tmp;
 };
 LifeService.ActivityInfo.prototype._writeTo = function (os) {
-    os.writeString(0, this.activityId);
-    os.writeString(1, this.sponsor);
-    os.writeString(2, this.clubId);
-    os.writeString(3, this.targetId);
-    os.writeString(4, this.createTime);
-    os.writeString(5, this.startTime);
-    os.writeString(6, this.stopTime);
-    os.writeString(7, this.registryStartTime);
-    os.writeString(8, this.registryStopTime);
-    os.writeString(9, this.content);
+    os.writeString(0, this.activity_id);
+    os.writeString(1, this.name);
+    os.writeString(2, this.sponsor);
+    os.writeString(3, this.club_id);
+    os.writeString(4, this.target_id);
+    os.writeString(5, this.create_time);
+    os.writeString(6, this.start_time);
+    os.writeString(7, this.stop_time);
+    os.writeString(8, this.registry_start_time);
+    os.writeString(9, this.registry_stop_time);
+    os.writeString(10, this.content);
 };
 LifeService.ActivityInfo.prototype._equal = function () {
     assert.fail("this structure not define key operation");
@@ -299,28 +302,30 @@ LifeService.ActivityInfo.prototype._genKey = function () {
 };
 LifeService.ActivityInfo.prototype.toObject = function() { 
     return {
-        "activityId" : this.activityId,
+        "activity_id" : this.activity_id,
+        "name" : this.name,
         "sponsor" : this.sponsor,
-        "clubId" : this.clubId,
-        "targetId" : this.targetId,
-        "createTime" : this.createTime,
-        "startTime" : this.startTime,
-        "stopTime" : this.stopTime,
-        "registryStartTime" : this.registryStartTime,
-        "registryStopTime" : this.registryStopTime,
+        "club_id" : this.club_id,
+        "target_id" : this.target_id,
+        "create_time" : this.create_time,
+        "start_time" : this.start_time,
+        "stop_time" : this.stop_time,
+        "registry_start_time" : this.registry_start_time,
+        "registry_stop_time" : this.registry_stop_time,
         "content" : this.content
     };
 };
 LifeService.ActivityInfo.prototype.readFromObject = function(json) { 
-    _hasOwnProperty.call(json, "activityId") && (this.activityId = json.activityId);
+    _hasOwnProperty.call(json, "activity_id") && (this.activity_id = json.activity_id);
+    _hasOwnProperty.call(json, "name") && (this.name = json.name);
     _hasOwnProperty.call(json, "sponsor") && (this.sponsor = json.sponsor);
-    _hasOwnProperty.call(json, "clubId") && (this.clubId = json.clubId);
-    _hasOwnProperty.call(json, "targetId") && (this.targetId = json.targetId);
-    _hasOwnProperty.call(json, "createTime") && (this.createTime = json.createTime);
-    _hasOwnProperty.call(json, "startTime") && (this.startTime = json.startTime);
-    _hasOwnProperty.call(json, "stopTime") && (this.stopTime = json.stopTime);
-    _hasOwnProperty.call(json, "registryStartTime") && (this.registryStartTime = json.registryStartTime);
-    _hasOwnProperty.call(json, "registryStopTime") && (this.registryStopTime = json.registryStopTime);
+    _hasOwnProperty.call(json, "club_id") && (this.club_id = json.club_id);
+    _hasOwnProperty.call(json, "target_id") && (this.target_id = json.target_id);
+    _hasOwnProperty.call(json, "create_time") && (this.create_time = json.create_time);
+    _hasOwnProperty.call(json, "start_time") && (this.start_time = json.start_time);
+    _hasOwnProperty.call(json, "stop_time") && (this.stop_time = json.stop_time);
+    _hasOwnProperty.call(json, "registry_start_time") && (this.registry_start_time = json.registry_start_time);
+    _hasOwnProperty.call(json, "registry_stop_time") && (this.registry_stop_time = json.registry_stop_time);
     _hasOwnProperty.call(json, "content") && (this.content = json.content);
     return this;
 };
@@ -781,6 +786,89 @@ LifeService.DataServiceProxy.prototype.getGroupInfo = function () {
     }
 };
 LifeService.DataServiceProxy.getGroupInfo = __LifeService_DataService$getGroupInfo$IF;
+
+var __LifeService_DataService$getRecordCount$IF = {
+    "name" : "getRecordCount",
+    "return" : "int32",
+    "arguments" : [{
+        "name" : "sTableName",
+        "class" : "string",
+        "direction" : "in"
+    }, {
+        "name" : "sCondition",
+        "class" : "string",
+        "direction" : "in"
+    }, {
+        "name" : "iCount",
+        "class" : "int32",
+        "direction" : "out"
+    }]
+};
+
+var __LifeService_DataService$getRecordCount$IE = function (sTableName, sCondition) {
+    var os = new TarsStream.TarsOutputStream();
+    os.writeString(1, sTableName);
+    os.writeString(2, sCondition);
+    return os.getBinBuffer();
+};
+
+var __LifeService_DataService$getRecordCount$ID = function (data) {
+    try {
+        var is = new TarsStream.TarsInputStream(data.response.sBuffer);
+        return {
+            "request" : data.request,
+            "response" : {
+                "costtime" : data.request.costtime,
+                "return" : is.readInt32(0, true, 0),
+                "arguments" : {
+                    "iCount" : is.readInt32(3, true, 0)
+                }
+            }
+        };
+    } catch (e) {
+        throw _makeError(data, e.message, TarsError.CLIENT.DECODE_ERROR);
+    }
+};
+
+var __LifeService_DataService$getRecordCount$PE = function (sTableName, sCondition, __$PROTOCOL$VERSION) {
+    var tup = new TarsStream.UniAttribute();
+    tup.tupVersion = __$PROTOCOL$VERSION;
+    tup.writeString("sTableName", sTableName);
+    tup.writeString("sCondition", sCondition);
+    return tup;
+};
+
+var __LifeService_DataService$getRecordCount$PD = function (data) {
+    try {
+        var tup = data.response.tup;
+        return {
+            "request" : data.request,
+            "response" : {
+                "costtime" : data.request.costtime,
+                "return" : tup.readInt32("", 0),
+                "arguments" : {
+                    "iCount" : tup.readInt32("iCount")
+                }
+            }
+        };
+    } catch (e) {
+        throw _makeError(data, e.message, TarsError.CLIENT.DECODE_ERROR);
+    }
+};
+
+var __LifeService_DataService$getRecordCount$ER = function (data) {
+    throw _makeError(data, "Call DataService::getRecordCount failed");
+};
+
+LifeService.DataServiceProxy.prototype.getRecordCount = function (sTableName, sCondition) {
+    var version = this._worker.version;
+    if (version === TarsStream.Tup.TUP_SIMPLE || version === TarsStream.Tup.TUP_COMPLEX) {
+        return this._worker.tup_invoke("getRecordCount", __LifeService_DataService$getRecordCount$PE(sTableName, sCondition, version), arguments[arguments.length - 1], __LifeService_DataService$getRecordCount$IF).then(__LifeService_DataService$getRecordCount$PD, __LifeService_DataService$getRecordCount$ER);
+    } else {
+        return this._worker.tars_invoke("getRecordCount", __LifeService_DataService$getRecordCount$IE(sTableName, sCondition), arguments[arguments.length - 1], __LifeService_DataService$getRecordCount$IF).then(__LifeService_DataService$getRecordCount$ID, __LifeService_DataService$getRecordCount$ER);
+    }
+};
+LifeService.DataServiceProxy.getRecordCount = __LifeService_DataService$getRecordCount$IF;
 
 var __LifeService_DataService$getUserInfo$IF = {
     "name" : "getUserInfo",
