@@ -130,15 +130,15 @@ var __LifeService_UserInfoService$GetUserPermissionInfo$IF = {
     "name" : "GetUserPermissionInfo",
     "return" : "int32",
     "arguments" : [{
-        "name" : "wx_id",
+        "name" : "wxId",
         "class" : "string",
         "direction" : "in"
     }]
 };
 
-var __LifeService_UserInfoService$GetUserPermissionInfo$IE = function (wx_id) {
+var __LifeService_UserInfoService$GetUserPermissionInfo$IE = function (wxId) {
     var os = new TarsStream.TarsOutputStream();
-    os.writeString(1, wx_id);
+    os.writeString(1, wxId);
     return os.getBinBuffer();
 };
 
@@ -157,10 +157,10 @@ var __LifeService_UserInfoService$GetUserPermissionInfo$ID = function (data) {
     }
 };
 
-var __LifeService_UserInfoService$GetUserPermissionInfo$PE = function (wx_id, __$PROTOCOL$VERSION) {
+var __LifeService_UserInfoService$GetUserPermissionInfo$PE = function (wxId, __$PROTOCOL$VERSION) {
     var tup = new TarsStream.UniAttribute();
     tup.tupVersion = __$PROTOCOL$VERSION;
-    tup.writeString("wx_id", wx_id);
+    tup.writeString("wxId", wxId);
     return tup;
 };
 
@@ -183,21 +183,276 @@ var __LifeService_UserInfoService$GetUserPermissionInfo$ER = function (data) {
     throw _makeError(data, "Call UserInfoService::GetUserPermissionInfo failed");
 };
 
-LifeService.UserInfoServiceProxy.prototype.GetUserPermissionInfo = function (wx_id) {
+LifeService.UserInfoServiceProxy.prototype.GetUserPermissionInfo = function (wxId) {
     var version = this._worker.version;
     if (version === TarsStream.Tup.TUP_SIMPLE || version === TarsStream.Tup.TUP_COMPLEX) {
-        return this._worker.tup_invoke("GetUserPermissionInfo", __LifeService_UserInfoService$GetUserPermissionInfo$PE(wx_id, version), arguments[arguments.length - 1], __LifeService_UserInfoService$GetUserPermissionInfo$IF).then(__LifeService_UserInfoService$GetUserPermissionInfo$PD, __LifeService_UserInfoService$GetUserPermissionInfo$ER);
+        return this._worker.tup_invoke("GetUserPermissionInfo", __LifeService_UserInfoService$GetUserPermissionInfo$PE(wxId, version), arguments[arguments.length - 1], __LifeService_UserInfoService$GetUserPermissionInfo$IF).then(__LifeService_UserInfoService$GetUserPermissionInfo$PD, __LifeService_UserInfoService$GetUserPermissionInfo$ER);
     } else {
-        return this._worker.tars_invoke("GetUserPermissionInfo", __LifeService_UserInfoService$GetUserPermissionInfo$IE(wx_id), arguments[arguments.length - 1], __LifeService_UserInfoService$GetUserPermissionInfo$IF).then(__LifeService_UserInfoService$GetUserPermissionInfo$ID, __LifeService_UserInfoService$GetUserPermissionInfo$ER);
+        return this._worker.tars_invoke("GetUserPermissionInfo", __LifeService_UserInfoService$GetUserPermissionInfo$IE(wxId), arguments[arguments.length - 1], __LifeService_UserInfoService$GetUserPermissionInfo$IF).then(__LifeService_UserInfoService$GetUserPermissionInfo$ID, __LifeService_UserInfoService$GetUserPermissionInfo$ER);
     }
 };
 LifeService.UserInfoServiceProxy.GetUserPermissionInfo = __LifeService_UserInfoService$GetUserPermissionInfo$IF;
+
+var __LifeService_UserInfoService$IsAppliedActivity$IF = {
+    "name" : "IsAppliedActivity",
+    "return" : "int32",
+    "arguments" : [{
+        "name" : "wxId",
+        "class" : "string",
+        "direction" : "in"
+    }, {
+        "name" : "activityId",
+        "class" : "string",
+        "direction" : "in"
+    }, {
+        "name" : "isApplied",
+        "class" : "bool",
+        "direction" : "out"
+    }]
+};
+
+var __LifeService_UserInfoService$IsAppliedActivity$IE = function (wxId, activityId) {
+    var os = new TarsStream.TarsOutputStream();
+    os.writeString(1, wxId);
+    os.writeString(2, activityId);
+    return os.getBinBuffer();
+};
+
+var __LifeService_UserInfoService$IsAppliedActivity$ID = function (data) {
+    try {
+        var is = new TarsStream.TarsInputStream(data.response.sBuffer);
+        return {
+            "request" : data.request,
+            "response" : {
+                "costtime" : data.request.costtime,
+                "return" : is.readInt32(0, true, 0),
+                "arguments" : {
+                    "isApplied" : is.readBoolean(3, true, true)
+                }
+            }
+        };
+    } catch (e) {
+        throw _makeError(data, e.message, TarsError.CLIENT.DECODE_ERROR);
+    }
+};
+
+var __LifeService_UserInfoService$IsAppliedActivity$PE = function (wxId, activityId, __$PROTOCOL$VERSION) {
+    var tup = new TarsStream.UniAttribute();
+    tup.tupVersion = __$PROTOCOL$VERSION;
+    tup.writeString("wxId", wxId);
+    tup.writeString("activityId", activityId);
+    return tup;
+};
+
+var __LifeService_UserInfoService$IsAppliedActivity$PD = function (data) {
+    try {
+        var tup = data.response.tup;
+        return {
+            "request" : data.request,
+            "response" : {
+                "costtime" : data.request.costtime,
+                "return" : tup.readInt32("", 0),
+                "arguments" : {
+                    "isApplied" : tup.readBoolean("isApplied")
+                }
+            }
+        };
+    } catch (e) {
+        throw _makeError(data, e.message, TarsError.CLIENT.DECODE_ERROR);
+    }
+};
+
+var __LifeService_UserInfoService$IsAppliedActivity$ER = function (data) {
+    throw _makeError(data, "Call UserInfoService::IsAppliedActivity failed");
+};
+
+LifeService.UserInfoServiceProxy.prototype.IsAppliedActivity = function (wxId, activityId) {
+    var version = this._worker.version;
+    if (version === TarsStream.Tup.TUP_SIMPLE || version === TarsStream.Tup.TUP_COMPLEX) {
+        return this._worker.tup_invoke("IsAppliedActivity", __LifeService_UserInfoService$IsAppliedActivity$PE(wxId, activityId, version), arguments[arguments.length - 1], __LifeService_UserInfoService$IsAppliedActivity$IF).then(__LifeService_UserInfoService$IsAppliedActivity$PD, __LifeService_UserInfoService$IsAppliedActivity$ER);
+    } else {
+        return this._worker.tars_invoke("IsAppliedActivity", __LifeService_UserInfoService$IsAppliedActivity$IE(wxId, activityId), arguments[arguments.length - 1], __LifeService_UserInfoService$IsAppliedActivity$IF).then(__LifeService_UserInfoService$IsAppliedActivity$ID, __LifeService_UserInfoService$IsAppliedActivity$ER);
+    }
+};
+LifeService.UserInfoServiceProxy.IsAppliedActivity = __LifeService_UserInfoService$IsAppliedActivity$IF;
+
+var __LifeService_UserInfoService$IsClubManager$IF = {
+    "name" : "IsClubManager",
+    "return" : "int32",
+    "arguments" : [{
+        "name" : "wxId",
+        "class" : "string",
+        "direction" : "in"
+    }, {
+        "name" : "clubId",
+        "class" : "string",
+        "direction" : "in"
+    }, {
+        "name" : "isClubManager",
+        "class" : "bool",
+        "direction" : "out"
+    }]
+};
+
+var __LifeService_UserInfoService$IsClubManager$IE = function (wxId, clubId) {
+    var os = new TarsStream.TarsOutputStream();
+    os.writeString(1, wxId);
+    os.writeString(2, clubId);
+    return os.getBinBuffer();
+};
+
+var __LifeService_UserInfoService$IsClubManager$ID = function (data) {
+    try {
+        var is = new TarsStream.TarsInputStream(data.response.sBuffer);
+        return {
+            "request" : data.request,
+            "response" : {
+                "costtime" : data.request.costtime,
+                "return" : is.readInt32(0, true, 0),
+                "arguments" : {
+                    "isClubManager" : is.readBoolean(3, true, true)
+                }
+            }
+        };
+    } catch (e) {
+        throw _makeError(data, e.message, TarsError.CLIENT.DECODE_ERROR);
+    }
+};
+
+var __LifeService_UserInfoService$IsClubManager$PE = function (wxId, clubId, __$PROTOCOL$VERSION) {
+    var tup = new TarsStream.UniAttribute();
+    tup.tupVersion = __$PROTOCOL$VERSION;
+    tup.writeString("wxId", wxId);
+    tup.writeString("clubId", clubId);
+    return tup;
+};
+
+var __LifeService_UserInfoService$IsClubManager$PD = function (data) {
+    try {
+        var tup = data.response.tup;
+        return {
+            "request" : data.request,
+            "response" : {
+                "costtime" : data.request.costtime,
+                "return" : tup.readInt32("", 0),
+                "arguments" : {
+                    "isClubManager" : tup.readBoolean("isClubManager")
+                }
+            }
+        };
+    } catch (e) {
+        throw _makeError(data, e.message, TarsError.CLIENT.DECODE_ERROR);
+    }
+};
+
+var __LifeService_UserInfoService$IsClubManager$ER = function (data) {
+    throw _makeError(data, "Call UserInfoService::IsClubManager failed");
+};
+
+LifeService.UserInfoServiceProxy.prototype.IsClubManager = function (wxId, clubId) {
+    var version = this._worker.version;
+    if (version === TarsStream.Tup.TUP_SIMPLE || version === TarsStream.Tup.TUP_COMPLEX) {
+        return this._worker.tup_invoke("IsClubManager", __LifeService_UserInfoService$IsClubManager$PE(wxId, clubId, version), arguments[arguments.length - 1], __LifeService_UserInfoService$IsClubManager$IF).then(__LifeService_UserInfoService$IsClubManager$PD, __LifeService_UserInfoService$IsClubManager$ER);
+    } else {
+        return this._worker.tars_invoke("IsClubManager", __LifeService_UserInfoService$IsClubManager$IE(wxId, clubId), arguments[arguments.length - 1], __LifeService_UserInfoService$IsClubManager$IF).then(__LifeService_UserInfoService$IsClubManager$ID, __LifeService_UserInfoService$IsClubManager$ER);
+    }
+};
+LifeService.UserInfoServiceProxy.IsClubManager = __LifeService_UserInfoService$IsClubManager$IF;
+
+var __LifeService_UserInfoService$IsInClub$IF = {
+    "name" : "IsInClub",
+    "return" : "int32",
+    "arguments" : [{
+        "name" : "wxId",
+        "class" : "string",
+        "direction" : "in"
+    }, {
+        "name" : "clubId",
+        "class" : "string",
+        "direction" : "in"
+    }, {
+        "name" : "justInClub",
+        "class" : "bool",
+        "direction" : "in"
+    }, {
+        "name" : "isIn",
+        "class" : "bool",
+        "direction" : "out"
+    }]
+};
+
+var __LifeService_UserInfoService$IsInClub$IE = function (wxId, clubId, justInClub) {
+    var os = new TarsStream.TarsOutputStream();
+    os.writeString(1, wxId);
+    os.writeString(2, clubId);
+    os.writeBoolean(3, justInClub);
+    return os.getBinBuffer();
+};
+
+var __LifeService_UserInfoService$IsInClub$ID = function (data) {
+    try {
+        var is = new TarsStream.TarsInputStream(data.response.sBuffer);
+        return {
+            "request" : data.request,
+            "response" : {
+                "costtime" : data.request.costtime,
+                "return" : is.readInt32(0, true, 0),
+                "arguments" : {
+                    "isIn" : is.readBoolean(4, true, true)
+                }
+            }
+        };
+    } catch (e) {
+        throw _makeError(data, e.message, TarsError.CLIENT.DECODE_ERROR);
+    }
+};
+
+var __LifeService_UserInfoService$IsInClub$PE = function (wxId, clubId, justInClub, __$PROTOCOL$VERSION) {
+    var tup = new TarsStream.UniAttribute();
+    tup.tupVersion = __$PROTOCOL$VERSION;
+    tup.writeString("wxId", wxId);
+    tup.writeString("clubId", clubId);
+    tup.writeBoolean("justInClub", justInClub);
+    return tup;
+};
+
+var __LifeService_UserInfoService$IsInClub$PD = function (data) {
+    try {
+        var tup = data.response.tup;
+        return {
+            "request" : data.request,
+            "response" : {
+                "costtime" : data.request.costtime,
+                "return" : tup.readInt32("", 0),
+                "arguments" : {
+                    "isIn" : tup.readBoolean("isIn")
+                }
+            }
+        };
+    } catch (e) {
+        throw _makeError(data, e.message, TarsError.CLIENT.DECODE_ERROR);
+    }
+};
+
+var __LifeService_UserInfoService$IsInClub$ER = function (data) {
+    throw _makeError(data, "Call UserInfoService::IsInClub failed");
+};
+
+LifeService.UserInfoServiceProxy.prototype.IsInClub = function (wxId, clubId, justInClub) {
+    var version = this._worker.version;
+    if (version === TarsStream.Tup.TUP_SIMPLE || version === TarsStream.Tup.TUP_COMPLEX) {
+        return this._worker.tup_invoke("IsInClub", __LifeService_UserInfoService$IsInClub$PE(wxId, clubId, justInClub, version), arguments[arguments.length - 1], __LifeService_UserInfoService$IsInClub$IF).then(__LifeService_UserInfoService$IsInClub$PD, __LifeService_UserInfoService$IsInClub$ER);
+    } else {
+        return this._worker.tars_invoke("IsInClub", __LifeService_UserInfoService$IsInClub$IE(wxId, clubId, justInClub), arguments[arguments.length - 1], __LifeService_UserInfoService$IsInClub$IF).then(__LifeService_UserInfoService$IsInClub$ID, __LifeService_UserInfoService$IsInClub$ER);
+    }
+};
+LifeService.UserInfoServiceProxy.IsInClub = __LifeService_UserInfoService$IsInClub$IF;
 
 var __LifeService_UserInfoService$SignIn$IF = {
     "name" : "SignIn",
     "return" : "int32",
     "arguments" : [{
-        "name" : "wx_id",
+        "name" : "wxId",
         "class" : "string",
         "direction" : "in"
     }, {
@@ -207,9 +462,9 @@ var __LifeService_UserInfoService$SignIn$IF = {
     }]
 };
 
-var __LifeService_UserInfoService$SignIn$IE = function (wx_id) {
+var __LifeService_UserInfoService$SignIn$IE = function (wxId) {
     var os = new TarsStream.TarsOutputStream();
-    os.writeString(1, wx_id);
+    os.writeString(1, wxId);
     return os.getBinBuffer();
 };
 
@@ -231,10 +486,10 @@ var __LifeService_UserInfoService$SignIn$ID = function (data) {
     }
 };
 
-var __LifeService_UserInfoService$SignIn$PE = function (wx_id, __$PROTOCOL$VERSION) {
+var __LifeService_UserInfoService$SignIn$PE = function (wxId, __$PROTOCOL$VERSION) {
     var tup = new TarsStream.UniAttribute();
     tup.tupVersion = __$PROTOCOL$VERSION;
-    tup.writeString("wx_id", wx_id);
+    tup.writeString("wxId", wxId);
     return tup;
 };
 
@@ -260,12 +515,12 @@ var __LifeService_UserInfoService$SignIn$ER = function (data) {
     throw _makeError(data, "Call UserInfoService::SignIn failed");
 };
 
-LifeService.UserInfoServiceProxy.prototype.SignIn = function (wx_id) {
+LifeService.UserInfoServiceProxy.prototype.SignIn = function (wxId) {
     var version = this._worker.version;
     if (version === TarsStream.Tup.TUP_SIMPLE || version === TarsStream.Tup.TUP_COMPLEX) {
-        return this._worker.tup_invoke("SignIn", __LifeService_UserInfoService$SignIn$PE(wx_id, version), arguments[arguments.length - 1], __LifeService_UserInfoService$SignIn$IF).then(__LifeService_UserInfoService$SignIn$PD, __LifeService_UserInfoService$SignIn$ER);
+        return this._worker.tup_invoke("SignIn", __LifeService_UserInfoService$SignIn$PE(wxId, version), arguments[arguments.length - 1], __LifeService_UserInfoService$SignIn$IF).then(__LifeService_UserInfoService$SignIn$PD, __LifeService_UserInfoService$SignIn$ER);
     } else {
-        return this._worker.tars_invoke("SignIn", __LifeService_UserInfoService$SignIn$IE(wx_id), arguments[arguments.length - 1], __LifeService_UserInfoService$SignIn$IF).then(__LifeService_UserInfoService$SignIn$ID, __LifeService_UserInfoService$SignIn$ER);
+        return this._worker.tars_invoke("SignIn", __LifeService_UserInfoService$SignIn$IE(wxId), arguments[arguments.length - 1], __LifeService_UserInfoService$SignIn$IF).then(__LifeService_UserInfoService$SignIn$ID, __LifeService_UserInfoService$SignIn$ER);
     }
 };
 LifeService.UserInfoServiceProxy.SignIn = __LifeService_UserInfoService$SignIn$IF;
@@ -274,7 +529,7 @@ var __LifeService_UserInfoService$SignUp$IF = {
     "name" : "SignUp",
     "return" : "int32",
     "arguments" : [{
-        "name" : "wx_id",
+        "name" : "wxId",
         "class" : "string",
         "direction" : "in"
     }, {
@@ -288,9 +543,9 @@ var __LifeService_UserInfoService$SignUp$IF = {
     }]
 };
 
-var __LifeService_UserInfoService$SignUp$IE = function (wx_id, userInfo) {
+var __LifeService_UserInfoService$SignUp$IE = function (wxId, userInfo) {
     var os = new TarsStream.TarsOutputStream();
-    os.writeString(1, wx_id);
+    os.writeString(1, wxId);
     os.writeStruct(2, userInfo);
     return os.getBinBuffer();
 };
@@ -313,10 +568,10 @@ var __LifeService_UserInfoService$SignUp$ID = function (data) {
     }
 };
 
-var __LifeService_UserInfoService$SignUp$PE = function (wx_id, userInfo, __$PROTOCOL$VERSION) {
+var __LifeService_UserInfoService$SignUp$PE = function (wxId, userInfo, __$PROTOCOL$VERSION) {
     var tup = new TarsStream.UniAttribute();
     tup.tupVersion = __$PROTOCOL$VERSION;
-    tup.writeString("wx_id", wx_id);
+    tup.writeString("wxId", wxId);
     tup.writeStruct("userInfo", userInfo);
     return tup;
 };
@@ -343,12 +598,12 @@ var __LifeService_UserInfoService$SignUp$ER = function (data) {
     throw _makeError(data, "Call UserInfoService::SignUp failed");
 };
 
-LifeService.UserInfoServiceProxy.prototype.SignUp = function (wx_id, userInfo) {
+LifeService.UserInfoServiceProxy.prototype.SignUp = function (wxId, userInfo) {
     var version = this._worker.version;
     if (version === TarsStream.Tup.TUP_SIMPLE || version === TarsStream.Tup.TUP_COMPLEX) {
-        return this._worker.tup_invoke("SignUp", __LifeService_UserInfoService$SignUp$PE(wx_id, userInfo, version), arguments[arguments.length - 1], __LifeService_UserInfoService$SignUp$IF).then(__LifeService_UserInfoService$SignUp$PD, __LifeService_UserInfoService$SignUp$ER);
+        return this._worker.tup_invoke("SignUp", __LifeService_UserInfoService$SignUp$PE(wxId, userInfo, version), arguments[arguments.length - 1], __LifeService_UserInfoService$SignUp$IF).then(__LifeService_UserInfoService$SignUp$PD, __LifeService_UserInfoService$SignUp$ER);
     } else {
-        return this._worker.tars_invoke("SignUp", __LifeService_UserInfoService$SignUp$IE(wx_id, userInfo), arguments[arguments.length - 1], __LifeService_UserInfoService$SignUp$IF).then(__LifeService_UserInfoService$SignUp$ID, __LifeService_UserInfoService$SignUp$ER);
+        return this._worker.tars_invoke("SignUp", __LifeService_UserInfoService$SignUp$IE(wxId, userInfo), arguments[arguments.length - 1], __LifeService_UserInfoService$SignUp$IF).then(__LifeService_UserInfoService$SignUp$ID, __LifeService_UserInfoService$SignUp$ER);
     }
 };
 LifeService.UserInfoServiceProxy.SignUp = __LifeService_UserInfoService$SignUp$IF;
@@ -357,7 +612,7 @@ var __LifeService_UserInfoService$Test$IF = {
     "name" : "Test",
     "return" : "int32",
     "arguments" : [{
-        "name" : "TestStr",
+        "name" : "testStr",
         "class" : "string",
         "direction" : "out"
     }]
@@ -377,7 +632,7 @@ var __LifeService_UserInfoService$Test$ID = function (data) {
                 "costtime" : data.request.costtime,
                 "return" : is.readInt32(0, true, 0),
                 "arguments" : {
-                    "TestStr" : is.readString(1, true, "")
+                    "testStr" : is.readString(1, true, "")
                 }
             }
         };
@@ -401,7 +656,7 @@ var __LifeService_UserInfoService$Test$PD = function (data) {
                 "costtime" : data.request.costtime,
                 "return" : tup.readInt32("", 0),
                 "arguments" : {
-                    "TestStr" : tup.readString("TestStr")
+                    "testStr" : tup.readString("testStr")
                 }
             }
         };

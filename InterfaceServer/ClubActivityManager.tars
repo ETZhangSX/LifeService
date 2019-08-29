@@ -1,0 +1,14 @@
+#include "DataService.tars"
+
+module LifeService{
+    interface ClubActivityManager{
+        int CreateClubManager(string wxId, string clubId, out int RetCode);
+        int CreateClub(ClubInfo clubInfo, out int RetCode);
+        int GetClubList(out vector<ClubInfo> clubInfoList, out int RetCode);
+        int ApplyForClub(string wx_id, string clubId, out int RetCode);
+        int CreateActivity(string wx_id, ActivityInfo activityInfo, out int RetCode);
+        int GetActivityList(int index, out int nextIndex, out vector<map<string, string>> activityList);
+        int GetActivityDetail(string activityId, out ActivityInfo activityInfo);
+        int ApplyForActivity(string wx_id, string activityId, out int RetCode);
+    };
+};
