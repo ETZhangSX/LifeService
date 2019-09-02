@@ -28,7 +28,7 @@ ClubActivityServer.createClubManager = async (ctx) => {
     }
     catch(e) {
         console.log(e);
-        ctx.body = DataHandle.returnError(400, e);
+        ctx.body = DataHandle.returnError(400, e.message);
     }
 }
 
@@ -59,7 +59,7 @@ ClubActivityServer.createClub = async (ctx) => {
     }
     catch(e) {
         console.log(e);
-        ctx.body = DataHandle.returnError(400, e);
+        ctx.body = DataHandle.returnError(400, e.message);
     }
 };
 
@@ -74,7 +74,7 @@ ClubActivityServer.getClubList = async (ctx) => {
     }
     catch(e) {
         console.log(e);
-        ctx.body = DataHandle.returnError(400, e);
+        ctx.body = DataHandle.returnError(400, e.message);
     }
 };
 
@@ -94,7 +94,7 @@ ClubActivityServer.applyForClub = async (ctx) => {
     }
     catch(e) {
         console.log(e);
-        ctx.body = DataHandle.returnError(400, e);
+        ctx.body = DataHandle.returnError(400, e.message);
     }
 };
 
@@ -133,7 +133,7 @@ ClubActivityServer.createActivity = async (ctx) => {
     }
     catch(e) {
         console.log(e);
-        ctx.body = DataHandle.returnError(400, e);
+        ctx.body = DataHandle.returnError(400, e.message);
     }
 };
 
@@ -152,7 +152,7 @@ ClubActivityServer.getActivityList = async (ctx) => {
     }
     catch(e) {
         console.log(e);
-        ctx.body = DataHandle.returnError(400, e);
+        ctx.body = DataHandle.returnError(400, e.message);
     }
 };
 
@@ -168,7 +168,7 @@ ClubActivityServer.getActivityDetail = async (ctx) => {
     }
     catch(e) {
         console.log(e);
-        ctx.body = DataHandle.returnError(400, e);
+        ctx.body = DataHandle.returnError(400, e.message);
     }
 };
 
@@ -188,7 +188,7 @@ ClubActivityServer.applyForActivity = async (ctx) => {
     }
     catch(e) {
         console.log(e);
-        ctx.body = DataHandle.returnError(400, e);
+        ctx.body = DataHandle.returnError(400, e.message);
     }
 };
 

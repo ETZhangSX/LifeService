@@ -20,7 +20,7 @@ UserInfoServer.test = async ctx => {
     }
     catch(e) {
         console.log(e);
-        ctx.body = DataHandle.returnError(400, e);
+        ctx.body = DataHandle.returnError(400, e.message);
     }
 };
 
@@ -35,7 +35,7 @@ UserInfoServer.signIn = async (ctx) => {
 
     } catch(e) {
         console.log(e);
-        ctx.body = DataHandle.returnError(400, e);
+        ctx.body = DataHandle.returnError(400, e.message);
     }
 };
 
@@ -50,7 +50,7 @@ UserInfoServer.getGroupList = async (ctx) => {
     }
     catch(e) {
         console.log(e);
-        ctx.body = DataHandle.returnError(400, e);
+        ctx.body = DataHandle.returnError(400, e.message);
     }
 };
 
@@ -72,7 +72,7 @@ UserInfoServer.isClubManager = async (ctx) => {
     }
     catch(e) {
         console.log(e)
-        ctx.body = DataHandle.returnError(400, e);
+        ctx.body = DataHandle.returnError(400, e.message);
     }
 };
 
@@ -95,7 +95,7 @@ UserInfoServer.isInClub = async (ctx) => {
     }
     catch(e) {
         console.log(e);
-        ctx.body = DataHandle.returnError(400, e);
+        ctx.body = DataHandle.returnError(400, e.message);
     }
 };
 
@@ -117,7 +117,7 @@ UserInfoServer.isAppliedActivity = async (ctx) => {
     }
     catch(e) {
         console.log(e);
-        ctx.body = DataHandle.returnError(400, e);
+        ctx.body = DataHandle.returnError(400, e.message);
     }
 };
 
@@ -147,7 +147,7 @@ UserInfoServer.signUp = async (ctx) => {
     }
     catch(e) {
         console.log(e);
-        ctx.body = DataHandle.returnError(400, e);
+        ctx.body = DataHandle.returnError(400, e.message);
     }
 };
 
