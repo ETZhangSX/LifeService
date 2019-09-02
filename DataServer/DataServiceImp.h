@@ -70,13 +70,23 @@ public:
     /**
      * @brief 获取活动列表
      */
-    // virtual int getActivityList(vector<map<std::string, std::string>> activityList, tars::TarsCurrentPtr current);
+    virtual int getActivityList(tars::Int32 index, tars::Int32 &nextIndex, vector<map<std::string, std::string>> &activityList, tars::TarsCurrentPtr current);
     
     /**
      * @brief 获取活动详情
      */
     // virtual int getActivityDetail(std::string activityId, LifeService::ActivityInfo activityInfo, tars::TarsCurrentPtr current);
     
+    /**
+     * @brief 插入留言
+     */
+    virtual int insertMessage(const LifeService::Message &msg, tars::TarsCurrentPtr current);
+
+    virtual int getMsgList(tars::Int32 index, const std::string &date, const std::string &wx_id, tars::Int32 &nextIndex, vector<LifeService::Message> &msgList, tars::TarsCurrentPtr current);
+
+    virtual int addLike(const std::string &message_id, tars::TarsCurrentPtr current);
+
+    virtual int getLike(const std::string &message_id, tars::Int32 &like_count, tars::TarsCurrentPtr current);
     /**
      * @brief 向数据库插入数据
      */

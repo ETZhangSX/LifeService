@@ -116,6 +116,43 @@ int DataServiceImp::getClubList(vector<LifeService::ClubInfo> &clubInfoList, tar
 }
 
 //////////////////////////////////////////////////////
+int DataServiceImp::getActivityList(tars::Int32 index, tars::Int32 &nextIndex, vector<map<string, string>> &activityList, tars::TarsCurrentPtr current)
+{
+    int batch = 8;
+    int Ret = ActivityHandle::getInstance()->GetActivityList(index, batch, nextIndex, activityList);
+    return Ret;
+}
+
+//////////////////////////////////////////////////////
+int DataServiceImp::insertMessage(const LifeService::Message &msg, tars::TarsCurrentPtr current)
+{
+    MsgWallHandle::getInstance()->InsertMessage(msg);
+    return 0;
+}
+
+//////////////////////////////////////////////////////
+int DataServiceImp::getMsgList(tars::Int32 index, const string &date, const string &wx_id, tars::Int32 &nextIndex, vector<LifeService::Message> &msgList, tars::TarsCurrentPtr current)
+{
+    int batch = 8;
+    int Ret = MsgWallHandle::getInstance()->GetMsgList(index, batch, date, wx_id, nextIndex, msgList);
+    return Ret;
+}
+
+int DataServiceImp::addLike(const string &message_id, tars::TarsCurrentPtr current)
+{
+    MsgWallHandle::getInstance()->AddLike(message_id);
+    return 0;
+}
+
+int DataServiceImp::getLike(const string &message_id, tars::Int32 &like_count, tars::TarsCurrentPtr current)
+{
+    int Ret = MsgWallHandle::getInstance()->GetLike(message_id, like_count);
+    return Ret;
+}
+
+//////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////
 int DataServiceImp::insertData(const string &sTableName, const vector<LifeService::Column> &sColumns, tars::TarsCurrentPtr current)
 {
     MDbQueryRecord::getInstance()->InsertData(sTableName, sColumns);
