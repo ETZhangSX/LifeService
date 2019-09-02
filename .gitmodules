@@ -4,3 +4,6 @@
 [submodule "ClubActivityServer"]
 	path = ClubActivityServer
 	url = https://github.com/ETZhangSX/ClubActivityServer.git
+[submodule "MessageWallServer"]
+	path = MessageWallServer
+	url = https://github.com/ETZhangSX/MessageWallServer.git
