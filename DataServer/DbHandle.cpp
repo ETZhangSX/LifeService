@@ -107,7 +107,7 @@ bool UserHandle::hasUser(const string &wx_id)
     return true;
 }
 
-
+//////////////////////////////////////////////////////
 int ClubHandle::LoadDataFromDb()
 {
     TC_Mysql mysql(SConfig::getInstance()->strDbHost, \
@@ -168,5 +168,174 @@ int ClubHandle::InsertClubData(const LifeService::ClubInfo &clubInfo)
 
     LOG->debug() << "Insert Club Data: " << clubInfo.name << endl;
 
+    return 0;
+}
+
+//////////////////////////////////////////////////////
+int ActivityHandle::GetActivityList(const int &index, const int &batch, int &nextIndex, vector<map<string, string>> &activityList)
+{
+    string sTableName = "activities";
+    vector<string> vColumns = {"activity_id", "name", "sponsor", "club_id", "target_id", "create_time", "start_time", "stop_time", "registry_start_time", "registry_stop_time", "content"};
+    string sCondition = "`" + vColumns[0] + "`";
+    // 0代表第一次请求
+    if (index == 0)
+    {
+        sCondition += ">=0";
+    }
+    else 
+    {
+        sCondition += "<" + TC_Common::tostr<int>(index);
+    }
+
+    // 根据创建时间排序, 从最新的留言开始查询
+    string sql = buildSelectSQL(sTableName, vColumns, sCondition, vColumns[4], DESC, batch);
+    {
+        TC_Mysql::MysqlData oResults;
+        try
+        {
+            oResults = MDbQueryRecord::getInstance()->GetMysqlObject()->queryRecord(sql);
+        }
+        catch (exception &e)
+        {
+            LOG->error() << "GetActivityList query error: " << e.what() << endl;
+            return -1;
+        }
+        size_t oResultsCount = oResults.size();
+
+        // 若查询的数据小于batch, 说明以及没有更早的数据, 返回-1
+        if (oResultsCount < batch)
+            nextIndex = -1;
+        else
+            nextIndex = TC_Common::strto<int>(oResults[oResultsCount - 1][vColumns[0]]);
+
+        for (size_t i = 0; i < oResultsCount; i++)
+        {
+            map<string, string> item;
+            
+            item.insert(make_pair(vColumns[0], oResults[i][vColumns[0]]));
+            item.insert(make_pair(vColumns[1], oResults[i][vColumns[1]]));
+            item.insert(make_pair(vColumns[2], oResults[i][vColumns[2]]));
+            item.insert(make_pair(vColumns[3], oResults[i][vColumns[3]]));
+            item.insert(make_pair(vColumns[4], oResults[i][vColumns[4]]));
+            item.insert(make_pair(vColumns[5], oResults[i][vColumns[5]]));
+            item.insert(make_pair(vColumns[6], oResults[i][vColumns[6]]));
+            item.insert(make_pair(vColumns[7], oResults[i][vColumns[7]]));
+            item.insert(make_pair(vColumns[8], oResults[i][vColumns[8]]));
+            item.insert(make_pair(vColumns[9], oResults[i][vColumns[9]]));
+            item.insert(make_pair(vColumns[10], oResults[i][vColumns[10]]));
+
+            activityList.push_back(item);
+        }
+    }
+    return 0;
+}
+
+//////////////////////////////////////////////////////
+int MsgWallHandle::InsertMessage(const LifeService::Message &msg)
+{
+    map<string, pair<TC_Mysql::FT, string>> mColumns;
+
+    mColumns.insert(make_pair(  "user_id", make_pair(TC_Mysql::DB_STR, msg.user_id)));
+    mColumns.insert(make_pair(  "content", make_pair(TC_Mysql::DB_STR, msg.content)));
+    mColumns.insert(make_pair("anonymous", make_pair(TC_Mysql::DB_INT, TC_Common::tostr<bool>(msg.anonymous))));
+
+    MDbQueryRecord::getInstance()->InsertData("message_wall", mColumns);
+
+    LOG->debug() << "Insert Message Wall Data" << msg.user_id << endl;
+
+    return 0;
+}
+
+int MsgWallHandle::GetMsgList(const int &index, const int &batch, const string &date, const string wx_id, int &nextIndex, vector<LifeService::Message> &msgList)
+{
+    string sTableName = "message_wall";
+    vector<string> vColumns = {"message_id", "user_id", "content", "anonymous", "message_time", "like_count"};
+    string sCondition = "`" + vColumns[0] + "`";
+
+    // 0代表第一次请求
+    if (index == 0)
+    {
+        sCondition += ">=0";
+    }
+    else 
+    {
+        sCondition += "<" + TC_Common::tostr<int>(index);
+    }
+
+    if (wx_id != "")
+    {
+        sCondition += " and `user_id`='" + wx_id + "'";
+    }
+
+    if (date != "") 
+    {
+        sCondition += " and to_days(`" + vColumns[5] + "`)=to_days('" + date + "')";
+    }
+
+    // 根据创建时间排序, 从最新的留言开始查询
+    string sql = buildSelectSQL(sTableName, vColumns, sCondition, vColumns[4], DESC, batch);
+    {
+        TC_Mysql::MysqlData oResults;
+        try
+        {
+            oResults = MDbQueryRecord::getInstance()->GetMysqlObject()->queryRecord(sql);
+        }
+        catch (exception &e)
+        {
+            LOG->error() << "GetMsgList error query: " << e.what() << endl;
+            return -1;
+        }
+
+        size_t oResultsCount = oResults.size();
+
+        // 若查询的数据小于batch, 说明以及没有更早的数据, 返回-1
+        if (oResultsCount < batch)
+            nextIndex = -1;
+        else
+            nextIndex = TC_Common::strto<int>(oResults[oResultsCount - 1][vColumns[0]]);
+
+        for (size_t i = 0; i < oResultsCount; i++)
+        {
+            LifeService::Message msg;
+            msg.message_id   = oResults[i][vColumns[0]];
+            msg.user_id      = oResults[i][vColumns[1]];
+            msg.content      = oResults[i][vColumns[2]];
+            msg.anonymous    = TC_Common::strto<bool>(oResults[i][vColumns[3]]);
+            msg.message_time = oResults[i][vColumns[4]];
+            msg.like_count   = TC_Common::strto<int>(oResults[i][vColumns[5]]);
+
+            msgList.push_back(msg);
+        }
+    }
+    return 0;
+}
+
+int MsgWallHandle::AddLike(const string &message_id)
+{
+    string sSql = "update message_wall set `like_count`=(`like_count`+1) where `message_id`=" + message_id;
+    MDbExecuteRecord::getInstance()->AddExecuteSql(sSql);
+    return 0;
+}
+
+int MsgWallHandle::GetLike(const string &message_id, int &like_count)
+{
+    string sSql = buildSelectSQL("message_wall", "like_count", "`message_id`=" + message_id);
+    {
+        TC_Mysql::MysqlData oResult;
+        try
+        {
+            oResult = MDbQueryRecord::getInstance()->GetMysqlObject()->queryRecord(sSql);
+        }
+        catch (exception &e)
+        {
+            LOG->error() << "GetLike error query: " << e.what() << endl;
+            return -1;
+        }
+
+        if (oResult.size() < 1)
+            return -1;
+
+        like_count = TC_Common::strto<int>(oResult[0]["like_count"]);
+    }
     return 0;
 }

@@ -52,4 +52,19 @@ private:
     tars::TC_ThreadLock _pLocker;
 };
 
+class ActivityHandle: public tars::TC_Singleton<ActivityHandle>
+{
+public:
+    int GetActivityList(const int &index, const int &batch, int &nextIndex, vector<map<std::string, std::string>> &activityList);
+};
+
+class MsgWallHandle: public tars::TC_Singleton<MsgWallHandle>
+{
+public:
+    int InsertMessage(const LifeService::Message &msg);
+    int GetMsgList(const int &index, const int &batch, const std::string &date, const std::string wx_id, int &nextIndex, vector<LifeService::Message> &msgList);
+    int AddLike(const std::string &message_id);
+    int GetLike(const std::string &message_id, int &like_count);
+};
+
 #endif
