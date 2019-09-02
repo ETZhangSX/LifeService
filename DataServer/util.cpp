@@ -3,7 +3,13 @@
 
 using namespace std;
 
+
 string buildSelectSQL(const string &sTableName,const vector<string> &sColumns, const string &sWhereFilter)
+{
+    return buildSelectSQL(sTableName, sColumns, sWhereFilter, "", DEFAULT, 0);
+}
+
+string buildSelectSQL(const string &sTableName,const vector<string> &sColumns, const string &sWhereFilter, const string &orderBy, const MYSQL_Order &mysqlOrder, const int &limitNum)
 {
     ostringstream sColumnNameSet;
 
@@ -27,16 +33,50 @@ string buildSelectSQL(const string &sTableName,const vector<string> &sColumns, c
     if (sWhereFilter != "")
        os << " where " << sWhereFilter;
 
+    if (orderBy != "")
+    {
+        os << " order by `" << orderBy << "`";
+        if (mysqlOrder == ASC)
+            os << " ASC";
+        else if (mysqlOrder == DESC)
+            os << " DESC";
+    }
+
+    if (limitNum != 0)
+    {
+        os << " limit " << tars::TC_Common::tostr<int>(limitNum);
+    }
+
     return os.str();
 }
 
-string buildSelectSQL(const string &sTableName,const string &sColumn, const string &sWhereFilter)
+string buildSelectSQL(const string &sTableName, const string &sColumn, const string &sWhereFilter)
+{
+    return buildSelectSQL(sTableName, sColumn, sWhereFilter, "", DEFAULT, 0);
+}
+
+string buildSelectSQL(const string &sTableName,const string &sColumn, const string &sWhereFilter, const string &orderBy, const MYSQL_Order &mysqlOrder, const int &limitNum)
 {
     ostringstream os;
+    
     os << "select " << sColumn
        << " from " << sTableName;
+    
     if (sWhereFilter != "")
        os << " where " << sWhereFilter;
+    
+    if (orderBy != "")
+    {
+        os << " order by `" << orderBy << "`";
+        if (mysqlOrder == ASC)
+            os << " ASC";
+        else if (mysqlOrder == DESC)
+            os << " DESC";
+    }
 
+    if (limitNum != 0)
+    {
+        os << " limit " << tars::TC_Common::tostr<int>(limitNum);
+    }
     return os.str();
 }
