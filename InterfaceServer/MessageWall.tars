@@ -1,0 +1,10 @@
+#include "DataService.tars"
+
+module LifeService{
+    interface MessageWall{
+        int PostMessage(Message Msg);
+        int GetMessageList(int Index, string Date, string WxId, out int NextIndex, out vector<Message> MsgList);
+        int AddLike(string MessageId);
+        int GetLike(string MessageId, out int LikeCount);
+    };
+};

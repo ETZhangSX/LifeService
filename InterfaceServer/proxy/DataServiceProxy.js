@@ -341,6 +341,143 @@ LifeService.ActivityInfo.create = function (is) {
     return LifeService.ActivityInfo._readFrom(is);
 };
 
+LifeService.Message = function() {
+    this.message_id = "";
+    this.user_id = "";
+    this.content = "";
+    this.anonymous = true;
+    this.message_time = "";
+    this.like_count = 0;
+    this._classname = "LifeService.Message";
+};
+LifeService.Message._classname = "LifeService.Message";
+LifeService.Message._write = function (os, tag, value) { os.writeStruct(tag, value); };
+LifeService.Message._read  = function (is, tag, def) { return is.readStruct(tag, true, def); };
+LifeService.Message._readFrom = function (is) {
+    var tmp = new LifeService.Message;
+    tmp.message_id = is.readString(0, true, "");
+    tmp.user_id = is.readString(1, true, "");
+    tmp.content = is.readString(2, true, "");
+    tmp.anonymous = is.readBoolean(3, true, true);
+    tmp.message_time = is.readString(4, true, "");
+    tmp.like_count = is.readInt32(5, false, 0);
+    return tmp;
+};
+LifeService.Message.prototype._writeTo = function (os) {
+    os.writeString(0, this.message_id);
+    os.writeString(1, this.user_id);
+    os.writeString(2, this.content);
+    os.writeBoolean(3, this.anonymous);
+    os.writeString(4, this.message_time);
+    os.writeInt32(5, this.like_count);
+};
+LifeService.Message.prototype._equal = function () {
+    assert.fail("this structure not define key operation");
+};
+LifeService.Message.prototype._genKey = function () {
+    if (!this._proto_struct_name_) {
+        this._proto_struct_name_ = "STRUCT" + Math.random();
+    }
+    return this._proto_struct_name_;
+};
+LifeService.Message.prototype.toObject = function() { 
+    return {
+        "message_id" : this.message_id,
+        "user_id" : this.user_id,
+        "content" : this.content,
+        "anonymous" : this.anonymous,
+        "message_time" : this.message_time,
+        "like_count" : this.like_count
+    };
+};
+LifeService.Message.prototype.readFromObject = function(json) { 
+    _hasOwnProperty.call(json, "message_id") && (this.message_id = json.message_id);
+    _hasOwnProperty.call(json, "user_id") && (this.user_id = json.user_id);
+    _hasOwnProperty.call(json, "content") && (this.content = json.content);
+    _hasOwnProperty.call(json, "anonymous") && (this.anonymous = json.anonymous);
+    _hasOwnProperty.call(json, "message_time") && (this.message_time = json.message_time);
+    _hasOwnProperty.call(json, "like_count") && (this.like_count = json.like_count);
+    return this;
+};
+LifeService.Message.prototype.toBinBuffer = function () {
+    var os = new TarsStream.TarsOutputStream();
+    this._writeTo(os);
+    return os.getBinBuffer();
+};
+LifeService.Message.new = function () {
+    return new LifeService.Message();
+};
+LifeService.Message.create = function (is) {
+    return LifeService.Message._readFrom(is);
+};
+
+var __LifeService_DataService$addLike$IF = {
+    "name" : "addLike",
+    "return" : "int32",
+    "arguments" : [{
+        "name" : "message_id",
+        "class" : "string",
+        "direction" : "in"
+    }]
+};
+
+var __LifeService_DataService$addLike$IE = function (message_id) {
+    var os = new TarsStream.TarsOutputStream();
+    os.writeString(1, message_id);
+    return os.getBinBuffer();
+};
+
+var __LifeService_DataService$addLike$ID = function (data) {
+    try {
+        var is = new TarsStream.TarsInputStream(data.response.sBuffer);
+        return {
+            "request" : data.request,
+            "response" : {
+                "costtime" : data.request.costtime,
+                "return" : is.readInt32(0, true, 0)
+            }
+        };
+    } catch (e) {
+        throw _makeError(data, e.message, TarsError.CLIENT.DECODE_ERROR);
+    }
+};
+
+var __LifeService_DataService$addLike$PE = function (message_id, __$PROTOCOL$VERSION) {
+    var tup = new TarsStream.UniAttribute();
+    tup.tupVersion = __$PROTOCOL$VERSION;
+    tup.writeString("message_id", message_id);
+    return tup;
+};
+
+var __LifeService_DataService$addLike$PD = function (data) {
+    try {
+        var tup = data.response.tup;
+        return {
+            "request" : data.request,
+            "response" : {
+                "costtime" : data.request.costtime,
+                "return" : tup.readInt32("", 0)
+            }
+        };
+    } catch (e) {
+        throw _makeError(data, e.message, TarsError.CLIENT.DECODE_ERROR);
+    }
+};
+
+var __LifeService_DataService$addLike$ER = function (data) {
+    throw _makeError(data, "Call DataService::addLike failed");
+};
+
+LifeService.DataServiceProxy.prototype.addLike = function (message_id) {
+    var version = this._worker.version;
+    if (version === TarsStream.Tup.TUP_SIMPLE || version === TarsStream.Tup.TUP_COMPLEX) {
+        return this._worker.tup_invoke("addLike", __LifeService_DataService$addLike$PE(message_id, version), arguments[arguments.length - 1], __LifeService_DataService$addLike$IF).then(__LifeService_DataService$addLike$PD, __LifeService_DataService$addLike$ER);
+    } else {
+        return this._worker.tars_invoke("addLike", __LifeService_DataService$addLike$IE(message_id), arguments[arguments.length - 1], __LifeService_DataService$addLike$IF).then(__LifeService_DataService$addLike$ID, __LifeService_DataService$addLike$ER);
+    }
+};
+LifeService.DataServiceProxy.addLike = __LifeService_DataService$addLike$IF;
+
 var __LifeService_DataService$createClub$IF = {
     "name" : "createClub",
     "return" : "int32",
@@ -490,6 +627,89 @@ LifeService.DataServiceProxy.prototype.createUser = function (wx_id, UserInfo) {
     }
 };
 LifeService.DataServiceProxy.createUser = __LifeService_DataService$createUser$IF;
+
+var __LifeService_DataService$getActivityList$IF = {
+    "name" : "getActivityList",
+    "return" : "int32",
+    "arguments" : [{
+        "name" : "index",
+        "class" : "int32",
+        "direction" : "in"
+    }, {
+        "name" : "nextIndex",
+        "class" : "int32",
+        "direction" : "out"
+    }, {
+        "name" : "activityList",
+        "class" : "list(map(string, string))",
+        "direction" : "out"
+    }]
+};
+
+var __LifeService_DataService$getActivityList$IE = function (index) {
+    var os = new TarsStream.TarsOutputStream();
+    os.writeInt32(1, index);
+    return os.getBinBuffer();
+};
+
+var __LifeService_DataService$getActivityList$ID = function (data) {
+    try {
+        var is = new TarsStream.TarsInputStream(data.response.sBuffer);
+        return {
+            "request" : data.request,
+            "response" : {
+                "costtime" : data.request.costtime,
+                "return" : is.readInt32(0, true, 0),
+                "arguments" : {
+                    "nextIndex" : is.readInt32(2, true, 0),
+                    "activityList" : is.readList(3, true, TarsStream.List(TarsStream.Map(TarsStream.String, TarsStream.String)))
+                }
+            }
+        };
+    } catch (e) {
+        throw _makeError(data, e.message, TarsError.CLIENT.DECODE_ERROR);
+    }
+};
+
+var __LifeService_DataService$getActivityList$PE = function (index, __$PROTOCOL$VERSION) {
+    var tup = new TarsStream.UniAttribute();
+    tup.tupVersion = __$PROTOCOL$VERSION;
+    tup.writeInt32("index", index);
+    return tup;
+};
+
+var __LifeService_DataService$getActivityList$PD = function (data) {
+    try {
+        var tup = data.response.tup;
+        return {
+            "request" : data.request,
+            "response" : {
+                "costtime" : data.request.costtime,
+                "return" : tup.readInt32("", 0),
+                "arguments" : {
+                    "nextIndex" : tup.readInt32("nextIndex"),
+                    "activityList" : tup.readList("activityList", TarsStream.List(TarsStream.Map(TarsStream.String, TarsStream.String)))
+                }
+            }
+        };
+    } catch (e) {
+        throw _makeError(data, e.message, TarsError.CLIENT.DECODE_ERROR);
+    }
+};
+
+var __LifeService_DataService$getActivityList$ER = function (data) {
+    throw _makeError(data, "Call DataService::getActivityList failed");
+};
+
+LifeService.DataServiceProxy.prototype.getActivityList = function (index) {
+    var version = this._worker.version;
+    if (version === TarsStream.Tup.TUP_SIMPLE || version === TarsStream.Tup.TUP_COMPLEX) {
+        return this._worker.tup_invoke("getActivityList", __LifeService_DataService$getActivityList$PE(index, version), arguments[arguments.length - 1], __LifeService_DataService$getActivityList$IF).then(__LifeService_DataService$getActivityList$PD, __LifeService_DataService$getActivityList$ER);
+    } else {
+        return this._worker.tars_invoke("getActivityList", __LifeService_DataService$getActivityList$IE(index), arguments[arguments.length - 1], __LifeService_DataService$getActivityList$IF).then(__LifeService_DataService$getActivityList$ID, __LifeService_DataService$getActivityList$ER);
+    }
+};
+LifeService.DataServiceProxy.getActivityList = __LifeService_DataService$getActivityList$IF;
 
 var __LifeService_DataService$getClubList$IF = {
     "name" : "getClubList",
@@ -786,6 +1006,178 @@ LifeService.DataServiceProxy.prototype.getGroupInfo = function () {
     }
 };
 LifeService.DataServiceProxy.getGroupInfo = __LifeService_DataService$getGroupInfo$IF;
+
+var __LifeService_DataService$getLike$IF = {
+    "name" : "getLike",
+    "return" : "int32",
+    "arguments" : [{
+        "name" : "message_id",
+        "class" : "string",
+        "direction" : "in"
+    }, {
+        "name" : "like_count",
+        "class" : "int32",
+        "direction" : "out"
+    }]
+};
+
+var __LifeService_DataService$getLike$IE = function (message_id) {
+    var os = new TarsStream.TarsOutputStream();
+    os.writeString(1, message_id);
+    return os.getBinBuffer();
+};
+
+var __LifeService_DataService$getLike$ID = function (data) {
+    try {
+        var is = new TarsStream.TarsInputStream(data.response.sBuffer);
+        return {
+            "request" : data.request,
+            "response" : {
+                "costtime" : data.request.costtime,
+                "return" : is.readInt32(0, true, 0),
+                "arguments" : {
+                    "like_count" : is.readInt32(2, true, 0)
+                }
+            }
+        };
+    } catch (e) {
+        throw _makeError(data, e.message, TarsError.CLIENT.DECODE_ERROR);
+    }
+};
+
+var __LifeService_DataService$getLike$PE = function (message_id, __$PROTOCOL$VERSION) {
+    var tup = new TarsStream.UniAttribute();
+    tup.tupVersion = __$PROTOCOL$VERSION;
+    tup.writeString("message_id", message_id);
+    return tup;
+};
+
+var __LifeService_DataService$getLike$PD = function (data) {
+    try {
+        var tup = data.response.tup;
+        return {
+            "request" : data.request,
+            "response" : {
+                "costtime" : data.request.costtime,
+                "return" : tup.readInt32("", 0),
+                "arguments" : {
+                    "like_count" : tup.readInt32("like_count")
+                }
+            }
+        };
+    } catch (e) {
+        throw _makeError(data, e.message, TarsError.CLIENT.DECODE_ERROR);
+    }
+};
+
+var __LifeService_DataService$getLike$ER = function (data) {
+    throw _makeError(data, "Call DataService::getLike failed");
+};
+
+LifeService.DataServiceProxy.prototype.getLike = function (message_id) {
+    var version = this._worker.version;
+    if (version === TarsStream.Tup.TUP_SIMPLE || version === TarsStream.Tup.TUP_COMPLEX) {
+        return this._worker.tup_invoke("getLike", __LifeService_DataService$getLike$PE(message_id, version), arguments[arguments.length - 1], __LifeService_DataService$getLike$IF).then(__LifeService_DataService$getLike$PD, __LifeService_DataService$getLike$ER);
+    } else {
+        return this._worker.tars_invoke("getLike", __LifeService_DataService$getLike$IE(message_id), arguments[arguments.length - 1], __LifeService_DataService$getLike$IF).then(__LifeService_DataService$getLike$ID, __LifeService_DataService$getLike$ER);
+    }
+};
+LifeService.DataServiceProxy.getLike = __LifeService_DataService$getLike$IF;
+
+var __LifeService_DataService$getMsgList$IF = {
+    "name" : "getMsgList",
+    "return" : "int32",
+    "arguments" : [{
+        "name" : "index",
+        "class" : "int32",
+        "direction" : "in"
+    }, {
+        "name" : "date",
+        "class" : "string",
+        "direction" : "in"
+    }, {
+        "name" : "wx_id",
+        "class" : "string",
+        "direction" : "in"
+    }, {
+        "name" : "nextIndex",
+        "class" : "int32",
+        "direction" : "out"
+    }, {
+        "name" : "msgList",
+        "class" : "list(LifeService.Message)",
+        "direction" : "out"
+    }]
+};
+
+var __LifeService_DataService$getMsgList$IE = function (index, date, wx_id) {
+    var os = new TarsStream.TarsOutputStream();
+    os.writeInt32(1, index);
+    os.writeString(2, date);
+    os.writeString(3, wx_id);
+    return os.getBinBuffer();
+};
+
+var __LifeService_DataService$getMsgList$ID = function (data) {
+    try {
+        var is = new TarsStream.TarsInputStream(data.response.sBuffer);
+        return {
+            "request" : data.request,
+            "response" : {
+                "costtime" : data.request.costtime,
+                "return" : is.readInt32(0, true, 0),
+                "arguments" : {
+                    "nextIndex" : is.readInt32(4, true, 0),
+                    "msgList" : is.readList(5, true, TarsStream.List(LifeService.Message))
+                }
+            }
+        };
+    } catch (e) {
+        throw _makeError(data, e.message, TarsError.CLIENT.DECODE_ERROR);
+    }
+};
+
+var __LifeService_DataService$getMsgList$PE = function (index, date, wx_id, __$PROTOCOL$VERSION) {
+    var tup = new TarsStream.UniAttribute();
+    tup.tupVersion = __$PROTOCOL$VERSION;
+    tup.writeInt32("index", index);
+    tup.writeString("date", date);
+    tup.writeString("wx_id", wx_id);
+    return tup;
+};
+
+var __LifeService_DataService$getMsgList$PD = function (data) {
+    try {
+        var tup = data.response.tup;
+        return {
+            "request" : data.request,
+            "response" : {
+                "costtime" : data.request.costtime,
+                "return" : tup.readInt32("", 0),
+                "arguments" : {
+                    "nextIndex" : tup.readInt32("nextIndex"),
+                    "msgList" : tup.readList("msgList", TarsStream.List(LifeService.Message))
+                }
+            }
+        };
+    } catch (e) {
+        throw _makeError(data, e.message, TarsError.CLIENT.DECODE_ERROR);
+    }
+};
+
+var __LifeService_DataService$getMsgList$ER = function (data) {
+    throw _makeError(data, "Call DataService::getMsgList failed");
+};
+
+LifeService.DataServiceProxy.prototype.getMsgList = function (index, date, wx_id) {
+    var version = this._worker.version;
+    if (version === TarsStream.Tup.TUP_SIMPLE || version === TarsStream.Tup.TUP_COMPLEX) {
+        return this._worker.tup_invoke("getMsgList", __LifeService_DataService$getMsgList$PE(index, date, wx_id, version), arguments[arguments.length - 1], __LifeService_DataService$getMsgList$IF).then(__LifeService_DataService$getMsgList$PD, __LifeService_DataService$getMsgList$ER);
+    } else {
+        return this._worker.tars_invoke("getMsgList", __LifeService_DataService$getMsgList$IE(index, date, wx_id), arguments[arguments.length - 1], __LifeService_DataService$getMsgList$IF).then(__LifeService_DataService$getMsgList$ID, __LifeService_DataService$getMsgList$ER);
+    }
+};
+LifeService.DataServiceProxy.getMsgList = __LifeService_DataService$getMsgList$IF;
 
 var __LifeService_DataService$getRecordCount$IF = {
     "name" : "getRecordCount",
@@ -1096,6 +1488,73 @@ LifeService.DataServiceProxy.prototype.insertData = function (sTableName, sColum
     }
 };
 LifeService.DataServiceProxy.insertData = __LifeService_DataService$insertData$IF;
+
+var __LifeService_DataService$insertMessage$IF = {
+    "name" : "insertMessage",
+    "return" : "int32",
+    "arguments" : [{
+        "name" : "msg",
+        "class" : "LifeService.Message",
+        "direction" : "in"
+    }]
+};
+
+var __LifeService_DataService$insertMessage$IE = function (msg) {
+    var os = new TarsStream.TarsOutputStream();
+    os.writeStruct(1, msg);
+    return os.getBinBuffer();
+};
+
+var __LifeService_DataService$insertMessage$ID = function (data) {
+    try {
+        var is = new TarsStream.TarsInputStream(data.response.sBuffer);
+        return {
+            "request" : data.request,
+            "response" : {
+                "costtime" : data.request.costtime,
+                "return" : is.readInt32(0, true, 0)
+            }
+        };
+    } catch (e) {
+        throw _makeError(data, e.message, TarsError.CLIENT.DECODE_ERROR);
+    }
+};
+
+var __LifeService_DataService$insertMessage$PE = function (msg, __$PROTOCOL$VERSION) {
+    var tup = new TarsStream.UniAttribute();
+    tup.tupVersion = __$PROTOCOL$VERSION;
+    tup.writeStruct("msg", msg);
+    return tup;
+};
+
+var __LifeService_DataService$insertMessage$PD = function (data) {
+    try {
+        var tup = data.response.tup;
+        return {
+            "request" : data.request,
+            "response" : {
+                "costtime" : data.request.costtime,
+                "return" : tup.readInt32("", 0)
+            }
+        };
+    } catch (e) {
+        throw _makeError(data, e.message, TarsError.CLIENT.DECODE_ERROR);
+    }
+};
+
+var __LifeService_DataService$insertMessage$ER = function (data) {
+    throw _makeError(data, "Call DataService::insertMessage failed");
+};
+
+LifeService.DataServiceProxy.prototype.insertMessage = function (msg) {
+    var version = this._worker.version;
+    if (version === TarsStream.Tup.TUP_SIMPLE || version === TarsStream.Tup.TUP_COMPLEX) {
+        return this._worker.tup_invoke("insertMessage", __LifeService_DataService$insertMessage$PE(msg, version), arguments[arguments.length - 1], __LifeService_DataService$insertMessage$IF).then(__LifeService_DataService$insertMessage$PD, __LifeService_DataService$insertMessage$ER);
+    } else {
+        return this._worker.tars_invoke("insertMessage", __LifeService_DataService$insertMessage$IE(msg), arguments[arguments.length - 1], __LifeService_DataService$insertMessage$IF).then(__LifeService_DataService$insertMessage$ID, __LifeService_DataService$insertMessage$ER);
+    }
+};
+LifeService.DataServiceProxy.insertMessage = __LifeService_DataService$insertMessage$IF;
 
 var __LifeService_DataService$queryData$IF = {
     "name" : "queryData",

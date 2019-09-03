@@ -142,10 +142,10 @@ LifeService.Column.create = function (is) {
 };
 
 LifeService.ClubInfo = function() {
-    this.clubId = "";
+    this.club_id = "";
     this.name = "";
     this.chairman = "";
-    this.createTime = "";
+    this.create_time = "";
     this.introduction = "";
     this._classname = "LifeService.ClubInfo";
 };
@@ -154,18 +154,18 @@ LifeService.ClubInfo._write = function (os, tag, value) { os.writeStruct(tag, va
 LifeService.ClubInfo._read  = function (is, tag, def) { return is.readStruct(tag, true, def); };
 LifeService.ClubInfo._readFrom = function (is) {
     var tmp = new LifeService.ClubInfo;
-    tmp.clubId = is.readString(0, true, "");
+    tmp.club_id = is.readString(0, true, "");
     tmp.name = is.readString(1, true, "");
     tmp.chairman = is.readString(2, true, "");
-    tmp.createTime = is.readString(3, true, "");
+    tmp.create_time = is.readString(3, true, "");
     tmp.introduction = is.readString(4, true, "");
     return tmp;
 };
 LifeService.ClubInfo.prototype._writeTo = function (os) {
-    os.writeString(0, this.clubId);
+    os.writeString(0, this.club_id);
     os.writeString(1, this.name);
     os.writeString(2, this.chairman);
-    os.writeString(3, this.createTime);
+    os.writeString(3, this.create_time);
     os.writeString(4, this.introduction);
 };
 LifeService.ClubInfo.prototype._equal = function () {
@@ -179,18 +179,18 @@ LifeService.ClubInfo.prototype._genKey = function () {
 };
 LifeService.ClubInfo.prototype.toObject = function() { 
     return {
-        "clubId" : this.clubId,
+        "club_id" : this.club_id,
         "name" : this.name,
         "chairman" : this.chairman,
-        "createTime" : this.createTime,
+        "create_time" : this.create_time,
         "introduction" : this.introduction
     };
 };
 LifeService.ClubInfo.prototype.readFromObject = function(json) { 
-    _hasOwnProperty.call(json, "clubId") && (this.clubId = json.clubId);
+    _hasOwnProperty.call(json, "club_id") && (this.club_id = json.club_id);
     _hasOwnProperty.call(json, "name") && (this.name = json.name);
     _hasOwnProperty.call(json, "chairman") && (this.chairman = json.chairman);
-    _hasOwnProperty.call(json, "createTime") && (this.createTime = json.createTime);
+    _hasOwnProperty.call(json, "create_time") && (this.create_time = json.create_time);
     _hasOwnProperty.call(json, "introduction") && (this.introduction = json.introduction);
     return this;
 };
@@ -207,15 +207,16 @@ LifeService.ClubInfo.create = function (is) {
 };
 
 LifeService.ActivityInfo = function() {
-    this.activityId = "";
+    this.activity_id = "";
+    this.name = "";
     this.sponsor = "";
-    this.clubId = "";
-    this.targetId = "";
-    this.createTime = "";
-    this.startTime = "";
-    this.stopTime = "";
-    this.registryStartTime = "";
-    this.registryStopTime = "";
+    this.club_id = "";
+    this.target_id = "";
+    this.create_time = "";
+    this.start_time = "";
+    this.stop_time = "";
+    this.registry_start_time = "";
+    this.registry_stop_time = "";
     this.content = "";
     this._classname = "LifeService.ActivityInfo";
 };
@@ -224,29 +225,31 @@ LifeService.ActivityInfo._write = function (os, tag, value) { os.writeStruct(tag
 LifeService.ActivityInfo._read  = function (is, tag, def) { return is.readStruct(tag, true, def); };
 LifeService.ActivityInfo._readFrom = function (is) {
     var tmp = new LifeService.ActivityInfo;
-    tmp.activityId = is.readString(0, true, "");
-    tmp.sponsor = is.readString(1, true, "");
-    tmp.clubId = is.readString(2, true, "");
-    tmp.targetId = is.readString(3, true, "");
-    tmp.createTime = is.readString(4, false, "");
-    tmp.startTime = is.readString(5, false, "");
-    tmp.stopTime = is.readString(6, false, "");
-    tmp.registryStartTime = is.readString(7, false, "");
-    tmp.registryStopTime = is.readString(8, false, "");
-    tmp.content = is.readString(9, false, "");
+    tmp.activity_id = is.readString(0, true, "");
+    tmp.name = is.readString(1, true, "");
+    tmp.sponsor = is.readString(2, true, "");
+    tmp.club_id = is.readString(3, true, "");
+    tmp.target_id = is.readString(4, false, "");
+    tmp.create_time = is.readString(5, false, "");
+    tmp.start_time = is.readString(6, false, "");
+    tmp.stop_time = is.readString(7, false, "");
+    tmp.registry_start_time = is.readString(8, false, "");
+    tmp.registry_stop_time = is.readString(9, false, "");
+    tmp.content = is.readString(10, false, "");
     return tmp;
 };
 LifeService.ActivityInfo.prototype._writeTo = function (os) {
-    os.writeString(0, this.activityId);
-    os.writeString(1, this.sponsor);
-    os.writeString(2, this.clubId);
-    os.writeString(3, this.targetId);
-    os.writeString(4, this.createTime);
-    os.writeString(5, this.startTime);
-    os.writeString(6, this.stopTime);
-    os.writeString(7, this.registryStartTime);
-    os.writeString(8, this.registryStopTime);
-    os.writeString(9, this.content);
+    os.writeString(0, this.activity_id);
+    os.writeString(1, this.name);
+    os.writeString(2, this.sponsor);
+    os.writeString(3, this.club_id);
+    os.writeString(4, this.target_id);
+    os.writeString(5, this.create_time);
+    os.writeString(6, this.start_time);
+    os.writeString(7, this.stop_time);
+    os.writeString(8, this.registry_start_time);
+    os.writeString(9, this.registry_stop_time);
+    os.writeString(10, this.content);
 };
 LifeService.ActivityInfo.prototype._equal = function () {
     assert.fail("this structure not define key operation");
@@ -259,28 +262,30 @@ LifeService.ActivityInfo.prototype._genKey = function () {
 };
 LifeService.ActivityInfo.prototype.toObject = function() { 
     return {
-        "activityId" : this.activityId,
+        "activity_id" : this.activity_id,
+        "name" : this.name,
         "sponsor" : this.sponsor,
-        "clubId" : this.clubId,
-        "targetId" : this.targetId,
-        "createTime" : this.createTime,
-        "startTime" : this.startTime,
-        "stopTime" : this.stopTime,
-        "registryStartTime" : this.registryStartTime,
-        "registryStopTime" : this.registryStopTime,
+        "club_id" : this.club_id,
+        "target_id" : this.target_id,
+        "create_time" : this.create_time,
+        "start_time" : this.start_time,
+        "stop_time" : this.stop_time,
+        "registry_start_time" : this.registry_start_time,
+        "registry_stop_time" : this.registry_stop_time,
         "content" : this.content
     };
 };
 LifeService.ActivityInfo.prototype.readFromObject = function(json) { 
-    _hasOwnProperty.call(json, "activityId") && (this.activityId = json.activityId);
+    _hasOwnProperty.call(json, "activity_id") && (this.activity_id = json.activity_id);
+    _hasOwnProperty.call(json, "name") && (this.name = json.name);
     _hasOwnProperty.call(json, "sponsor") && (this.sponsor = json.sponsor);
-    _hasOwnProperty.call(json, "clubId") && (this.clubId = json.clubId);
-    _hasOwnProperty.call(json, "targetId") && (this.targetId = json.targetId);
-    _hasOwnProperty.call(json, "createTime") && (this.createTime = json.createTime);
-    _hasOwnProperty.call(json, "startTime") && (this.startTime = json.startTime);
-    _hasOwnProperty.call(json, "stopTime") && (this.stopTime = json.stopTime);
-    _hasOwnProperty.call(json, "registryStartTime") && (this.registryStartTime = json.registryStartTime);
-    _hasOwnProperty.call(json, "registryStopTime") && (this.registryStopTime = json.registryStopTime);
+    _hasOwnProperty.call(json, "club_id") && (this.club_id = json.club_id);
+    _hasOwnProperty.call(json, "target_id") && (this.target_id = json.target_id);
+    _hasOwnProperty.call(json, "create_time") && (this.create_time = json.create_time);
+    _hasOwnProperty.call(json, "start_time") && (this.start_time = json.start_time);
+    _hasOwnProperty.call(json, "stop_time") && (this.stop_time = json.stop_time);
+    _hasOwnProperty.call(json, "registry_start_time") && (this.registry_start_time = json.registry_start_time);
+    _hasOwnProperty.call(json, "registry_stop_time") && (this.registry_stop_time = json.registry_stop_time);
     _hasOwnProperty.call(json, "content") && (this.content = json.content);
     return this;
 };
@@ -294,6 +299,76 @@ LifeService.ActivityInfo.new = function () {
 };
 LifeService.ActivityInfo.create = function (is) {
     return LifeService.ActivityInfo._readFrom(is);
+};
+
+LifeService.Message = function() {
+    this.message_id = "";
+    this.user_id = "";
+    this.content = "";
+    this.anonymous = true;
+    this.message_time = "";
+    this.like_count = 0;
+    this._classname = "LifeService.Message";
+};
+LifeService.Message._classname = "LifeService.Message";
+LifeService.Message._write = function (os, tag, value) { os.writeStruct(tag, value); };
+LifeService.Message._read  = function (is, tag, def) { return is.readStruct(tag, true, def); };
+LifeService.Message._readFrom = function (is) {
+    var tmp = new LifeService.Message;
+    tmp.message_id = is.readString(0, true, "");
+    tmp.user_id = is.readString(1, true, "");
+    tmp.content = is.readString(2, true, "");
+    tmp.anonymous = is.readBoolean(3, true, true);
+    tmp.message_time = is.readString(4, true, "");
+    tmp.like_count = is.readInt32(5, false, 0);
+    return tmp;
+};
+LifeService.Message.prototype._writeTo = function (os) {
+    os.writeString(0, this.message_id);
+    os.writeString(1, this.user_id);
+    os.writeString(2, this.content);
+    os.writeBoolean(3, this.anonymous);
+    os.writeString(4, this.message_time);
+    os.writeInt32(5, this.like_count);
+};
+LifeService.Message.prototype._equal = function () {
+    assert.fail("this structure not define key operation");
+};
+LifeService.Message.prototype._genKey = function () {
+    if (!this._proto_struct_name_) {
+        this._proto_struct_name_ = "STRUCT" + Math.random();
+    }
+    return this._proto_struct_name_;
+};
+LifeService.Message.prototype.toObject = function() { 
+    return {
+        "message_id" : this.message_id,
+        "user_id" : this.user_id,
+        "content" : this.content,
+        "anonymous" : this.anonymous,
+        "message_time" : this.message_time,
+        "like_count" : this.like_count
+    };
+};
+LifeService.Message.prototype.readFromObject = function(json) { 
+    _hasOwnProperty.call(json, "message_id") && (this.message_id = json.message_id);
+    _hasOwnProperty.call(json, "user_id") && (this.user_id = json.user_id);
+    _hasOwnProperty.call(json, "content") && (this.content = json.content);
+    _hasOwnProperty.call(json, "anonymous") && (this.anonymous = json.anonymous);
+    _hasOwnProperty.call(json, "message_time") && (this.message_time = json.message_time);
+    _hasOwnProperty.call(json, "like_count") && (this.like_count = json.like_count);
+    return this;
+};
+LifeService.Message.prototype.toBinBuffer = function () {
+    var os = new TarsStream.TarsOutputStream();
+    this._writeTo(os);
+    return os.getBinBuffer();
+};
+LifeService.Message.new = function () {
+    return new LifeService.Message();
+};
+LifeService.Message.create = function (is) {
+    return LifeService.Message._readFrom(is);
 };
 
 
