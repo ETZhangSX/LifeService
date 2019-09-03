@@ -35,7 +35,6 @@ ClubActivityServer.createClubManager = async (ctx) => {
 // 创建社团
 ClubActivityServer.createClub = async (ctx) => {
     const {
-        club_id,
         name,
         chairman,
         introduction,
@@ -44,7 +43,6 @@ ClubActivityServer.createClub = async (ctx) => {
     const clubInfo = new DataServiceTars.LifeService.ClubInfo();
 
     clubInfo.readFromObject({
-        club_id,
         name,
         chairman,
         introduction,
@@ -101,7 +99,6 @@ ClubActivityServer.applyForClub = async (ctx) => {
 // 创建活动
 ClubActivityServer.createActivity = async (ctx) => {
     const {
-        wx_id,
         name,
         sponsor,
         club_id,

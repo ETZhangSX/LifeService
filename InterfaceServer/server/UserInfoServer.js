@@ -102,13 +102,13 @@ UserInfoServer.isInClub = async (ctx) => {
 UserInfoServer.isAppliedActivity = async (ctx) => {
     const {
         wx_id,
-        club_id,
+        activity_id,
     } = ctx.request.body;
 
     try {
         const prx = Tars.stringToProxy(UserInfoServicePrx, userInfoObjName);
         
-        let result    = await prx.IsAppliedActivity(wx_id, club_id);
+        let result    = await prx.IsAppliedActivity(wx_id, activity_id);
         let isApplied = result.response.arguments.isApplied;
         
         ctx.body = DataHandle.returnData(200, 'success', {
