@@ -1,7 +1,11 @@
-const UserInfoServer     = require('../server/UserInfoServer');
-const ClubActivityServer = require('../server/ClubActivityServer');
+const UserInfoServer     = require('../servers/UserInfoServer');
+const ClubActivityServer = require('../servers/ClubActivityServer');
+const MessageWallServer  = require('../servers/MessageWallServer');
+const WeixinAPI          = require('../servers/WeixinAPI');
 
 const apiConf = [
+    //WeixinAPI
+    ['get' , '/getOpenId'        , WeixinAPI.getOpenId],
     //用户服务接口
     ['get' , '/test'             , UserInfoServer.test],
     ['get' , '/signIn'           , UserInfoServer.signIn],
@@ -20,10 +24,10 @@ const apiConf = [
     ['get' , '/getActivityDetail', ClubActivityServer.getActivityDetail],
     ['post', '/applyForActivity' , ClubActivityServer.applyForActivity],
     //表白墙服务接口
-    ['post', '/postMessage'],
-    ['post', '/getMessageList'],
-    ['post', '/addLike'],
-    ['post', '/getLike'],
+    ['post', '/postMessage'      , MessageWallServer.postMessage],
+    ['post', '/getMessageList'   , MessageWallServer.getMessageList],
+    ['post', '/addLike'          , MessageWallServer.addLike],
+    ['post', '/getLike'          , MessageWallServer.getLike],
 ]
 
 module.exports = apiConf
