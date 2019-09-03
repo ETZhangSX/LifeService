@@ -19,6 +19,11 @@ const apiConf = [
     ['get' , '/getActivityList'  , ClubActivityServer.getActivityList],
     ['get' , '/getActivityDetail', ClubActivityServer.getActivityDetail],
     ['post', '/applyForActivity' , ClubActivityServer.applyForActivity],
+    //表白墙服务接口
+    ['post', '/postMessage'],
+    ['post', '/getMessageList'],
+    ['post', '/addLike'],
+    ['post', '/getLike'],
 ]
 
 module.exports = apiConf
