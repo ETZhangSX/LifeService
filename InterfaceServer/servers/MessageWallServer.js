@@ -26,7 +26,7 @@ MessageWallServer.postMessage = async (ctx) => {
     try {
         const prx = Tars.stringToProxy(MessageWallPrx, messageWallObjName);
 
-        let result = await prx.PostMessage(message);
+        await prx.PostMessage(message);
 
         ctx.body = DataHandle.returnData(200, 'success');
     }
@@ -84,9 +84,9 @@ MessageWallServer.getLike = async (ctx) => {
             'like_count': result.response.arguments.LikeCount,
         });
     }
-    catch {
+    catch(e) {
         ctx.body = DataHandle.returnError(400, e.message);
     }
-}
+};
 
 module.exports = MessageWallServer;

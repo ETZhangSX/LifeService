@@ -9,11 +9,11 @@ DataHandle.returnData = function(status, errmsg, data = "") {
         'errmsg': errmsg,
           'data':   data,
     }
-}
+};
 
 DataHandle.returnError = function(status, errmsg) {
     return {
         'status': status,
         'errmsg': errmsg,
     }
-}
+};

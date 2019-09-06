@@ -1,7 +1,7 @@
+const WeixinAPI          = require('../servers/WeixinAPI');
 const UserInfoServer     = require('../servers/UserInfoServer');
 const ClubActivityServer = require('../servers/ClubActivityServer');
 const MessageWallServer  = require('../servers/MessageWallServer');
-const WeixinAPI          = require('../servers/WeixinAPI');
 
 const apiConf = [
     //WeixinAPI
@@ -28,6 +28,6 @@ const apiConf = [
     ['post', '/getMessageList'   , MessageWallServer.getMessageList],
     ['post', '/addLike'          , MessageWallServer.addLike],
     ['post', '/getLike'          , MessageWallServer.getLike],
-]
+];
 
-module.exports = apiConf
+module.exports = apiConf;

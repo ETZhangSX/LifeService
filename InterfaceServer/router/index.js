@@ -4,11 +4,11 @@ const Router = require('koa-router');
 //获取路由
 const getRouter = (router, routerConf) => {
     routerConf.forEach(function (conf) {
-            var [method, url, controller] = conf;
+            var [method, url, server] = conf;
 
             //业务逻辑控制器
             router[method](url, async (ctx, next) => {
-                    await controller.call({}, ctx);
+                    await server.call({}, ctx);
                     await next();
             });
 

@@ -30,7 +30,7 @@ ClubActivityServer.createClubManager = async (ctx) => {
         console.log(e);
         ctx.body = DataHandle.returnError(400, e.message);
     }
-}
+};
 
 // 创建社团
 ClubActivityServer.createClub = async (ctx) => {
@@ -46,7 +46,7 @@ ClubActivityServer.createClub = async (ctx) => {
         name,
         chairman,
         introduction,
-    })
+    });
 
     try {
         const prx = Tars.stringToProxy(ClubActivityManangerPrx, clubActivityObjName);
@@ -119,12 +119,12 @@ ClubActivityServer.createActivity = async (ctx) => {
         registry_start_time,
         registry_stop_time,
         content,
-    })
+    });
 
     try {
         const prx = Tars.stringToProxy(ClubActivityManangerPrx, clubActivityObjName);
 
-        let result = await prx.CreateActivity(wx_id, activityInfo);
+        let result = await prx.CreateActivity(sponsor, activityInfo);
 
         ctx.body = DataHandle.returnData(result.response.arguments.RetCode, 'success');
     }

@@ -7,7 +7,7 @@ const userInfoObjName    = "LifeService.UserInfoServer.UserInfoServiceObj";
 // 引入util工具
 const DataHandle = require('../tools/util').DataHandle;
 
-const UserInfoServer = {}
+const UserInfoServer = {};
 
 UserInfoServer.test = async ctx => {
     try {
@@ -71,7 +71,7 @@ UserInfoServer.isClubManager = async (ctx) => {
         });
     }
     catch(e) {
-        console.log(e)
+        console.log(e);
         ctx.body = DataHandle.returnError(400, e.message);
     }
 };
@@ -137,7 +137,7 @@ UserInfoServer.signUp = async (ctx) => {
         phone,
         gender,
         avatar_url
-    })
+    });
 
     try {
         const prx = Tars.stringToProxy(UserInfoServicePrx, userInfoObjName);
@@ -151,4 +151,4 @@ UserInfoServer.signUp = async (ctx) => {
     }
 };
 
-module.exports = UserInfoServer
+module.exports = UserInfoServer;
