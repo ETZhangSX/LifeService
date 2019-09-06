@@ -1,30 +1,30 @@
-const request = require('request');
-const appConf = require('../config/appConf')
+const request    = require('request');
+const util       = require('util');
+const DataHandle = require('../tools/util').DataHandle;
+const appConf    = require('../config/appConf');
 
 const WeixinAPI = {};
+
+const getPromise = util.promisify(request.get);
 
 WeixinAPI.getOpenId = async (ctx) => {
     let {js_code} = ctx.query;
 
-    var params = 'appid=' + appConf.app_id + 
+    let params = 'appid=' + appConf.app_id +
                '&secret=' + appConf.app_secret + 
               '&js_code=' + js_code + 
               '&grant_type=authorization_code';
 
-    var url = 'https://api.weixin.qq.com/sns/jscode2session?' + params;
-    
-    
-    request(url, function (error, response, data) {
-        if (!error && response.statusCode == 200) {
-            ctx.body = data;
-        }
-        else {
-            ctx.body = {
-                errcode: 404,
-                errmsg: "request weixin api failed",
-            };
-        }
-    });
-}
+    let url = 'https://api.weixin.qq.com/sns/jscode2session?' + params;
+
+    try {
+        let result = await getPromise(url);
+        console.log(result);
+        ctx.body = result.body;
+    }
+    catch(e) {
+        ctx.body = DataHandle.returnError('400', e.message);
+    }
+};
 
 module.exports = WeixinAPI;
