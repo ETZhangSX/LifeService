@@ -1,7 +1,7 @@
 // Tars工具
 const Tars = require("@tars/rpc").client;
 // 引入tars代理
-const ClubActivityManangerPrx = require("../proxy/ClubActivityManagerProxy").LifeService.ClubActivityManagerProxy;
+const ClubActivityManagerPrx = require("../proxy/ClubActivityManagerProxy").LifeService.ClubActivityManagerProxy;
 const DataServiceTars         = require("../proxy/DataServiceTars");
 // 服务对象名
 const clubActivityObjName = "LifeService.ClubActivityServer.ClubActivityManagerObj";
@@ -20,11 +20,10 @@ ClubActivityServer.createClubManager = async (ctx) => {
     } = ctx.request.body;
 
     try {
-        const prx = Tars.stringToProxy(ClubActivityManangerPrx, clubActivityObjName);
-
+        const prx = Tars.stringToProxy(ClubActivityManagerPrx, clubActivityObjName);
         let result = await prx.CreateClubManager(wx_id, club_id);
         
-        ctx.body = DataHandle.returnData(result.response.arguments.RetCode, 'success');
+        ctx.body = DataHandle.returnData(result.response.arguments.RetCode, DataHandle.Success);
     }
     catch(e) {
         console.log(e);
@@ -49,11 +48,10 @@ ClubActivityServer.createClub = async (ctx) => {
     });
 
     try {
-        const prx = Tars.stringToProxy(ClubActivityManangerPrx, clubActivityObjName);
-
+        const prx = Tars.stringToProxy(ClubActivityManagerPrx, clubActivityObjName);
         let result = await prx.CreateClub(clubInfo);
         
-        ctx.body = DataHandle.returnData(result.response.arguments.RetCode, 'success');
+        ctx.body = DataHandle.returnData(result.response.arguments.RetCode, DataHandle.Success);
     }
     catch(e) {
         console.log(e);
@@ -63,12 +61,18 @@ ClubActivityServer.createClub = async (ctx) => {
 
 // 获取社团列表
 ClubActivityServer.getClubList = async (ctx) => {
+    let {
+        wx_id,
+        index,
+    } = ctx.query;
     try {
-        const prx = Tars.stringToProxy(ClubActivityManangerPrx, clubActivityObjName);
+        const prx = Tars.stringToProxy(ClubActivityManagerPrx, clubActivityObjName);
+        let result = await prx.GetClubList(index, wx_id);
 
-        let result = await prx.GetClubList();
-
-        ctx.body = DataHandle.returnData(result.response.arguments.RetCode, 'success', result.response.arguments.clubInfoList.toObject());
+        ctx.body = DataHandle.returnData(result.response.arguments.RetCode, DataHandle.Success, {
+            'next_index': result.response.arguments.nextIndex,
+            'club_list' : result.response.arguments.clubInfoList.toObject(),
+        });
     }
     catch(e) {
         console.log(e);
@@ -84,15 +88,100 @@ ClubActivityServer.applyForClub = async (ctx) => {
     } = ctx.request.body;
 
     try {
-        const prx = Tars.stringToProxy(ClubActivityManangerPrx, clubActivityObjName);
-
+        const prx = Tars.stringToProxy(ClubActivityManagerPrx, clubActivityObjName);
         let result = await prx.ApplyForClub(wx_id, club_id);
 
-        ctx.body = DataHandle.returnData(result.response.arguments.RetCode, 'success');
+        ctx.body = DataHandle.returnData(result.response.arguments.RetCode, DataHandle.Success);
     }
     catch(e) {
         console.log(e);
         ctx.body = DataHandle.returnError(400, e.message);
+    }
+};
+
+// 获取社团成员
+ClubActivityServer.getClubMembers = async (ctx) => {
+    let {
+        club_id,
+        index,
+    } = ctx.query;
+
+    try {
+        const prx = Tars.stringToProxy(ClubActivityManagerPrx, clubActivityObjName);
+        let result = await prx.GetClubApply(club_id, index, 1);
+        
+        ctx.body = DataHandle.returnData(200, DataHandle.Success, {
+            'next_index': result.response.arguments.nextIndex,
+            'member_list': result.response.arguments.applyList.toObject(),
+        });
+    }
+    catch(e) {
+        console.log(e);
+        ctx.body = DataHandle.returnError(400, e.message);
+    }
+};
+
+// 获取社团申请
+ClubActivityServer.getClubApplications = async (ctx) => {
+    let {
+        club_id,
+        index,
+    } = ctx.query;
+
+    try {
+        const prx = Tars.stringToProxy(ClubActivityManagerPrx, clubActivityObjName);
+        let result = await prx.GetClubApply(club_id, index, 0);
+        
+        ctx.body = DataHandle.returnData(200, DataHandle.Success, {
+            'next_index': result.response.arguments.nextIndex,
+            'application_list': result.response.arguments.applyList.toObject(),
+        });
+    }
+    catch(e) {
+        console.log(e);
+        ctx.body = DataHandle.returnError(400, e.message);
+    }
+};
+
+// 获取用户参加的社团
+ClubActivityServer.getUserApplications = async (ctx) => {
+    let {
+        wx_id,
+        index,
+        apply_status,
+    } = ctx.query;
+
+    try {
+        const prx = Tars.stringToProxy(ClubActivityManagerPrx, clubActivityObjName);
+        let result = await prx.GetUserApply(wx_id, index, apply_status);
+
+        ctx.body = DataHandle.returnData(200, DataHandle.Success, {
+            'next_index': result.response.arguments.nextIndex,
+            'club_list': result.response.arguments.applyList.toObject(),
+        });
+    }
+    catch(e) {
+        console.log(e);
+        ctx.body = DataHandle.returnError(400, e.message);
+    }
+};
+
+// 删除申请
+ClubActivityServer.deleteApply = async (ctx) => {
+    const {
+        wx_id,
+        club_id,
+    } = ctx.request.body;
+
+    try {
+        const prx = Tars.stringToProxy(ClubActivityManagerPrx, clubActivityObjName);
+        let result = await prx.DeleteApply(wx_id, club_id);
+
+        ctx.body = DataHandle.returnData(result.response.arguments.RetCode, DataHandle.Success)
+    }
+    catch(e) {
+        console.log(e);
+        ctx.body = DataHandle.returnError(400, e);
     }
 };
 
@@ -122,11 +211,10 @@ ClubActivityServer.createActivity = async (ctx) => {
     });
 
     try {
-        const prx = Tars.stringToProxy(ClubActivityManangerPrx, clubActivityObjName);
-
+        const prx = Tars.stringToProxy(ClubActivityManagerPrx, clubActivityObjName);
         let result = await prx.CreateActivity(sponsor, activityInfo);
 
-        ctx.body = DataHandle.returnData(result.response.arguments.RetCode, 'success');
+        ctx.body = DataHandle.returnData(result.response.arguments.RetCode, DataHandle.Success);
     }
     catch(e) {
         console.log(e);
@@ -138,11 +226,10 @@ ClubActivityServer.createActivity = async (ctx) => {
 ClubActivityServer.getActivityList = async (ctx) => {
     let {index} = ctx.query;
     try {
-        const prx = Tars.stringToProxy(ClubActivityManangerPrx, clubActivityObjName);
-        
-        let result = await prx.GetActivityList(index);
+        const prx = Tars.stringToProxy(ClubActivityManagerPrx, clubActivityObjName);
+        let result = await prx.GetActivityList(index, "", "");
 
-        ctx.body = DataHandle.returnData(200, 'success', {
+        ctx.body = DataHandle.returnData(200, DataHandle.Success, {
             'next_index': result.response.arguments.nextIndex,
             'activity_list' : result.response.arguments.activityList.toObject(),
         })
@@ -153,15 +240,72 @@ ClubActivityServer.getActivityList = async (ctx) => {
     }
 };
 
+// 获取用户报名的活动
+ClubActivityServer.getUserActivityList = async (ctx) => {
+    let {
+        wx_id,
+        index,
+    } = ctx.query;
+    try {
+        const prx = Tars.stringToProxy(ClubActivityManagerPrx, clubActivityObjName);
+        let result = await prx.GetActivityList(index, wx_id, "");
+
+        ctx.body = DataHandle.returnData(200, DataHandle.Success, {
+            'next_index': result.response.arguments.nextIndex,
+            'activity_list' : result.response.arguments.activityList.toObject(),
+        })
+    }
+    catch(e) {
+        console.log(e);
+        ctx.body = DataHandle.returnError(400, e.message);
+    }
+};
+
+// 获取社团活动列表
+ClubActivityServer.getClubActivityList = async (ctx) => {
+    let {
+        club_id,
+        index,
+    } = ctx.query;
+    try {
+        const prx = Tars.stringToProxy(ClubActivityManagerPrx, clubActivityObjName);
+        let result = await prx.GetActivityList(index, "", club_id);
+
+        ctx.body = DataHandle.returnData(200, DataHandle.Success, {
+            'next_index': result.response.arguments.nextIndex,
+            'activity_list' : result.response.arguments.activityList.toObject(),
+        })
+    }
+    catch(e) {
+        console.log(e);
+        ctx.body = DataHandle.returnError(400, e.message);
+    }
+};
+
+// 删除活动
+ClubActivityServer.deleteActivity = async (ctx) => {
+    const {activity_id} = ctx.request.body;
+
+    try {
+        const prx = Tars.stringToProxy(ClubActivityManagerPrx, clubActivityObjName);
+        let result = await prx.DeleteActivity(activity_id);
+
+        ctx.body = DataHandle.returnData(result.response.arguments.RetCode, DataHandle.Success);
+    }
+    catch(e) {
+        console.log(e);
+        ctx.body = DataHandle.returnError(400, e.message);
+    }
+}
+
 // 获取活动详情
 ClubActivityServer.getActivityDetail = async (ctx) => {
     let {activity_id} = ctx.query;
     try {
-        const prx = Tars.stringToProxy(ClubActivityManangerPrx, clubActivityObjName);
-
+        const prx = Tars.stringToProxy(ClubActivityManagerPrx, clubActivityObjName);
         let result = await prx.GetActivityDetail(activity_id);
 
-        ctx.body = DataHandle.returnData(200, 'success', result.response.arguments.activityInfo.toObject());
+        ctx.body = DataHandle.returnData(200, DataHandle.Success, result.response.arguments.activityInfo.toObject());
     }
     catch(e) {
         console.log(e);
@@ -177,11 +321,10 @@ ClubActivityServer.applyForActivity = async (ctx) => {
     } = ctx.request.body;
 
     try {
-        const prx = Tars.stringToProxy(ClubActivityManangerPrx, clubActivityObjName);
-
+        const prx = Tars.stringToProxy(ClubActivityManagerPrx, clubActivityObjName);
         let result = await prx.ApplyForActivity(wx_id, activity_id);
 
-        ctx.body = DataHandle.returnData(result.response.arguments.RetCode, 'success');
+        ctx.body = DataHandle.returnData(result.response.arguments.RetCode, DataHandle.Success);
     }
     catch(e) {
         console.log(e);
