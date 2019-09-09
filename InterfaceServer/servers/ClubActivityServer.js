@@ -166,6 +166,25 @@ ClubActivityServer.getUserApplications = async (ctx) => {
     }
 };
 
+// 通过申请
+ClubActivityServer.approveApplication = async (ctx) => {
+    const {
+        wx_id,
+        club_id,
+    } = ctx.request.body;
+
+    try {
+        const prx = Tars.stringToProxy(ClubActivityManagerPrx, clubActivityObjName);
+        let result = await prx.ModifyApplyStatus(wx_id, club_id, 1);
+
+        ctx.body = DataHandle.returnData(result.response.arguments.RetCode, DataHandle.Success);
+    }
+    catch(e) {
+        console.log(e);
+        ctx.body = DataHandle.returnError(400, e.message);
+    }
+};
+
 // 删除申请
 ClubActivityServer.deleteApply = async (ctx) => {
     const {
