@@ -176,15 +176,16 @@ int ClubHandle::InsertClubData(const LifeService::ClubInfo &clubInfo)
 //////////////////////////////////////////////////////
 int ClubHandle::GetClubList(const int &index, const int &batch, const string &wx_id, int &nextIndex, vector<LifeService::ClubInfo> &clubInfoList)
 {
+    // 不需要筛选用户, 从vClubInfo中获取
     if(wx_id == "") 
     {
-        size_t lenofclub = vClubInfo.size();
-        if (index > lenofclub) 
+        int lenofclub = (int)vClubInfo.size();
+        if (index >= lenofclub) 
         {
             nextIndex = -1;
             return 0;
         }
-        int endp = ((index + batch > lenofclub)? (index + batch - 1):(lenofclub - 1));
+        int endp = ((index + batch > lenofclub)? (lenofclub - 1):(index + batch - 1));
         nextIndex = ((endp + 1 == lenofclub)? -1 : (endp + 1));
         copy(vClubInfo.begin() + index, vClubInfo.begin() + endp, clubInfoList.begin());
         // clubInfoList = ClubHandle::getInstance()->vClubInfo;
@@ -209,7 +210,7 @@ int ClubHandle::GetClubList(const int &index, const int &batch, const string &wx
         }
         size_t oResultsCount = oResults.size();
 
-        if (oResultsCount < batch)
+        if (oResultsCount < (size_t)batch)
             nextIndex = -1;
         else 
             nextIndex = TC_Common::strto<int>(oResults[oResultsCount - 1][vColumns[0]]);
@@ -230,7 +231,7 @@ int ClubHandle::GetClubList(const int &index, const int &batch, const string &wx
 }
 
 //////////////////////////////////////////////////////
-int ClubHandle::GetApplyListByClubId(const string &club_id, int index, int batch, int apply_status, int &nextIndex, vector<LifeService::ApplyInfo> applyList)
+int ClubHandle::GetApplyListByClubId(const string &club_id, int index, int batch, int apply_status, int &nextIndex, vector<LifeService::ApplyInfo> &applyList)
 {
     string sTableLeft = "apply_for_club";
     string sTableRight = "users";
@@ -265,7 +266,7 @@ int ClubHandle::GetApplyListByClubId(const string &club_id, int index, int batch
         size_t oResultsCount = oResults.size();
 
         // 若查询的数据小于batch, 说明以及没有更早的数据, 返回-1
-        if (oResultsCount < batch)
+        if (oResultsCount < (size_t)batch)
             nextIndex = -1;
         else
             nextIndex = TC_Common::strto<int>(oResults[oResultsCount - 1][vColumns[0]]);
@@ -288,7 +289,7 @@ int ClubHandle::GetApplyListByClubId(const string &club_id, int index, int batch
 }
 
 //////////////////////////////////////////////////////
-int ClubHandle::GetApplyListByUserId(const string &wx_id, int index, int batch, int apply_status, int &nextIndex, vector<LifeService::ApplyInfo> applyList)
+int ClubHandle::GetApplyListByUserId(const string &wx_id, int index, int batch, int apply_status, int &nextIndex, vector<LifeService::ApplyInfo> &applyList)
 {
     string sTableLeft = "apply_for_club";
     string sTableRight = "clubs";
@@ -323,7 +324,7 @@ int ClubHandle::GetApplyListByUserId(const string &wx_id, int index, int batch, 
         size_t oResultsCount = oResults.size();
 
         // 若查询的数据小于batch, 说明以及没有更早的数据, 返回-1
-        if (oResultsCount < batch)
+        if (oResultsCount < (size_t)batch)
             nextIndex = -1;
         else
             nextIndex = TC_Common::strto<int>(oResults[oResultsCount - 1][vColumns[0]]);
@@ -401,7 +402,7 @@ int ActivityHandle::GetActivityList(const int &index, const int &batch, const st
         size_t oResultsCount = oResults.size();
 
         // 若查询的数据小于batch, 说明以及没有更早的数据, 返回-1
-        if (oResultsCount < batch)
+        if (oResultsCount < (size_t)batch)
             nextIndex = -1;
         else
             nextIndex = TC_Common::strto<int>(oResults[oResultsCount - 1][vColumns[0]]);
@@ -463,7 +464,7 @@ int MsgWallHandle::InsertMessage(const LifeService::Message &msg)
 int MsgWallHandle::GetMsgList(const int &index, const int &batch, const string &date, const string wx_id, int &nextIndex, vector<LifeService::Message> &msgList)
 {
     string sTableName = "message_wall";
-    vector<string> vColumns = {"message_id", "user_id", "content", "anonymous", "message_time", "like_count"};
+    vector<string> vColumns = {"message_id", "user_id", "receiver", "content", "anonymous", "message_time", "like_count"};
     string sCondition = "`" + vColumns[0] + "`";
 
     // 0代表第一次请求
@@ -503,7 +504,7 @@ int MsgWallHandle::GetMsgList(const int &index, const int &batch, const string &
         size_t oResultsCount = oResults.size();
 
         // 若查询的数据小于batch, 说明以及没有更早的数据, 返回-1
-        if (oResultsCount < batch)
+        if (oResultsCount < (size_t)batch)
             nextIndex = -1;
         else
             nextIndex = TC_Common::strto<int>(oResults[oResultsCount - 1][vColumns[0]]);
@@ -513,10 +514,11 @@ int MsgWallHandle::GetMsgList(const int &index, const int &batch, const string &
             LifeService::Message msg;
             msg.message_id   = oResults[i][vColumns[0]];
             msg.user_id      = oResults[i][vColumns[1]];
-            msg.content      = oResults[i][vColumns[2]];
-            msg.anonymous    = TC_Common::strto<bool>(oResults[i][vColumns[3]]);
-            msg.message_time = oResults[i][vColumns[4]];
-            msg.like_count   = TC_Common::strto<int>(oResults[i][vColumns[5]]);
+            msg.receiver     = oResults[i][vColumns[2]];
+            msg.content      = oResults[i][vColumns[3]];
+            msg.anonymous    = TC_Common::strto<bool>(oResults[i][vColumns[4]]);
+            msg.message_time = oResults[i][vColumns[5]];
+            msg.like_count   = TC_Common::strto<int>(oResults[i][vColumns[6]]);
             // 判断是否匿名
             if (!msg.anonymous)
                 msg.user_name = UserHandle::getInstance()->mUserInfo[msg.user_id].name;

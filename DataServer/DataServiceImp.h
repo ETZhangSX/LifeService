@@ -61,13 +61,13 @@ public:
      * @brief 创建社团
      */
     virtual int createClub(const LifeService::ClubInfo &clubInfo, tars::Int32 &iRetCode, tars::TarsCurrentPtr current);
-    virtual int getClubName(const std::string &club_id, std::string &club_name, tars::TarsCurrentPtr current);
+
     /**
      * @brief 获取社团列表
      */
     virtual int getClubList(tars::Int32 index, tars::Int32 batch, const std::string &wx_id, tars::Int32 &nextIndex, vector<LifeService::ClubInfo> &clubInfoList, tars::TarsCurrentPtr current);
-    virtual int getApplyListByClubId(const std::string &club_id, tars::Int32 index, tars::Int32 batch, tars::Int32 apply_status, tars::Int32 &nextIndex, vector<LifeService::ApplyInfo> applyList, tars::TarsCurrentPtr current);
-    virtual int getApplyListByUserId(const std::string &wx_id, tars::Int32 index, tars::Int32 batch, tars::Int32 apply_status, tars::Int32 &nextIndex, vector<LifeService::ApplyInfo> applyList, tars::TarsCurrentPtr current);
+    virtual int getApplyListByClubId(const std::string &club_id, tars::Int32 index, tars::Int32 batch, tars::Int32 apply_status, tars::Int32 &nextIndex, vector<LifeService::ApplyInfo> &applyList, tars::TarsCurrentPtr current);
+    virtual int getApplyListByUserId(const std::string &wx_id, tars::Int32 index, tars::Int32 batch, tars::Int32 apply_status, tars::Int32 &nextIndex, vector<LifeService::ApplyInfo> &applyList, tars::TarsCurrentPtr current);
     virtual int deleteApply(const std::string &wx_id, const std::string &club_id, tars::Int32 &iRetCode, tars::TarsCurrentPtr current);
 
     // virtual int createActivity(const LifeService::ActivityInfo &activityInfo, tars::Int32 &iRetCode, tars::TarsCurrentPtr current);

@@ -56,11 +56,12 @@ module LifeService
     {
         0 require  string message_id;
         1 require  string user_id;
-        2 require  string content;
-        3 require  bool   anonymous;
-        4 require  string message_time;
-        5 optional int    like_count;
-        6 optional string user_name;
+        2 require  string receiver;
+        3 require  string content;
+        4 require  bool   anonymous;
+        5 require  string message_time;
+        6 optional int    like_count;
+        7 optional string user_name;
     };
     
     interface DataService
@@ -73,7 +74,7 @@ module LifeService
         int getGroupByGroupId(int groupId, out string group);
 
         int createClub(ClubInfo clubInfo, out int iRetCode);
-        int getClubName(string club_id, out string club_name);
+        // int getClubName(string club_id, out string club_name);
         int getClubList(int index, int batch, string wx_id, out int nextIndex, out vector<ClubInfo> clubInfoList);
         
         int getApplyListByClubId(string club_id, int index, int batch, int apply_status, out int nextIndex, out vector<ApplyInfo> applyList);
