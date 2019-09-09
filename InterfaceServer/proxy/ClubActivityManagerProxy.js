@@ -1081,5 +1081,94 @@ LifeService.ClubActivityManagerProxy.prototype.GetUserApply = function (wxId, in
 };
 LifeService.ClubActivityManagerProxy.GetUserApply = __LifeService_ClubActivityManager$GetUserApply$IF;
 
+var __LifeService_ClubActivityManager$ModifyApplyStatus$IF = {
+    "name" : "ModifyApplyStatus",
+    "return" : "int32",
+    "arguments" : [{
+        "name" : "wxId",
+        "class" : "string",
+        "direction" : "in"
+    }, {
+        "name" : "clubId",
+        "class" : "string",
+        "direction" : "in"
+    }, {
+        "name" : "applyStatus",
+        "class" : "int32",
+        "direction" : "in"
+    }, {
+        "name" : "RetCode",
+        "class" : "int32",
+        "direction" : "out"
+    }]
+};
+
+var __LifeService_ClubActivityManager$ModifyApplyStatus$IE = function (wxId, clubId, applyStatus) {
+    var os = new TarsStream.TarsOutputStream();
+    os.writeString(1, wxId);
+    os.writeString(2, clubId);
+    os.writeInt32(3, applyStatus);
+    return os.getBinBuffer();
+};
+
+var __LifeService_ClubActivityManager$ModifyApplyStatus$ID = function (data) {
+    try {
+        var is = new TarsStream.TarsInputStream(data.response.sBuffer);
+        return {
+            "request" : data.request,
+            "response" : {
+                "costtime" : data.request.costtime,
+                "return" : is.readInt32(0, true, 0),
+                "arguments" : {
+                    "RetCode" : is.readInt32(4, true, 0)
+                }
+            }
+        };
+    } catch (e) {
+        throw _makeError(data, e.message, TarsError.CLIENT.DECODE_ERROR);
+    }
+};
+
+var __LifeService_ClubActivityManager$ModifyApplyStatus$PE = function (wxId, clubId, applyStatus, __$PROTOCOL$VERSION) {
+    var tup = new TarsStream.UniAttribute();
+    tup.tupVersion = __$PROTOCOL$VERSION;
+    tup.writeString("wxId", wxId);
+    tup.writeString("clubId", clubId);
+    tup.writeInt32("applyStatus", applyStatus);
+    return tup;
+};
+
+var __LifeService_ClubActivityManager$ModifyApplyStatus$PD = function (data) {
+    try {
+        var tup = data.response.tup;
+        return {
+            "request" : data.request,
+            "response" : {
+                "costtime" : data.request.costtime,
+                "return" : tup.readInt32("", 0),
+                "arguments" : {
+                    "RetCode" : tup.readInt32("RetCode")
+                }
+            }
+        };
+    } catch (e) {
+        throw _makeError(data, e.message, TarsError.CLIENT.DECODE_ERROR);
+    }
+};
+
+var __LifeService_ClubActivityManager$ModifyApplyStatus$ER = function (data) {
+    throw _makeError(data, "Call ClubActivityManager::ModifyApplyStatus failed");
+};
+
+LifeService.ClubActivityManagerProxy.prototype.ModifyApplyStatus = function (wxId, clubId, applyStatus) {
+    var version = this._worker.version;
+    if (version === TarsStream.Tup.TUP_SIMPLE || version === TarsStream.Tup.TUP_COMPLEX) {
+        return this._worker.tup_invoke("ModifyApplyStatus", __LifeService_ClubActivityManager$ModifyApplyStatus$PE(wxId, clubId, applyStatus, version), arguments[arguments.length - 1], __LifeService_ClubActivityManager$ModifyApplyStatus$IF).then(__LifeService_ClubActivityManager$ModifyApplyStatus$PD, __LifeService_ClubActivityManager$ModifyApplyStatus$ER);
+    } else {
+        return this._worker.tars_invoke("ModifyApplyStatus", __LifeService_ClubActivityManager$ModifyApplyStatus$IE(wxId, clubId, applyStatus), arguments[arguments.length - 1], __LifeService_ClubActivityManager$ModifyApplyStatus$IF).then(__LifeService_ClubActivityManager$ModifyApplyStatus$ID, __LifeService_ClubActivityManager$ModifyApplyStatus$ER);
+    }
+};
+LifeService.ClubActivityManagerProxy.ModifyApplyStatus = __LifeService_ClubActivityManager$ModifyApplyStatus$IF;
+
 
 

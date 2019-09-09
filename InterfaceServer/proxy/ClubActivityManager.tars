@@ -8,7 +8,7 @@ module LifeService{
         int ApplyForClub(string wxId, string clubId, out int RetCode);
         int GetClubApply(string clubId, int index, int applyStatus, out int nextIndex, out vector<ApplyInfo> applyList);
         int GetUserApply(string wxId, int index, int applyStatus, out int nextIndex, out vector<ApplyInfo> applyList);
-        //TODO: ModifyApply
+        int ModifyApplyStatus(string wxId, string clubId, int applyStatus, out int RetCode);
         int DeleteApply(string wxId, string clubId, out int RetCode);
 
         int CreateActivity(string wxId, ActivityInfo activityInfo, out int RetCode);
