@@ -12,6 +12,7 @@ const MessageWallServer = {};
 MessageWallServer.postMessage = async (ctx) => {
     const {
         user_id,
+        receiver,
         content,
         anonymous,
     } = ctx.request.body;
@@ -19,6 +20,7 @@ MessageWallServer.postMessage = async (ctx) => {
     const message = new DataServiceTars.LifeService.Message();
     message.readFromObject({
         user_id,
+        receiver,
         content,
         anonymous,
     });
