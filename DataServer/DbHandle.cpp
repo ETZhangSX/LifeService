@@ -463,7 +463,7 @@ int MsgWallHandle::InsertMessage(const LifeService::Message &msg)
 int MsgWallHandle::GetMsgList(const int &index, const int &batch, const string &date, const string wx_id, int &nextIndex, vector<LifeService::Message> &msgList)
 {
     string sTableName = "message_wall";
-    vector<string> vColumns = {"message_id", "user_id", "content", "anonymous", "message_time", "like_count"};
+    vector<string> vColumns = {"message_id", "user_id", "receiver", "content", "anonymous", "message_time", "like_count"};
     string sCondition = "`" + vColumns[0] + "`";
 
     // 0代表第一次请求
@@ -513,10 +513,11 @@ int MsgWallHandle::GetMsgList(const int &index, const int &batch, const string &
             LifeService::Message msg;
             msg.message_id   = oResults[i][vColumns[0]];
             msg.user_id      = oResults[i][vColumns[1]];
-            msg.content      = oResults[i][vColumns[2]];
-            msg.anonymous    = TC_Common::strto<bool>(oResults[i][vColumns[3]]);
-            msg.message_time = oResults[i][vColumns[4]];
-            msg.like_count   = TC_Common::strto<int>(oResults[i][vColumns[5]]);
+            msg.receiver     = oResults[i][vColumns[2]];
+            msg.content      = oResults[i][vColumns[3]];
+            msg.anonymous    = TC_Common::strto<bool>(oResults[i][vColumns[4]]);
+            msg.message_time = oResults[i][vColumns[5]];
+            msg.like_count   = TC_Common::strto<int>(oResults[i][vColumns[6]]);
             // 判断是否匿名
             if (!msg.anonymous)
                 msg.user_name = UserHandle::getInstance()->mUserInfo[msg.user_id].name;

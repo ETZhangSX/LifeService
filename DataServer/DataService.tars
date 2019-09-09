@@ -56,11 +56,12 @@ module LifeService
     {
         0 require  string message_id;
         1 require  string user_id;
-        2 require  string content;
-        3 require  bool   anonymous;
-        4 require  string message_time;
-        5 optional int    like_count;
-        6 optional string user_name;
+        2 require  string receiver;
+        3 require  string content;
+        4 require  bool   anonymous;
+        5 require  string message_time;
+        6 optional int    like_count;
+        7 optional string user_name;
     };
     
     interface DataService
