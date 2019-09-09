@@ -110,9 +110,6 @@ int DataServiceImp::createClub(const LifeService::ClubInfo &clubInfo, tars::Int3
     return 0;
 }
 
-int DataServiceImp::getClubName(const string &club_id, string &club_name, tars::TarsCurrentPtr current)
-{}
-
 //////////////////////////////////////////////////////
 int DataServiceImp::getClubList(tars::Int32 index, tars::Int32 batch, const string &wx_id, tars::Int32 &nextIndex, vector<LifeService::ClubInfo> &clubInfoList, tars::TarsCurrentPtr current)
 {
@@ -121,14 +118,14 @@ int DataServiceImp::getClubList(tars::Int32 index, tars::Int32 batch, const stri
 }
 
 //////////////////////////////////////////////////////
-int DataServiceImp::getApplyListByClubId(const string &club_id, tars::Int32 index, tars::Int32 batch, tars::Int32 apply_status, tars::Int32 &nextIndex, vector<LifeService::ApplyInfo> applyList, tars::TarsCurrentPtr current)
+int DataServiceImp::getApplyListByClubId(const string &club_id, tars::Int32 index, tars::Int32 batch, tars::Int32 apply_status, tars::Int32 &nextIndex, vector<LifeService::ApplyInfo> &applyList, tars::TarsCurrentPtr current)
 {
     int ret = ClubHandle::getInstance()->GetApplyListByClubId(club_id, index, batch, apply_status, nextIndex, applyList);
     return ret;
 }
 
 //////////////////////////////////////////////////////
-int DataServiceImp::getApplyListByUserId(const string &wx_id, tars::Int32 index, tars::Int32 batch, tars::Int32 apply_status, tars::Int32 &nextIndex, vector<LifeService::ApplyInfo> applyList, tars::TarsCurrentPtr current)
+int DataServiceImp::getApplyListByUserId(const string &wx_id, tars::Int32 index, tars::Int32 batch, tars::Int32 apply_status, tars::Int32 &nextIndex, vector<LifeService::ApplyInfo> &applyList, tars::TarsCurrentPtr current)
 {
     int ret = ClubHandle::getInstance()->GetApplyListByUserId(wx_id, index, batch, apply_status, nextIndex, applyList);
     return ret;
