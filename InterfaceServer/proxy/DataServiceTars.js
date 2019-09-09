@@ -206,6 +206,81 @@ LifeService.ClubInfo.create = function (is) {
     return LifeService.ClubInfo._readFrom(is);
 };
 
+LifeService.ApplyInfo = function() {
+    this.apply_id = "";
+    this.apply_time = "";
+    this.wx_id = "";
+    this.club_id = "";
+    this.user_name = "";
+    this.club_name = "";
+    this.avatar_url = "";
+    this._classname = "LifeService.ApplyInfo";
+};
+LifeService.ApplyInfo._classname = "LifeService.ApplyInfo";
+LifeService.ApplyInfo._write = function (os, tag, value) { os.writeStruct(tag, value); };
+LifeService.ApplyInfo._read  = function (is, tag, def) { return is.readStruct(tag, true, def); };
+LifeService.ApplyInfo._readFrom = function (is) {
+    var tmp = new LifeService.ApplyInfo;
+    tmp.apply_id = is.readString(0, true, "");
+    tmp.apply_time = is.readString(1, true, "");
+    tmp.wx_id = is.readString(2, true, "");
+    tmp.club_id = is.readString(3, true, "");
+    tmp.user_name = is.readString(4, false, "");
+    tmp.club_name = is.readString(5, false, "");
+    tmp.avatar_url = is.readString(6, false, "");
+    return tmp;
+};
+LifeService.ApplyInfo.prototype._writeTo = function (os) {
+    os.writeString(0, this.apply_id);
+    os.writeString(1, this.apply_time);
+    os.writeString(2, this.wx_id);
+    os.writeString(3, this.club_id);
+    os.writeString(4, this.user_name);
+    os.writeString(5, this.club_name);
+    os.writeString(6, this.avatar_url);
+};
+LifeService.ApplyInfo.prototype._equal = function () {
+    assert.fail("this structure not define key operation");
+};
+LifeService.ApplyInfo.prototype._genKey = function () {
+    if (!this._proto_struct_name_) {
+        this._proto_struct_name_ = "STRUCT" + Math.random();
+    }
+    return this._proto_struct_name_;
+};
+LifeService.ApplyInfo.prototype.toObject = function() { 
+    return {
+        "apply_id" : this.apply_id,
+        "apply_time" : this.apply_time,
+        "wx_id" : this.wx_id,
+        "club_id" : this.club_id,
+        "user_name" : this.user_name,
+        "club_name" : this.club_name,
+        "avatar_url" : this.avatar_url
+    };
+};
+LifeService.ApplyInfo.prototype.readFromObject = function(json) { 
+    _hasOwnProperty.call(json, "apply_id") && (this.apply_id = json.apply_id);
+    _hasOwnProperty.call(json, "apply_time") && (this.apply_time = json.apply_time);
+    _hasOwnProperty.call(json, "wx_id") && (this.wx_id = json.wx_id);
+    _hasOwnProperty.call(json, "club_id") && (this.club_id = json.club_id);
+    _hasOwnProperty.call(json, "user_name") && (this.user_name = json.user_name);
+    _hasOwnProperty.call(json, "club_name") && (this.club_name = json.club_name);
+    _hasOwnProperty.call(json, "avatar_url") && (this.avatar_url = json.avatar_url);
+    return this;
+};
+LifeService.ApplyInfo.prototype.toBinBuffer = function () {
+    var os = new TarsStream.TarsOutputStream();
+    this._writeTo(os);
+    return os.getBinBuffer();
+};
+LifeService.ApplyInfo.new = function () {
+    return new LifeService.ApplyInfo();
+};
+LifeService.ApplyInfo.create = function (is) {
+    return LifeService.ApplyInfo._readFrom(is);
+};
+
 LifeService.ActivityInfo = function() {
     this.activity_id = "";
     this.name = "";
@@ -304,10 +379,12 @@ LifeService.ActivityInfo.create = function (is) {
 LifeService.Message = function() {
     this.message_id = "";
     this.user_id = "";
+    this.receiver = "";
     this.content = "";
     this.anonymous = true;
     this.message_time = "";
     this.like_count = 0;
+    this.user_name = "";
     this._classname = "LifeService.Message";
 };
 LifeService.Message._classname = "LifeService.Message";
@@ -317,19 +394,23 @@ LifeService.Message._readFrom = function (is) {
     var tmp = new LifeService.Message;
     tmp.message_id = is.readString(0, true, "");
     tmp.user_id = is.readString(1, true, "");
-    tmp.content = is.readString(2, true, "");
-    tmp.anonymous = is.readBoolean(3, true, true);
-    tmp.message_time = is.readString(4, true, "");
-    tmp.like_count = is.readInt32(5, false, 0);
+    tmp.receiver = is.readString(2, true, "");
+    tmp.content = is.readString(3, true, "");
+    tmp.anonymous = is.readBoolean(4, true, true);
+    tmp.message_time = is.readString(5, true, "");
+    tmp.like_count = is.readInt32(6, false, 0);
+    tmp.user_name = is.readString(7, false, "");
     return tmp;
 };
 LifeService.Message.prototype._writeTo = function (os) {
     os.writeString(0, this.message_id);
     os.writeString(1, this.user_id);
-    os.writeString(2, this.content);
-    os.writeBoolean(3, this.anonymous);
-    os.writeString(4, this.message_time);
-    os.writeInt32(5, this.like_count);
+    os.writeString(2, this.receiver);
+    os.writeString(3, this.content);
+    os.writeBoolean(4, this.anonymous);
+    os.writeString(5, this.message_time);
+    os.writeInt32(6, this.like_count);
+    os.writeString(7, this.user_name);
 };
 LifeService.Message.prototype._equal = function () {
     assert.fail("this structure not define key operation");
@@ -344,19 +425,23 @@ LifeService.Message.prototype.toObject = function() {
     return {
         "message_id" : this.message_id,
         "user_id" : this.user_id,
+        "receiver" : this.receiver,
         "content" : this.content,
         "anonymous" : this.anonymous,
         "message_time" : this.message_time,
-        "like_count" : this.like_count
+        "like_count" : this.like_count,
+        "user_name" : this.user_name
     };
 };
 LifeService.Message.prototype.readFromObject = function(json) { 
     _hasOwnProperty.call(json, "message_id") && (this.message_id = json.message_id);
     _hasOwnProperty.call(json, "user_id") && (this.user_id = json.user_id);
+    _hasOwnProperty.call(json, "receiver") && (this.receiver = json.receiver);
     _hasOwnProperty.call(json, "content") && (this.content = json.content);
     _hasOwnProperty.call(json, "anonymous") && (this.anonymous = json.anonymous);
     _hasOwnProperty.call(json, "message_time") && (this.message_time = json.message_time);
     _hasOwnProperty.call(json, "like_count") && (this.like_count = json.like_count);
+    _hasOwnProperty.call(json, "user_name") && (this.user_name = json.user_name);
     return this;
 };
 LifeService.Message.prototype.toBinBuffer = function () {

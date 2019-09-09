@@ -246,6 +246,81 @@ LifeService.ClubInfo.create = function (is) {
     return LifeService.ClubInfo._readFrom(is);
 };
 
+LifeService.ApplyInfo = function() {
+    this.apply_id = "";
+    this.apply_time = "";
+    this.wx_id = "";
+    this.club_id = "";
+    this.user_name = "";
+    this.club_name = "";
+    this.avatar_url = "";
+    this._classname = "LifeService.ApplyInfo";
+};
+LifeService.ApplyInfo._classname = "LifeService.ApplyInfo";
+LifeService.ApplyInfo._write = function (os, tag, value) { os.writeStruct(tag, value); };
+LifeService.ApplyInfo._read  = function (is, tag, def) { return is.readStruct(tag, true, def); };
+LifeService.ApplyInfo._readFrom = function (is) {
+    var tmp = new LifeService.ApplyInfo;
+    tmp.apply_id = is.readString(0, true, "");
+    tmp.apply_time = is.readString(1, true, "");
+    tmp.wx_id = is.readString(2, true, "");
+    tmp.club_id = is.readString(3, true, "");
+    tmp.user_name = is.readString(4, false, "");
+    tmp.club_name = is.readString(5, false, "");
+    tmp.avatar_url = is.readString(6, false, "");
+    return tmp;
+};
+LifeService.ApplyInfo.prototype._writeTo = function (os) {
+    os.writeString(0, this.apply_id);
+    os.writeString(1, this.apply_time);
+    os.writeString(2, this.wx_id);
+    os.writeString(3, this.club_id);
+    os.writeString(4, this.user_name);
+    os.writeString(5, this.club_name);
+    os.writeString(6, this.avatar_url);
+};
+LifeService.ApplyInfo.prototype._equal = function () {
+    assert.fail("this structure not define key operation");
+};
+LifeService.ApplyInfo.prototype._genKey = function () {
+    if (!this._proto_struct_name_) {
+        this._proto_struct_name_ = "STRUCT" + Math.random();
+    }
+    return this._proto_struct_name_;
+};
+LifeService.ApplyInfo.prototype.toObject = function() { 
+    return {
+        "apply_id" : this.apply_id,
+        "apply_time" : this.apply_time,
+        "wx_id" : this.wx_id,
+        "club_id" : this.club_id,
+        "user_name" : this.user_name,
+        "club_name" : this.club_name,
+        "avatar_url" : this.avatar_url
+    };
+};
+LifeService.ApplyInfo.prototype.readFromObject = function(json) { 
+    _hasOwnProperty.call(json, "apply_id") && (this.apply_id = json.apply_id);
+    _hasOwnProperty.call(json, "apply_time") && (this.apply_time = json.apply_time);
+    _hasOwnProperty.call(json, "wx_id") && (this.wx_id = json.wx_id);
+    _hasOwnProperty.call(json, "club_id") && (this.club_id = json.club_id);
+    _hasOwnProperty.call(json, "user_name") && (this.user_name = json.user_name);
+    _hasOwnProperty.call(json, "club_name") && (this.club_name = json.club_name);
+    _hasOwnProperty.call(json, "avatar_url") && (this.avatar_url = json.avatar_url);
+    return this;
+};
+LifeService.ApplyInfo.prototype.toBinBuffer = function () {
+    var os = new TarsStream.TarsOutputStream();
+    this._writeTo(os);
+    return os.getBinBuffer();
+};
+LifeService.ApplyInfo.new = function () {
+    return new LifeService.ApplyInfo();
+};
+LifeService.ApplyInfo.create = function (is) {
+    return LifeService.ApplyInfo._readFrom(is);
+};
+
 LifeService.ActivityInfo = function() {
     this.activity_id = "";
     this.name = "";
@@ -344,10 +419,12 @@ LifeService.ActivityInfo.create = function (is) {
 LifeService.Message = function() {
     this.message_id = "";
     this.user_id = "";
+    this.receiver = "";
     this.content = "";
     this.anonymous = true;
     this.message_time = "";
     this.like_count = 0;
+    this.user_name = "";
     this._classname = "LifeService.Message";
 };
 LifeService.Message._classname = "LifeService.Message";
@@ -357,19 +434,23 @@ LifeService.Message._readFrom = function (is) {
     var tmp = new LifeService.Message;
     tmp.message_id = is.readString(0, true, "");
     tmp.user_id = is.readString(1, true, "");
-    tmp.content = is.readString(2, true, "");
-    tmp.anonymous = is.readBoolean(3, true, true);
-    tmp.message_time = is.readString(4, true, "");
-    tmp.like_count = is.readInt32(5, false, 0);
+    tmp.receiver = is.readString(2, true, "");
+    tmp.content = is.readString(3, true, "");
+    tmp.anonymous = is.readBoolean(4, true, true);
+    tmp.message_time = is.readString(5, true, "");
+    tmp.like_count = is.readInt32(6, false, 0);
+    tmp.user_name = is.readString(7, false, "");
     return tmp;
 };
 LifeService.Message.prototype._writeTo = function (os) {
     os.writeString(0, this.message_id);
     os.writeString(1, this.user_id);
-    os.writeString(2, this.content);
-    os.writeBoolean(3, this.anonymous);
-    os.writeString(4, this.message_time);
-    os.writeInt32(5, this.like_count);
+    os.writeString(2, this.receiver);
+    os.writeString(3, this.content);
+    os.writeBoolean(4, this.anonymous);
+    os.writeString(5, this.message_time);
+    os.writeInt32(6, this.like_count);
+    os.writeString(7, this.user_name);
 };
 LifeService.Message.prototype._equal = function () {
     assert.fail("this structure not define key operation");
@@ -384,19 +465,23 @@ LifeService.Message.prototype.toObject = function() {
     return {
         "message_id" : this.message_id,
         "user_id" : this.user_id,
+        "receiver" : this.receiver,
         "content" : this.content,
         "anonymous" : this.anonymous,
         "message_time" : this.message_time,
-        "like_count" : this.like_count
+        "like_count" : this.like_count,
+        "user_name" : this.user_name
     };
 };
 LifeService.Message.prototype.readFromObject = function(json) { 
     _hasOwnProperty.call(json, "message_id") && (this.message_id = json.message_id);
     _hasOwnProperty.call(json, "user_id") && (this.user_id = json.user_id);
+    _hasOwnProperty.call(json, "receiver") && (this.receiver = json.receiver);
     _hasOwnProperty.call(json, "content") && (this.content = json.content);
     _hasOwnProperty.call(json, "anonymous") && (this.anonymous = json.anonymous);
     _hasOwnProperty.call(json, "message_time") && (this.message_time = json.message_time);
     _hasOwnProperty.call(json, "like_count") && (this.like_count = json.like_count);
+    _hasOwnProperty.call(json, "user_name") && (this.user_name = json.user_name);
     return this;
 };
 LifeService.Message.prototype.toBinBuffer = function () {
@@ -628,12 +713,184 @@ LifeService.DataServiceProxy.prototype.createUser = function (wx_id, UserInfo) {
 };
 LifeService.DataServiceProxy.createUser = __LifeService_DataService$createUser$IF;
 
+var __LifeService_DataService$deleteActivity$IF = {
+    "name" : "deleteActivity",
+    "return" : "int32",
+    "arguments" : [{
+        "name" : "activity_id",
+        "class" : "string",
+        "direction" : "in"
+    }, {
+        "name" : "iRetCode",
+        "class" : "int32",
+        "direction" : "out"
+    }]
+};
+
+var __LifeService_DataService$deleteActivity$IE = function (activity_id) {
+    var os = new TarsStream.TarsOutputStream();
+    os.writeString(1, activity_id);
+    return os.getBinBuffer();
+};
+
+var __LifeService_DataService$deleteActivity$ID = function (data) {
+    try {
+        var is = new TarsStream.TarsInputStream(data.response.sBuffer);
+        return {
+            "request" : data.request,
+            "response" : {
+                "costtime" : data.request.costtime,
+                "return" : is.readInt32(0, true, 0),
+                "arguments" : {
+                    "iRetCode" : is.readInt32(2, true, 0)
+                }
+            }
+        };
+    } catch (e) {
+        throw _makeError(data, e.message, TarsError.CLIENT.DECODE_ERROR);
+    }
+};
+
+var __LifeService_DataService$deleteActivity$PE = function (activity_id, __$PROTOCOL$VERSION) {
+    var tup = new TarsStream.UniAttribute();
+    tup.tupVersion = __$PROTOCOL$VERSION;
+    tup.writeString("activity_id", activity_id);
+    return tup;
+};
+
+var __LifeService_DataService$deleteActivity$PD = function (data) {
+    try {
+        var tup = data.response.tup;
+        return {
+            "request" : data.request,
+            "response" : {
+                "costtime" : data.request.costtime,
+                "return" : tup.readInt32("", 0),
+                "arguments" : {
+                    "iRetCode" : tup.readInt32("iRetCode")
+                }
+            }
+        };
+    } catch (e) {
+        throw _makeError(data, e.message, TarsError.CLIENT.DECODE_ERROR);
+    }
+};
+
+var __LifeService_DataService$deleteActivity$ER = function (data) {
+    throw _makeError(data, "Call DataService::deleteActivity failed");
+};
+
+LifeService.DataServiceProxy.prototype.deleteActivity = function (activity_id) {
+    var version = this._worker.version;
+    if (version === TarsStream.Tup.TUP_SIMPLE || version === TarsStream.Tup.TUP_COMPLEX) {
+        return this._worker.tup_invoke("deleteActivity", __LifeService_DataService$deleteActivity$PE(activity_id, version), arguments[arguments.length - 1], __LifeService_DataService$deleteActivity$IF).then(__LifeService_DataService$deleteActivity$PD, __LifeService_DataService$deleteActivity$ER);
+    } else {
+        return this._worker.tars_invoke("deleteActivity", __LifeService_DataService$deleteActivity$IE(activity_id), arguments[arguments.length - 1], __LifeService_DataService$deleteActivity$IF).then(__LifeService_DataService$deleteActivity$ID, __LifeService_DataService$deleteActivity$ER);
+    }
+};
+LifeService.DataServiceProxy.deleteActivity = __LifeService_DataService$deleteActivity$IF;
+
+var __LifeService_DataService$deleteApply$IF = {
+    "name" : "deleteApply",
+    "return" : "int32",
+    "arguments" : [{
+        "name" : "wx_id",
+        "class" : "string",
+        "direction" : "in"
+    }, {
+        "name" : "club_id",
+        "class" : "string",
+        "direction" : "in"
+    }, {
+        "name" : "iRetCode",
+        "class" : "int32",
+        "direction" : "out"
+    }]
+};
+
+var __LifeService_DataService$deleteApply$IE = function (wx_id, club_id) {
+    var os = new TarsStream.TarsOutputStream();
+    os.writeString(1, wx_id);
+    os.writeString(2, club_id);
+    return os.getBinBuffer();
+};
+
+var __LifeService_DataService$deleteApply$ID = function (data) {
+    try {
+        var is = new TarsStream.TarsInputStream(data.response.sBuffer);
+        return {
+            "request" : data.request,
+            "response" : {
+                "costtime" : data.request.costtime,
+                "return" : is.readInt32(0, true, 0),
+                "arguments" : {
+                    "iRetCode" : is.readInt32(3, true, 0)
+                }
+            }
+        };
+    } catch (e) {
+        throw _makeError(data, e.message, TarsError.CLIENT.DECODE_ERROR);
+    }
+};
+
+var __LifeService_DataService$deleteApply$PE = function (wx_id, club_id, __$PROTOCOL$VERSION) {
+    var tup = new TarsStream.UniAttribute();
+    tup.tupVersion = __$PROTOCOL$VERSION;
+    tup.writeString("wx_id", wx_id);
+    tup.writeString("club_id", club_id);
+    return tup;
+};
+
+var __LifeService_DataService$deleteApply$PD = function (data) {
+    try {
+        var tup = data.response.tup;
+        return {
+            "request" : data.request,
+            "response" : {
+                "costtime" : data.request.costtime,
+                "return" : tup.readInt32("", 0),
+                "arguments" : {
+                    "iRetCode" : tup.readInt32("iRetCode")
+                }
+            }
+        };
+    } catch (e) {
+        throw _makeError(data, e.message, TarsError.CLIENT.DECODE_ERROR);
+    }
+};
+
+var __LifeService_DataService$deleteApply$ER = function (data) {
+    throw _makeError(data, "Call DataService::deleteApply failed");
+};
+
+LifeService.DataServiceProxy.prototype.deleteApply = function (wx_id, club_id) {
+    var version = this._worker.version;
+    if (version === TarsStream.Tup.TUP_SIMPLE || version === TarsStream.Tup.TUP_COMPLEX) {
+        return this._worker.tup_invoke("deleteApply", __LifeService_DataService$deleteApply$PE(wx_id, club_id, version), arguments[arguments.length - 1], __LifeService_DataService$deleteApply$IF).then(__LifeService_DataService$deleteApply$PD, __LifeService_DataService$deleteApply$ER);
+    } else {
+        return this._worker.tars_invoke("deleteApply", __LifeService_DataService$deleteApply$IE(wx_id, club_id), arguments[arguments.length - 1], __LifeService_DataService$deleteApply$IF).then(__LifeService_DataService$deleteApply$ID, __LifeService_DataService$deleteApply$ER);
+    }
+};
+LifeService.DataServiceProxy.deleteApply = __LifeService_DataService$deleteApply$IF;
+
 var __LifeService_DataService$getActivityList$IF = {
     "name" : "getActivityList",
     "return" : "int32",
     "arguments" : [{
         "name" : "index",
         "class" : "int32",
+        "direction" : "in"
+    }, {
+        "name" : "batch",
+        "class" : "int32",
+        "direction" : "in"
+    }, {
+        "name" : "wx_id",
+        "class" : "string",
+        "direction" : "in"
+    }, {
+        "name" : "club_id",
+        "class" : "string",
         "direction" : "in"
     }, {
         "name" : "nextIndex",
@@ -646,9 +903,12 @@ var __LifeService_DataService$getActivityList$IF = {
     }]
 };
 
-var __LifeService_DataService$getActivityList$IE = function (index) {
+var __LifeService_DataService$getActivityList$IE = function (index, batch, wx_id, club_id) {
     var os = new TarsStream.TarsOutputStream();
     os.writeInt32(1, index);
+    os.writeInt32(2, batch);
+    os.writeString(3, wx_id);
+    os.writeString(4, club_id);
     return os.getBinBuffer();
 };
 
@@ -661,8 +921,8 @@ var __LifeService_DataService$getActivityList$ID = function (data) {
                 "costtime" : data.request.costtime,
                 "return" : is.readInt32(0, true, 0),
                 "arguments" : {
-                    "nextIndex" : is.readInt32(2, true, 0),
-                    "activityList" : is.readList(3, true, TarsStream.List(TarsStream.Map(TarsStream.String, TarsStream.String)))
+                    "nextIndex" : is.readInt32(5, true, 0),
+                    "activityList" : is.readList(6, true, TarsStream.List(TarsStream.Map(TarsStream.String, TarsStream.String)))
                 }
             }
         };
@@ -671,10 +931,13 @@ var __LifeService_DataService$getActivityList$ID = function (data) {
     }
 };
 
-var __LifeService_DataService$getActivityList$PE = function (index, __$PROTOCOL$VERSION) {
+var __LifeService_DataService$getActivityList$PE = function (index, batch, wx_id, club_id, __$PROTOCOL$VERSION) {
     var tup = new TarsStream.UniAttribute();
     tup.tupVersion = __$PROTOCOL$VERSION;
     tup.writeInt32("index", index);
+    tup.writeInt32("batch", batch);
+    tup.writeString("wx_id", wx_id);
+    tup.writeString("club_id", club_id);
     return tup;
 };
 
@@ -701,28 +964,249 @@ var __LifeService_DataService$getActivityList$ER = function (data) {
     throw _makeError(data, "Call DataService::getActivityList failed");
 };
 
-LifeService.DataServiceProxy.prototype.getActivityList = function (index) {
+LifeService.DataServiceProxy.prototype.getActivityList = function (index, batch, wx_id, club_id) {
     var version = this._worker.version;
     if (version === TarsStream.Tup.TUP_SIMPLE || version === TarsStream.Tup.TUP_COMPLEX) {
-        return this._worker.tup_invoke("getActivityList", __LifeService_DataService$getActivityList$PE(index, version), arguments[arguments.length - 1], __LifeService_DataService$getActivityList$IF).then(__LifeService_DataService$getActivityList$PD, __LifeService_DataService$getActivityList$ER);
+        return this._worker.tup_invoke("getActivityList", __LifeService_DataService$getActivityList$PE(index, batch, wx_id, club_id, version), arguments[arguments.length - 1], __LifeService_DataService$getActivityList$IF).then(__LifeService_DataService$getActivityList$PD, __LifeService_DataService$getActivityList$ER);
     } else {
-        return this._worker.tars_invoke("getActivityList", __LifeService_DataService$getActivityList$IE(index), arguments[arguments.length - 1], __LifeService_DataService$getActivityList$IF).then(__LifeService_DataService$getActivityList$ID, __LifeService_DataService$getActivityList$ER);
+        return this._worker.tars_invoke("getActivityList", __LifeService_DataService$getActivityList$IE(index, batch, wx_id, club_id), arguments[arguments.length - 1], __LifeService_DataService$getActivityList$IF).then(__LifeService_DataService$getActivityList$ID, __LifeService_DataService$getActivityList$ER);
     }
 };
 LifeService.DataServiceProxy.getActivityList = __LifeService_DataService$getActivityList$IF;
+
+var __LifeService_DataService$getApplyListByClubId$IF = {
+    "name" : "getApplyListByClubId",
+    "return" : "int32",
+    "arguments" : [{
+        "name" : "club_id",
+        "class" : "string",
+        "direction" : "in"
+    }, {
+        "name" : "index",
+        "class" : "int32",
+        "direction" : "in"
+    }, {
+        "name" : "batch",
+        "class" : "int32",
+        "direction" : "in"
+    }, {
+        "name" : "apply_status",
+        "class" : "int32",
+        "direction" : "in"
+    }, {
+        "name" : "nextIndex",
+        "class" : "int32",
+        "direction" : "out"
+    }, {
+        "name" : "applyList",
+        "class" : "list(LifeService.ApplyInfo)",
+        "direction" : "out"
+    }]
+};
+
+var __LifeService_DataService$getApplyListByClubId$IE = function (club_id, index, batch, apply_status) {
+    var os = new TarsStream.TarsOutputStream();
+    os.writeString(1, club_id);
+    os.writeInt32(2, index);
+    os.writeInt32(3, batch);
+    os.writeInt32(4, apply_status);
+    return os.getBinBuffer();
+};
+
+var __LifeService_DataService$getApplyListByClubId$ID = function (data) {
+    try {
+        var is = new TarsStream.TarsInputStream(data.response.sBuffer);
+        return {
+            "request" : data.request,
+            "response" : {
+                "costtime" : data.request.costtime,
+                "return" : is.readInt32(0, true, 0),
+                "arguments" : {
+                    "nextIndex" : is.readInt32(5, true, 0),
+                    "applyList" : is.readList(6, true, TarsStream.List(LifeService.ApplyInfo))
+                }
+            }
+        };
+    } catch (e) {
+        throw _makeError(data, e.message, TarsError.CLIENT.DECODE_ERROR);
+    }
+};
+
+var __LifeService_DataService$getApplyListByClubId$PE = function (club_id, index, batch, apply_status, __$PROTOCOL$VERSION) {
+    var tup = new TarsStream.UniAttribute();
+    tup.tupVersion = __$PROTOCOL$VERSION;
+    tup.writeString("club_id", club_id);
+    tup.writeInt32("index", index);
+    tup.writeInt32("batch", batch);
+    tup.writeInt32("apply_status", apply_status);
+    return tup;
+};
+
+var __LifeService_DataService$getApplyListByClubId$PD = function (data) {
+    try {
+        var tup = data.response.tup;
+        return {
+            "request" : data.request,
+            "response" : {
+                "costtime" : data.request.costtime,
+                "return" : tup.readInt32("", 0),
+                "arguments" : {
+                    "nextIndex" : tup.readInt32("nextIndex"),
+                    "applyList" : tup.readList("applyList", TarsStream.List(LifeService.ApplyInfo))
+                }
+            }
+        };
+    } catch (e) {
+        throw _makeError(data, e.message, TarsError.CLIENT.DECODE_ERROR);
+    }
+};
+
+var __LifeService_DataService$getApplyListByClubId$ER = function (data) {
+    throw _makeError(data, "Call DataService::getApplyListByClubId failed");
+};
+
+LifeService.DataServiceProxy.prototype.getApplyListByClubId = function (club_id, index, batch, apply_status) {
+    var version = this._worker.version;
+    if (version === TarsStream.Tup.TUP_SIMPLE || version === TarsStream.Tup.TUP_COMPLEX) {
+        return this._worker.tup_invoke("getApplyListByClubId", __LifeService_DataService$getApplyListByClubId$PE(club_id, index, batch, apply_status, version), arguments[arguments.length - 1], __LifeService_DataService$getApplyListByClubId$IF).then(__LifeService_DataService$getApplyListByClubId$PD, __LifeService_DataService$getApplyListByClubId$ER);
+    } else {
+        return this._worker.tars_invoke("getApplyListByClubId", __LifeService_DataService$getApplyListByClubId$IE(club_id, index, batch, apply_status), arguments[arguments.length - 1], __LifeService_DataService$getApplyListByClubId$IF).then(__LifeService_DataService$getApplyListByClubId$ID, __LifeService_DataService$getApplyListByClubId$ER);
+    }
+};
+LifeService.DataServiceProxy.getApplyListByClubId = __LifeService_DataService$getApplyListByClubId$IF;
+
+var __LifeService_DataService$getApplyListByUserId$IF = {
+    "name" : "getApplyListByUserId",
+    "return" : "int32",
+    "arguments" : [{
+        "name" : "wx_id",
+        "class" : "string",
+        "direction" : "in"
+    }, {
+        "name" : "index",
+        "class" : "int32",
+        "direction" : "in"
+    }, {
+        "name" : "batch",
+        "class" : "int32",
+        "direction" : "in"
+    }, {
+        "name" : "apply_status",
+        "class" : "int32",
+        "direction" : "in"
+    }, {
+        "name" : "nextIndex",
+        "class" : "int32",
+        "direction" : "out"
+    }, {
+        "name" : "applyList",
+        "class" : "list(LifeService.ApplyInfo)",
+        "direction" : "out"
+    }]
+};
+
+var __LifeService_DataService$getApplyListByUserId$IE = function (wx_id, index, batch, apply_status) {
+    var os = new TarsStream.TarsOutputStream();
+    os.writeString(1, wx_id);
+    os.writeInt32(2, index);
+    os.writeInt32(3, batch);
+    os.writeInt32(4, apply_status);
+    return os.getBinBuffer();
+};
+
+var __LifeService_DataService$getApplyListByUserId$ID = function (data) {
+    try {
+        var is = new TarsStream.TarsInputStream(data.response.sBuffer);
+        return {
+            "request" : data.request,
+            "response" : {
+                "costtime" : data.request.costtime,
+                "return" : is.readInt32(0, true, 0),
+                "arguments" : {
+                    "nextIndex" : is.readInt32(5, true, 0),
+                    "applyList" : is.readList(6, true, TarsStream.List(LifeService.ApplyInfo))
+                }
+            }
+        };
+    } catch (e) {
+        throw _makeError(data, e.message, TarsError.CLIENT.DECODE_ERROR);
+    }
+};
+
+var __LifeService_DataService$getApplyListByUserId$PE = function (wx_id, index, batch, apply_status, __$PROTOCOL$VERSION) {
+    var tup = new TarsStream.UniAttribute();
+    tup.tupVersion = __$PROTOCOL$VERSION;
+    tup.writeString("wx_id", wx_id);
+    tup.writeInt32("index", index);
+    tup.writeInt32("batch", batch);
+    tup.writeInt32("apply_status", apply_status);
+    return tup;
+};
+
+var __LifeService_DataService$getApplyListByUserId$PD = function (data) {
+    try {
+        var tup = data.response.tup;
+        return {
+            "request" : data.request,
+            "response" : {
+                "costtime" : data.request.costtime,
+                "return" : tup.readInt32("", 0),
+                "arguments" : {
+                    "nextIndex" : tup.readInt32("nextIndex"),
+                    "applyList" : tup.readList("applyList", TarsStream.List(LifeService.ApplyInfo))
+                }
+            }
+        };
+    } catch (e) {
+        throw _makeError(data, e.message, TarsError.CLIENT.DECODE_ERROR);
+    }
+};
+
+var __LifeService_DataService$getApplyListByUserId$ER = function (data) {
+    throw _makeError(data, "Call DataService::getApplyListByUserId failed");
+};
+
+LifeService.DataServiceProxy.prototype.getApplyListByUserId = function (wx_id, index, batch, apply_status) {
+    var version = this._worker.version;
+    if (version === TarsStream.Tup.TUP_SIMPLE || version === TarsStream.Tup.TUP_COMPLEX) {
+        return this._worker.tup_invoke("getApplyListByUserId", __LifeService_DataService$getApplyListByUserId$PE(wx_id, index, batch, apply_status, version), arguments[arguments.length - 1], __LifeService_DataService$getApplyListByUserId$IF).then(__LifeService_DataService$getApplyListByUserId$PD, __LifeService_DataService$getApplyListByUserId$ER);
+    } else {
+        return this._worker.tars_invoke("getApplyListByUserId", __LifeService_DataService$getApplyListByUserId$IE(wx_id, index, batch, apply_status), arguments[arguments.length - 1], __LifeService_DataService$getApplyListByUserId$IF).then(__LifeService_DataService$getApplyListByUserId$ID, __LifeService_DataService$getApplyListByUserId$ER);
+    }
+};
+LifeService.DataServiceProxy.getApplyListByUserId = __LifeService_DataService$getApplyListByUserId$IF;
 
 var __LifeService_DataService$getClubList$IF = {
     "name" : "getClubList",
     "return" : "int32",
     "arguments" : [{
+        "name" : "index",
+        "class" : "int32",
+        "direction" : "in"
+    }, {
+        "name" : "batch",
+        "class" : "int32",
+        "direction" : "in"
+    }, {
+        "name" : "wx_id",
+        "class" : "string",
+        "direction" : "in"
+    }, {
+        "name" : "nextIndex",
+        "class" : "int32",
+        "direction" : "out"
+    }, {
         "name" : "clubInfoList",
         "class" : "list(LifeService.ClubInfo)",
         "direction" : "out"
     }]
 };
 
-var __LifeService_DataService$getClubList$IE = function () {
+var __LifeService_DataService$getClubList$IE = function (index, batch, wx_id) {
     var os = new TarsStream.TarsOutputStream();
+    os.writeInt32(1, index);
+    os.writeInt32(2, batch);
+    os.writeString(3, wx_id);
     return os.getBinBuffer();
 };
 
@@ -735,7 +1219,8 @@ var __LifeService_DataService$getClubList$ID = function (data) {
                 "costtime" : data.request.costtime,
                 "return" : is.readInt32(0, true, 0),
                 "arguments" : {
-                    "clubInfoList" : is.readList(1, true, TarsStream.List(LifeService.ClubInfo))
+                    "nextIndex" : is.readInt32(4, true, 0),
+                    "clubInfoList" : is.readList(5, true, TarsStream.List(LifeService.ClubInfo))
                 }
             }
         };
@@ -744,9 +1229,12 @@ var __LifeService_DataService$getClubList$ID = function (data) {
     }
 };
 
-var __LifeService_DataService$getClubList$PE = function (__$PROTOCOL$VERSION) {
+var __LifeService_DataService$getClubList$PE = function (index, batch, wx_id, __$PROTOCOL$VERSION) {
     var tup = new TarsStream.UniAttribute();
     tup.tupVersion = __$PROTOCOL$VERSION;
+    tup.writeInt32("index", index);
+    tup.writeInt32("batch", batch);
+    tup.writeString("wx_id", wx_id);
     return tup;
 };
 
@@ -759,6 +1247,7 @@ var __LifeService_DataService$getClubList$PD = function (data) {
                 "costtime" : data.request.costtime,
                 "return" : tup.readInt32("", 0),
                 "arguments" : {
+                    "nextIndex" : tup.readInt32("nextIndex"),
                     "clubInfoList" : tup.readList("clubInfoList", TarsStream.List(LifeService.ClubInfo))
                 }
             }
@@ -772,12 +1261,12 @@ var __LifeService_DataService$getClubList$ER = function (data) {
     throw _makeError(data, "Call DataService::getClubList failed");
 };
 
-LifeService.DataServiceProxy.prototype.getClubList = function () {
+LifeService.DataServiceProxy.prototype.getClubList = function (index, batch, wx_id) {
     var version = this._worker.version;
     if (version === TarsStream.Tup.TUP_SIMPLE || version === TarsStream.Tup.TUP_COMPLEX) {
-        return this._worker.tup_invoke("getClubList", __LifeService_DataService$getClubList$PE(version), arguments[arguments.length - 1], __LifeService_DataService$getClubList$IF).then(__LifeService_DataService$getClubList$PD, __LifeService_DataService$getClubList$ER);
+        return this._worker.tup_invoke("getClubList", __LifeService_DataService$getClubList$PE(index, batch, wx_id, version), arguments[arguments.length - 1], __LifeService_DataService$getClubList$IF).then(__LifeService_DataService$getClubList$PD, __LifeService_DataService$getClubList$ER);
     } else {
-        return this._worker.tars_invoke("getClubList", __LifeService_DataService$getClubList$IE(), arguments[arguments.length - 1], __LifeService_DataService$getClubList$IF).then(__LifeService_DataService$getClubList$ID, __LifeService_DataService$getClubList$ER);
+        return this._worker.tars_invoke("getClubList", __LifeService_DataService$getClubList$IE(index, batch, wx_id), arguments[arguments.length - 1], __LifeService_DataService$getClubList$IF).then(__LifeService_DataService$getClubList$ID, __LifeService_DataService$getClubList$ER);
     }
 };
 LifeService.DataServiceProxy.getClubList = __LifeService_DataService$getClubList$IF;
@@ -1644,6 +2133,95 @@ LifeService.DataServiceProxy.prototype.queryData = function (sTableName, sColumn
     }
 };
 LifeService.DataServiceProxy.queryData = __LifeService_DataService$queryData$IF;
+
+var __LifeService_DataService$setApplyStatus$IF = {
+    "name" : "setApplyStatus",
+    "return" : "int32",
+    "arguments" : [{
+        "name" : "wx_id",
+        "class" : "string",
+        "direction" : "in"
+    }, {
+        "name" : "club_id",
+        "class" : "string",
+        "direction" : "in"
+    }, {
+        "name" : "apply_status",
+        "class" : "int32",
+        "direction" : "in"
+    }, {
+        "name" : "iRetCode",
+        "class" : "int32",
+        "direction" : "out"
+    }]
+};
+
+var __LifeService_DataService$setApplyStatus$IE = function (wx_id, club_id, apply_status) {
+    var os = new TarsStream.TarsOutputStream();
+    os.writeString(1, wx_id);
+    os.writeString(2, club_id);
+    os.writeInt32(3, apply_status);
+    return os.getBinBuffer();
+};
+
+var __LifeService_DataService$setApplyStatus$ID = function (data) {
+    try {
+        var is = new TarsStream.TarsInputStream(data.response.sBuffer);
+        return {
+            "request" : data.request,
+            "response" : {
+                "costtime" : data.request.costtime,
+                "return" : is.readInt32(0, true, 0),
+                "arguments" : {
+                    "iRetCode" : is.readInt32(4, true, 0)
+                }
+            }
+        };
+    } catch (e) {
+        throw _makeError(data, e.message, TarsError.CLIENT.DECODE_ERROR);
+    }
+};
+
+var __LifeService_DataService$setApplyStatus$PE = function (wx_id, club_id, apply_status, __$PROTOCOL$VERSION) {
+    var tup = new TarsStream.UniAttribute();
+    tup.tupVersion = __$PROTOCOL$VERSION;
+    tup.writeString("wx_id", wx_id);
+    tup.writeString("club_id", club_id);
+    tup.writeInt32("apply_status", apply_status);
+    return tup;
+};
+
+var __LifeService_DataService$setApplyStatus$PD = function (data) {
+    try {
+        var tup = data.response.tup;
+        return {
+            "request" : data.request,
+            "response" : {
+                "costtime" : data.request.costtime,
+                "return" : tup.readInt32("", 0),
+                "arguments" : {
+                    "iRetCode" : tup.readInt32("iRetCode")
+                }
+            }
+        };
+    } catch (e) {
+        throw _makeError(data, e.message, TarsError.CLIENT.DECODE_ERROR);
+    }
+};
+
+var __LifeService_DataService$setApplyStatus$ER = function (data) {
+    throw _makeError(data, "Call DataService::setApplyStatus failed");
+};
+
+LifeService.DataServiceProxy.prototype.setApplyStatus = function (wx_id, club_id, apply_status) {
+    var version = this._worker.version;
+    if (version === TarsStream.Tup.TUP_SIMPLE || version === TarsStream.Tup.TUP_COMPLEX) {
+        return this._worker.tup_invoke("setApplyStatus", __LifeService_DataService$setApplyStatus$PE(wx_id, club_id, apply_status, version), arguments[arguments.length - 1], __LifeService_DataService$setApplyStatus$IF).then(__LifeService_DataService$setApplyStatus$PD, __LifeService_DataService$setApplyStatus$ER);
+    } else {
+        return this._worker.tars_invoke("setApplyStatus", __LifeService_DataService$setApplyStatus$IE(wx_id, club_id, apply_status), arguments[arguments.length - 1], __LifeService_DataService$setApplyStatus$IF).then(__LifeService_DataService$setApplyStatus$ID, __LifeService_DataService$setApplyStatus$ER);
+    }
+};
+LifeService.DataServiceProxy.setApplyStatus = __LifeService_DataService$setApplyStatus$IF;
 
 
 
