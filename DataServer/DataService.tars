@@ -26,6 +26,17 @@ module LifeService
         4 require string introduction;
     };
 
+    struct ApplyInfo
+    {
+        0 require  string apply_id;
+        1 require  string apply_time;
+        2 require  string wx_id;
+        3 require  string club_id;
+        4 optional string user_name;
+        5 optional string club_name;
+        6 optional string avatar_url;
+    };
+
     struct ActivityInfo
     {
         0  require  string activity_id;
@@ -61,10 +72,16 @@ module LifeService
         int getGroupByGroupId(int groupId, out string group);
 
         int createClub(ClubInfo clubInfo, out int iRetCode);
-        int getClubList(out vector<ClubInfo> clubInfoList);
-
+        int getClubName(string club_id, out string club_name);
+        int getClubList(int index, int batch, string wx_id, out int nextIndex, out vector<ClubInfo> clubInfoList);
+        
+        int getApplyListByClubId(string club_id, int index, int batch, int apply_status, out int nextIndex, out vector<ApplyInfo> applyList);
+        int getApplyListByUserId(string wx_id, int index, int batch, int apply_status, out int nextIndex, out vector<ApplyInfo> applyList);
+        int deleteApply(string wx_id, string club_id, out int iRetCode);
+        
         // int createActivity(ActivityInfo activityInfo, out int iRetCode);
-        int getActivityList(int index, out int nextIndex, out vector<map<string, string>> activityList);
+        int getActivityList(int index, int batch, string wx_id, string club_id, out int nextIndex, out vector<map<string, string>> activityList);
+        int deleteActivity(string activity_id, out int iRetCode);
         // int getActivityDetail(string activityId, out ActivityInfo activityInfo);
 
         int insertMessage(Message msg);

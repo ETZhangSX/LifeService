@@ -1,3 +1,4 @@
+#include <algorithm>
 #include "DataServiceImp.h"
 #include "servant/Application.h"
 #include "DbHandle.h"
@@ -104,23 +105,53 @@ int DataServiceImp::getGroupByGroupId(tars::Int32 groupId, string &group, tars::
 int DataServiceImp::createClub(const LifeService::ClubInfo &clubInfo, tars::Int32 &iRetCode, tars::TarsCurrentPtr current)
 {
     ClubHandle::getInstance()->InsertClubData(clubInfo);
+    iRetCode = 0;
     LOG->debug() << "Create Club Successfully" << endl;
     return 0;
 }
 
+int DataServiceImp::getClubName(const string &club_id, string &club_name, tars::TarsCurrentPtr current)
+{}
+
 //////////////////////////////////////////////////////
-int DataServiceImp::getClubList(vector<LifeService::ClubInfo> &clubInfoList, tars::TarsCurrentPtr current)
+int DataServiceImp::getClubList(tars::Int32 index, tars::Int32 batch, const string &wx_id, tars::Int32 &nextIndex, vector<LifeService::ClubInfo> &clubInfoList, tars::TarsCurrentPtr current)
 {
-    clubInfoList = ClubHandle::getInstance()->vClubInfo;
+    int ret = ClubHandle::getInstance()->GetClubList(index, batch, wx_id, nextIndex, clubInfoList);
+    return ret;
+}
+
+//////////////////////////////////////////////////////
+int DataServiceImp::getApplyListByClubId(const string &club_id, tars::Int32 index, tars::Int32 batch, tars::Int32 apply_status, tars::Int32 &nextIndex, vector<LifeService::ApplyInfo> applyList, tars::TarsCurrentPtr current)
+{
+    int ret = ClubHandle::getInstance()->GetApplyListByClubId(club_id, index, batch, apply_status, nextIndex, applyList);
+    return ret;
+}
+
+//////////////////////////////////////////////////////
+int DataServiceImp::getApplyListByUserId(const string &wx_id, tars::Int32 index, tars::Int32 batch, tars::Int32 apply_status, tars::Int32 &nextIndex, vector<LifeService::ApplyInfo> applyList, tars::TarsCurrentPtr current)
+{
+    int ret = ClubHandle::getInstance()->GetApplyListByUserId(wx_id, index, batch, apply_status, nextIndex, applyList);
+    return ret;
+}
+
+//////////////////////////////////////////////////////
+int DataServiceImp::deleteApply(const string &wx_id, const string &club_id, tars::Int32 &iRetCode, tars::TarsCurrentPtr current)
+{
+    iRetCode = ClubHandle::getInstance()->DeleteApply(wx_id, club_id);
     return 0;
 }
 
 //////////////////////////////////////////////////////
-int DataServiceImp::getActivityList(tars::Int32 index, tars::Int32 &nextIndex, vector<map<string, string>> &activityList, tars::TarsCurrentPtr current)
+int DataServiceImp::getActivityList(tars::Int32 index, tars::Int32 batch, const string &wx_id, const string &club_id, tars::Int32 &nextIndex, vector<map<string, string>> &activityList, tars::TarsCurrentPtr current)
 {
-    int batch = 8;
-    int Ret = ActivityHandle::getInstance()->GetActivityList(index, batch, nextIndex, activityList);
-    return Ret;
+    int ret = ActivityHandle::getInstance()->GetActivityList(index, batch, wx_id, club_id, nextIndex, activityList);
+    return ret;
+}
+
+int DataServiceImp::deleteActivity(const std::string &activity_id, tars::Int32 &iRetCode, tars::TarsCurrentPtr current)
+{
+    iRetCode = ActivityHandle::getInstance()->DeleteActivity(activity_id);
+    return 0;
 }
 
 //////////////////////////////////////////////////////
@@ -138,19 +169,19 @@ int DataServiceImp::getMsgList(tars::Int32 index, const string &date, const stri
     return Ret;
 }
 
+//////////////////////////////////////////////////////
 int DataServiceImp::addLike(const string &message_id, tars::TarsCurrentPtr current)
 {
     MsgWallHandle::getInstance()->AddLike(message_id);
     return 0;
 }
 
+//////////////////////////////////////////////////////
 int DataServiceImp::getLike(const string &message_id, tars::Int32 &like_count, tars::TarsCurrentPtr current)
 {
     int Ret = MsgWallHandle::getInstance()->GetLike(message_id, like_count);
     return Ret;
 }
-
-//////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////
 int DataServiceImp::insertData(const string &sTableName, const vector<LifeService::Column> &sColumns, tars::TarsCurrentPtr current)
