@@ -517,7 +517,10 @@ int MsgWallHandle::GetMsgList(const int &index, const int &batch, const string &
             msg.anonymous    = TC_Common::strto<bool>(oResults[i][vColumns[3]]);
             msg.message_time = oResults[i][vColumns[4]];
             msg.like_count   = TC_Common::strto<int>(oResults[i][vColumns[5]]);
-
+            // 判断是否匿名
+            if (!msg.anonymous)
+                msg.user_name = UserHandle::getInstance()->mUserInfo[msg.user_id].name;
+            
             msgList.push_back(msg);
         }
     }

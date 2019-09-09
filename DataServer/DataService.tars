@@ -60,6 +60,7 @@ module LifeService
         3 require  bool   anonymous;
         4 require  string message_time;
         5 optional int    like_count;
+        6 optional string user_name;
     };
     
     interface DataService
