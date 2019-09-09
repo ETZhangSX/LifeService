@@ -3,7 +3,7 @@ DataServer
 DataService.h
 UserInfoService.h
 *.tgz
-
+test_util
 # Prerequisites
 *.d
 
