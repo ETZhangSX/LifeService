@@ -144,6 +144,7 @@ int ClubHandle::LoadDataFromDb()
             clubInfo.introduction   = oResults[i][vColumns[4]];
 
             vClubInfo.push_back(clubInfo);
+            mClub.insert(make_pair(clubInfo.club_id, (int)vClubInfo.size() - 1));
         }
     }
     return 0;
@@ -154,6 +155,7 @@ int ClubHandle::InsertClubData(const LifeService::ClubInfo &clubInfo)
     {
         TC_ThreadLock::Lock lock(_pLocker);
         vClubInfo.push_back(clubInfo);
+        mClub.insert(make_pair(clubInfo.club_id, (int)vClubInfo.size() - 1));
     }
 
     map<string, pair<TC_Mysql::FT, string>> vColumns;
@@ -172,7 +174,187 @@ int ClubHandle::InsertClubData(const LifeService::ClubInfo &clubInfo)
 }
 
 //////////////////////////////////////////////////////
-int ActivityHandle::GetActivityList(const int &index, const int &batch, int &nextIndex, vector<map<string, string>> &activityList)
+int ClubHandle::GetClubList(const int &index, const int &batch, const string &wx_id, int &nextIndex, vector<LifeService::ClubInfo> &clubInfoList)
+{
+    if(wx_id == "") 
+    {
+        size_t lenofclub = vClubInfo.size();
+        if (index > lenofclub) 
+        {
+            nextIndex = -1;
+            return 0;
+        }
+        int endp = ((index + batch > lenofclub)? (index + batch - 1):(lenofclub - 1));
+        nextIndex = ((endp + 1 == lenofclub)? -1 : (endp + 1));
+        copy(vClubInfo.begin() + index, vClubInfo.begin() + endp, clubInfoList.begin());
+        // clubInfoList = ClubHandle::getInstance()->vClubInfo;
+        return 0;
+    }
+    string sTableLeft = "apply_for_club";
+    string sTableRight = "clubs";
+    vector<string> vColumns = {"club_id", "create_time", "name", "chairman", "introduction"};
+    string sOnFilter = sTableLeft + ".club_id=" + sTableRight + ".club_id where user_id='" + wx_id + "' and club_id>" + TC_Common::tostr<int>(index);
+    string sSql = buildJoinSQL(sTableLeft, sTableRight, LEFTJOIN, vColumns, sOnFilter, vColumns[0], DEFAULT, batch);
+
+    {
+        TC_Mysql::MysqlData oResults;
+        try 
+        {
+            oResults = MDbQueryRecord::getInstance()->GetMysqlObject()->queryRecord(sSql);
+        }
+        catch (exception &e)
+        {
+            LOG->error() << "GetClubList query error: " << e.what() << endl;
+            return -1;
+        }
+        size_t oResultsCount = oResults.size();
+
+        if (oResultsCount < batch)
+            nextIndex = -1;
+        else 
+            nextIndex = TC_Common::strto<int>(oResults[oResultsCount - 1][vColumns[0]]);
+        
+        for (size_t i = 0; i < oResultsCount; i++)
+        {
+            LifeService::ClubInfo clubInfo;
+            clubInfo.club_id      = oResults[i][vColumns[0]];
+            clubInfo.create_time  = oResults[i][vColumns[1]];
+            clubInfo.name         = oResults[i][vColumns[2]];
+            clubInfo.chairman     = oResults[i][vColumns[3]];
+            clubInfo.introduction = oResults[i][vColumns[4]];
+
+            clubInfoList.push_back(clubInfo);
+        }
+    }
+    return 0;
+}
+
+//////////////////////////////////////////////////////
+int ClubHandle::GetApplyListByClubId(const string &club_id, int index, int batch, int apply_status, int &nextIndex, vector<LifeService::ApplyInfo> applyList)
+{
+    string sTableLeft = "apply_for_club";
+    string sTableRight = "users";
+    vector<string> vColumns = {"apply_id", "apply_time", "user_id", "club_id", "name", "avatar_url"};
+    string sOnFilter = vColumns[2] + "=wx_id";
+    string sCondition = "`" + vColumns[0] + "`";
+    // 0代表第一次请求
+    if (index == 0)
+    {
+        sCondition += ">=0";
+    }
+    else
+    {
+        sCondition += "<" + TC_Common::tostr<int>(index);
+    }
+    // 筛选社团和状态
+    sCondition += " and `club_id`=" + club_id + " and `apply_status`=" + TC_Common::tostr<int>(apply_status);
+    string sSql;
+    sSql = buildJoinSQL(sTableLeft, sTableRight, LEFTJOIN, vColumns, sOnFilter + " where " + sCondition, vColumns[1], DESC, batch);
+
+    {
+        TC_Mysql::MysqlData oResults;
+        try
+        {
+            oResults = MDbQueryRecord::getInstance()->GetMysqlObject()->queryRecord(sSql);
+        }
+        catch (exception &e)
+        {
+            LOG->error() << "GetApplyListByClubId query error: " << e.what() << endl;
+            return -1;
+        }
+        size_t oResultsCount = oResults.size();
+
+        // 若查询的数据小于batch, 说明以及没有更早的数据, 返回-1
+        if (oResultsCount < batch)
+            nextIndex = -1;
+        else
+            nextIndex = TC_Common::strto<int>(oResults[oResultsCount - 1][vColumns[0]]);
+
+        for (size_t i = 0; i < oResultsCount; i++)
+        {
+            LifeService::ApplyInfo applyInfo;
+
+            applyInfo.apply_id   = oResults[i][vColumns[0]];
+            applyInfo.apply_time = oResults[i][vColumns[1]];
+            applyInfo.wx_id      = oResults[i][vColumns[2]];
+            applyInfo.club_id    = oResults[i][vColumns[3]];
+            applyInfo.user_name  = oResults[i][vColumns[4]];
+            applyInfo.avatar_url = oResults[i][vColumns[5]];
+
+            applyList.push_back(applyInfo);
+        }
+    }
+    return 0;
+}
+
+//////////////////////////////////////////////////////
+int ClubHandle::GetApplyListByUserId(const string &wx_id, int index, int batch, int apply_status, int &nextIndex, vector<LifeService::ApplyInfo> applyList)
+{
+    string sTableLeft = "apply_for_club";
+    string sTableRight = "clubs";
+    vector<string> vColumns = {"apply_id", "apply_time", "user_id", "club_id", "name"};
+    string sOnFilter = sTableLeft + "." + vColumns[3] + "=clubs.club_id";
+    string sCondition = "`" + vColumns[0] + "`";
+    // 0代表第一次请求
+    if (index == 0)
+    {
+        sCondition += ">=0";
+    }
+    else
+    {
+        sCondition += "<" + TC_Common::tostr<int>(index);
+    }
+    // 筛选用户和状态
+    sCondition += " and `user_id`=" + wx_id + " and `apply_status`=" + TC_Common::tostr<int>(apply_status);
+    string sSql;
+    sSql = buildJoinSQL(sTableLeft, sTableRight, LEFTJOIN, vColumns, sOnFilter + " where " + sCondition, vColumns[1], DESC, batch);
+
+    {
+        TC_Mysql::MysqlData oResults;
+        try
+        {
+            oResults = MDbQueryRecord::getInstance()->GetMysqlObject()->queryRecord(sSql);
+        }
+        catch (exception &e)
+        {
+            LOG->error() << "GetApplyListByUserId query error: " << e.what() << endl;
+            return -1;
+        }
+        size_t oResultsCount = oResults.size();
+
+        // 若查询的数据小于batch, 说明以及没有更早的数据, 返回-1
+        if (oResultsCount < batch)
+            nextIndex = -1;
+        else
+            nextIndex = TC_Common::strto<int>(oResults[oResultsCount - 1][vColumns[0]]);
+
+        for (size_t i = 0; i < oResultsCount; i++)
+        {
+            LifeService::ApplyInfo applyInfo;
+
+            applyInfo.apply_id   = oResults[i][vColumns[0]];
+            applyInfo.apply_time = oResults[i][vColumns[1]];
+            applyInfo.wx_id      = oResults[i][vColumns[2]];
+            applyInfo.club_id    = oResults[i][vColumns[3]];
+            applyInfo.club_name  = oResults[i][vColumns[4]];
+
+            applyList.push_back(applyInfo);
+        }
+    }
+    return 0;
+}
+
+//////////////////////////////////////////////////////
+int ClubHandle::DeleteApply(const string &wx_id, const string &club_id)
+{
+    string sSql = "delete from apply_for_club where `user_id`='" + wx_id + "' and `club_id`=1";
+    MDbExecuteRecord::getInstance()->AddExecuteSql(sSql);
+    LOG->debug() << "ClubHandle::DeleteApply AddExecuteSql: " << sSql << endl;
+    return 0;
+}
+
+//////////////////////////////////////////////////////
+int ActivityHandle::GetActivityList(const int &index, const int &batch, const string &wx_id, const string &club_id, int &nextIndex, vector<map<string, string>> &activityList)
 {
     string sTableName = "activities";
     vector<string> vColumns = {"activity_id", "name", "sponsor", "club_id", "target_id", "create_time", "start_time", "stop_time", "registry_start_time", "registry_stop_time", "content"};
@@ -186,9 +368,25 @@ int ActivityHandle::GetActivityList(const int &index, const int &batch, int &nex
     {
         sCondition += "<" + TC_Common::tostr<int>(index);
     }
+    // 筛选特定社团
+    if (club_id != "")
+    {
+        sCondition += " and `club_id`=" + club_id;
+    }
+
+    string sql;
+    if (wx_id != "")
+    {
+        string sTableLeft = "activity_records";
+        string sOnFilter = sTableLeft + ".activity_id=" + sTableName + ".activity_id where " + sCondition;
+        sql = buildJoinSQL(sTableLeft, sTableName, LEFTJOIN, vColumns, sOnFilter, vColumns[4], DESC, batch);
+    }
+    else
+    {
+        sql = buildSelectSQL(sTableName, vColumns, sCondition, vColumns[4], DESC, batch);
+    }
 
     // 根据创建时间排序, 从最新的留言开始查询
-    string sql = buildSelectSQL(sTableName, vColumns, sCondition, vColumns[4], DESC, batch);
     {
         TC_Mysql::MysqlData oResults;
         try
@@ -212,21 +410,37 @@ int ActivityHandle::GetActivityList(const int &index, const int &batch, int &nex
         {
             map<string, string> item;
             
-            item.insert(make_pair(vColumns[0], oResults[i][vColumns[0]]));
-            item.insert(make_pair(vColumns[1], oResults[i][vColumns[1]]));
-            item.insert(make_pair(vColumns[2], oResults[i][vColumns[2]]));
-            item.insert(make_pair(vColumns[3], oResults[i][vColumns[3]]));
-            item.insert(make_pair(vColumns[4], oResults[i][vColumns[4]]));
-            item.insert(make_pair(vColumns[5], oResults[i][vColumns[5]]));
-            item.insert(make_pair(vColumns[6], oResults[i][vColumns[6]]));
-            item.insert(make_pair(vColumns[7], oResults[i][vColumns[7]]));
-            item.insert(make_pair(vColumns[8], oResults[i][vColumns[8]]));
-            item.insert(make_pair(vColumns[9], oResults[i][vColumns[9]]));
+            item.insert(make_pair(vColumns[0] , oResults[i][vColumns[0]]));
+            item.insert(make_pair(vColumns[1] , oResults[i][vColumns[1]]));
+            item.insert(make_pair(vColumns[2] , oResults[i][vColumns[2]]));
+            item.insert(make_pair(vColumns[3] , oResults[i][vColumns[3]]));
+            item.insert(make_pair(vColumns[4] , oResults[i][vColumns[4]]));
+            item.insert(make_pair(vColumns[5] , oResults[i][vColumns[5]]));
+            item.insert(make_pair(vColumns[6] , oResults[i][vColumns[6]]));
+            item.insert(make_pair(vColumns[7] , oResults[i][vColumns[7]]));
+            item.insert(make_pair(vColumns[8] , oResults[i][vColumns[8]]));
+            item.insert(make_pair(vColumns[9] , oResults[i][vColumns[9]]));
             item.insert(make_pair(vColumns[10], oResults[i][vColumns[10]]));
+
+            // 获取社团名
+            int tempPos = ClubHandle::getInstance()->mClub[item["club_id"]];
+            string club_name = ClubHandle::getInstance()->vClubInfo[tempPos].name;
+            item.insert(make_pair("club_name", club_name));
 
             activityList.push_back(item);
         }
     }
+    return 0;
+}
+//////////////////////////////////////////////////////
+int ActivityHandle::DeleteActivity(const string &activity_id)
+{
+    string sql_delete_records = "delete from activity_records where `activity_id`=" + activity_id;
+    string sql_delete_activity = "delete from activities where `activity_id`=" + activity_id;
+    MDbExecuteRecord::getInstance()->AddExecuteSql(sql_delete_records);
+    MDbExecuteRecord::getInstance()->AddExecuteSql(sql_delete_activity);
+
+    LOG->debug() << "ActivityHandle::DeleteActivity AddExecuteSql: " << sql_delete_records << ", " << sql_delete_activity << endl;
     return 0;
 }
 
