@@ -132,6 +132,13 @@ int DataServiceImp::getApplyListByUserId(const string &wx_id, tars::Int32 index,
 }
 
 //////////////////////////////////////////////////////
+int DataServiceImp::setApplyStatus(const string &wx_id, const string &club_id, tars::Int32 apply_status, tars::Int32 &iRetCode, tars::TarsCurrentPtr current)
+{
+    iRetCode = ClubHandle::getInstance()->SetApplyStatus(wx_id, club_id, apply_status);
+    return 0;
+}
+
+//////////////////////////////////////////////////////
 int DataServiceImp::deleteApply(const string &wx_id, const string &club_id, tars::Int32 &iRetCode, tars::TarsCurrentPtr current)
 {
     iRetCode = ClubHandle::getInstance()->DeleteApply(wx_id, club_id);

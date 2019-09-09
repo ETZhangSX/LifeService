@@ -352,6 +352,16 @@ int ClubHandle::GetApplyListByUserId(const string &wx_id, int index, int batch, 
 }
 
 //////////////////////////////////////////////////////
+int ClubHandle::SetApplyStatus(const string &wx_id, const string &club_id, int apply_status)
+{
+    string sSql = "update apply_for_club set `apply_status`=" + TC_Common::tostr<int>(apply_status) 
+               +  " where `user_id`='" + wx_id + "' and `club_id`=`" + club_id + "'";
+    MDbExecuteRecord::getInstance()->AddExecuteSql(sSql);
+    LOG->debug() << "ClubHandle::SetApplyStatus Execute SQL: " << sSql << endl;
+    return 0;
+}
+
+//////////////////////////////////////////////////////
 int ClubHandle::DeleteApply(const string &wx_id, const string &club_id)
 {
     string sSql = "delete from apply_for_club where `user_id`='" + wx_id + "' and `club_id`=1";

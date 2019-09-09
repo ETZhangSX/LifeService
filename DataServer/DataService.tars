@@ -79,6 +79,7 @@ module LifeService
         
         int getApplyListByClubId(string club_id, int index, int batch, int apply_status, out int nextIndex, out vector<ApplyInfo> applyList);
         int getApplyListByUserId(string wx_id, int index, int batch, int apply_status, out int nextIndex, out vector<ApplyInfo> applyList);
+        int setApplyStatus(string wx_id, string club_id, int apply_status, out int iRetCode);
         int deleteApply(string wx_id, string club_id, out int iRetCode);
         
         // int createActivity(ActivityInfo activityInfo, out int iRetCode);
