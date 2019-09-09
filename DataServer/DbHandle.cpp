@@ -91,7 +91,7 @@ int UserHandle::InsertUserData(const string &wx_id, const LifeService::UserInfo 
 
     MDbQueryRecord::getInstance()->InsertData("users", vColumns);
 
-    LOG->debug() << "UserHandle::UpdateUserData : " 
+    LOG->debug() << "UserHandle::InsertUserData : " 
                  << wx_id << "\t"
                  << userInfo.name << "\t"
                  << userInfo.group << "\t";
@@ -145,6 +145,9 @@ int ClubHandle::LoadDataFromDb()
 
             vClubInfo.push_back(clubInfo);
             mClub.insert(make_pair(clubInfo.club_id, (int)vClubInfo.size() - 1));
+
+            LOG->debug() << "club id : " << clubInfo.club_id
+                         << "\tclub name:" << clubInfo.name << endl;
         }
     }
     return 0;
@@ -227,6 +230,7 @@ int ClubHandle::GetClubList(const int &index, const int &batch, const string &wx
             clubInfoList.push_back(clubInfo);
         }
     }
+    LOG->debug() << "ClubHandle::GetClubList Execute SQL: " << sSql << endl;
     return 0;
 }
 
@@ -285,6 +289,7 @@ int ClubHandle::GetApplyListByClubId(const string &club_id, int index, int batch
             applyList.push_back(applyInfo);
         }
     }
+    LOG->debug() << "ClubHandle::GetApplyListByClubId Execute SQL: " << sSql << endl;
     return 0;
 }
 
@@ -307,9 +312,8 @@ int ClubHandle::GetApplyListByUserId(const string &wx_id, int index, int batch, 
     }
     // 筛选用户和状态
     sCondition += " and `user_id`=" + wx_id + " and `apply_status`=" + TC_Common::tostr<int>(apply_status);
-    string sSql;
-    sSql = buildJoinSQL(sTableLeft, sTableRight, LEFTJOIN, vColumns, sOnFilter + " where " + sCondition, vColumns[1], DESC, batch);
-
+    string sSql = buildJoinSQL(sTableLeft, sTableRight, LEFTJOIN, vColumns, sOnFilter + " where " + sCondition, vColumns[1], DESC, batch);
+    
     {
         TC_Mysql::MysqlData oResults;
         try
@@ -342,6 +346,8 @@ int ClubHandle::GetApplyListByUserId(const string &wx_id, int index, int batch, 
             applyList.push_back(applyInfo);
         }
     }
+
+    LOG->debug() << "ClubHandle::GetApplyListByUserId Execute SQL: " << sSql << endl;
     return 0;
 }
 
@@ -358,17 +364,17 @@ int ClubHandle::DeleteApply(const string &wx_id, const string &club_id)
 int ActivityHandle::GetActivityList(const int &index, const int &batch, const string &wx_id, const string &club_id, int &nextIndex, vector<map<string, string>> &activityList)
 {
     string sTableName = "activities";
-    vector<string> vColumns = {"activity_id", "name", "sponsor", "club_id", "target_id", "create_time", "start_time", "stop_time", "registry_start_time", "registry_stop_time", "content"};
+    vector<string> vColumns = {
+        "activity_id", "name", "sponsor", "club_id", "target_id", "create_time", "start_time", "stop_time", "registry_start_time", "registry_stop_time", "content"
+    };
     string sCondition = "`" + vColumns[0] + "`";
+
     // 0代表第一次请求
     if (index == 0)
-    {
         sCondition += ">=0";
-    }
     else 
-    {
         sCondition += "<" + TC_Common::tostr<int>(index);
-    }
+    
     // 筛选特定社团
     if (club_id != "")
     {
@@ -376,18 +382,19 @@ int ActivityHandle::GetActivityList(const int &index, const int &batch, const st
     }
 
     string sql;
+    // 筛选特定用户参加的活动, 需要联表查询
     if (wx_id != "")
     {
         string sTableLeft = "activity_records";
-        string sOnFilter = sTableLeft + ".activity_id=" + sTableName + ".activity_id where " + sCondition;
-        sql = buildJoinSQL(sTableLeft, sTableName, LEFTJOIN, vColumns, sOnFilter, vColumns[4], DESC, batch);
+        string sOnFilter = sTableLeft + ".activity_id=" + sTableName + ".activity_id where " + sCondition + " and `user_id`=" + wx_id;
+        sql = buildJoinSQL(sTableLeft, sTableName, LEFTJOIN, vColumns, sOnFilter, vColumns[5], DESC, batch);
     }
     else
     {
-        sql = buildSelectSQL(sTableName, vColumns, sCondition, vColumns[4], DESC, batch);
+        sql = buildSelectSQL(sTableName, vColumns, sCondition, vColumns[5], DESC, batch);
     }
 
-    // 根据创建时间排序, 从最新的留言开始查询
+    // 根据创建时间排序
     {
         TC_Mysql::MysqlData oResults;
         try
@@ -431,6 +438,8 @@ int ActivityHandle::GetActivityList(const int &index, const int &batch, const st
             activityList.push_back(item);
         }
     }
+    LOG->debug() << "ActivityHandle::GetActivityList AddExecuteSql: " << sql << endl;
+
     return 0;
 }
 //////////////////////////////////////////////////////
@@ -456,11 +465,12 @@ int MsgWallHandle::InsertMessage(const LifeService::Message &msg)
 
     MDbQueryRecord::getInstance()->InsertData("message_wall", mColumns);
 
-    LOG->debug() << "Insert Message Wall Data" << msg.user_id << endl;
+    LOG->debug() << "Insert Message Wall Data " << msg.user_id << endl;
 
     return 0;
 }
 
+//////////////////////////////////////////////////////
 int MsgWallHandle::GetMsgList(const int &index, const int &batch, const string &date, const string wx_id, int &nextIndex, vector<LifeService::Message> &msgList)
 {
     string sTableName = "message_wall";
@@ -469,26 +479,20 @@ int MsgWallHandle::GetMsgList(const int &index, const int &batch, const string &
 
     // 0代表第一次请求
     if (index == 0)
-    {
         sCondition += ">=0";
-    }
     else 
-    {
         sCondition += "<" + TC_Common::tostr<int>(index);
-    }
-
+    
+    // 是否需要筛选用户
     if (wx_id != "")
-    {
         sCondition += " and `user_id`='" + wx_id + "'";
-    }
 
+    //是否需要筛选日期信息
     if (date != "") 
-    {
         sCondition += " and to_days(`" + vColumns[5] + "`)=to_days('" + date + "')";
-    }
 
     // 根据创建时间排序, 从最新的留言开始查询
-    string sql = buildSelectSQL(sTableName, vColumns, sCondition, vColumns[4], DESC, batch);
+    string sql = buildSelectSQL(sTableName, vColumns, sCondition, vColumns[5], DESC, batch);
     {
         TC_Mysql::MysqlData oResults;
         try
@@ -526,16 +530,20 @@ int MsgWallHandle::GetMsgList(const int &index, const int &batch, const string &
             msgList.push_back(msg);
         }
     }
+    LOG->debug() << "MsgWallHandle::GetMsgList AddExecuteSql: " << sql << endl;    
     return 0;
 }
 
+//////////////////////////////////////////////////////
 int MsgWallHandle::AddLike(const string &message_id)
 {
     string sSql = "update message_wall set `like_count`=(`like_count`+1) where `message_id`=" + message_id;
     MDbExecuteRecord::getInstance()->AddExecuteSql(sSql);
+    LOG->debug() << "MsgWallHandle::AddLike AddExecuteSql: " << sSql << endl;    
     return 0;
 }
 
+//////////////////////////////////////////////////////
 int MsgWallHandle::GetLike(const string &message_id, int &like_count)
 {
     string sSql = buildSelectSQL("message_wall", "like_count", "`message_id`=" + message_id);
@@ -556,5 +564,6 @@ int MsgWallHandle::GetLike(const string &message_id, int &like_count)
 
         like_count = TC_Common::strto<int>(oResult[0]["like_count"]);
     }
+    LOG->debug() << "MsgWallHandle::GetLike AddExecuteSql: " << sSql << endl;    
     return 0;
 }
