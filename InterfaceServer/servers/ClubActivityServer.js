@@ -144,7 +144,7 @@ ClubActivityServer.getActivityList = async (ctx) => {
 
         ctx.body = DataHandle.returnData(200, 'success', {
             'next_index': result.response.arguments.nextIndex,
-            'activity_list' : result.response.arguments.activityList,
+            'activity_list' : result.response.arguments.activityList.toObject(),
         })
     }
     catch(e) {

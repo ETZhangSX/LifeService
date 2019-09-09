@@ -49,7 +49,7 @@ MessageWallServer.getMessageList = async (ctx) => {
 
         ctx.body = DataHandle.returnData(200, 'success', {
             'next_index': result.response.arguments.NextIndex,
-            'message_list': result.response.arguments.MsgList,
+            'message_list': result.response.arguments.MsgList.toObject(),
         });
     }
     catch(e) {
