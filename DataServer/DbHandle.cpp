@@ -470,6 +470,7 @@ int MsgWallHandle::InsertMessage(const LifeService::Message &msg)
     map<string, pair<TC_Mysql::FT, string>> mColumns;
 
     mColumns.insert(make_pair(  "user_id", make_pair(TC_Mysql::DB_STR, msg.user_id)));
+    mColumns.insert(make_pair( "receiver", make_pair(TC_Mysql::DB_STR, msg.receiver)));
     mColumns.insert(make_pair(  "content", make_pair(TC_Mysql::DB_STR, msg.content)));
     mColumns.insert(make_pair("anonymous", make_pair(TC_Mysql::DB_INT, TC_Common::tostr<bool>(msg.anonymous))));
 
