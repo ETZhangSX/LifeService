@@ -7,3 +7,7 @@
 * [ ] 社团活动/getUserActivityList没有返回值
 * [ ] 社团活动/getUserActivityList的index值异常(可以去掉index，前端不需要)
 * [ ] 社团管理页面，需要新增一个我管理的社团的接口
+* [ ] 新建的社团club_id没有值
+* [ ] 新增一个/getActivityApplication
+* [ ] 新增一个/deleteClubMember 删除会员
+* [ ] 新增一个/deleteActivityParticipate 删除活动参与者
