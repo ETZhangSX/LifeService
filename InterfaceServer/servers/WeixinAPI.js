@@ -19,10 +19,11 @@ WeixinAPI.getOpenId = async (ctx) => {
 
     try {
         let result = await getPromise(url);
-        console.log(result);
+        console.log(result.body);
         ctx.body = result.body;
     }
     catch(e) {
+        console.error(e);
         ctx.body = DataHandle.returnError('400', e.message);
     }
 };
