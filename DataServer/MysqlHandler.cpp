@@ -57,13 +57,6 @@ void MDbQueryRecord::InsertData(const string &tableName,const vector<LifeService
     MDbExecuteRecord::getInstance()->AddExecuteSql(sql);
 }
 
-void MDbQueryRecord::InsertData(const string &tableName,const map<string, pair<TC_Mysql::FT, string>> &columns)
-{
-    string sql = GetMysqlObject()->buildInsertSQL(tableName, columns);
-    LOG->debug() << "Insert report info: " << sql << endl;
-    MDbExecuteRecord::getInstance()->AddExecuteSql(sql);
-}
-
 bool MDbExecuteRecord::Init()
 {
     _tcDbConfig._port = SConfig::getInstance()->usPort;

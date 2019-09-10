@@ -46,7 +46,7 @@ public:
     /**
      * @brief 新建社团信息
      */
-    int InsertClubData(const LifeService::ClubInfo &clubInfo);
+    int InsertClubData(LifeService::ClubInfo clubInfo);
     int GetClubList(const int &index, const int &batch, const std::string &wx_id, int &nextIndex, vector<LifeService::ClubInfo> &clubInfoList);
     int GetApplyListByClubId(const std::string &club_id, int index, int batch, int apply_status, int &nextIndex, vector<LifeService::ApplyInfo> &applyList);
     int GetApplyListByUserId(const std::string &wx_id, int index, int batch, int apply_status, int &nextIndex, vector<LifeService::ApplyInfo> &applyList);
