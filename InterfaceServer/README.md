@@ -1,15 +1,27 @@
 # InterfaceServer
+## 更新接口
+* [/getClubList](#interface-getclublist)
+* [/postMessage](#interface-postmessage)
+
+## 新增接口
+* [/getClubMembers](#interface-getclubmembers)
+* [/getClubApplications](#interface-getclubapplications)
+* [/getUserApplications](#interface-getuserapplications)
+* [/approveApplication](#interface-approveapplication)
+* [/deleteApplication](#interface-deleteapplication)
+* [/getUserActivityList](#interface-getuseractivitylist)
+* [/getClubActivityList](#interface-getclubactivitylist)
+* [/deleteActivity](#interface-deleteactivity)
 
 ## 接口列表
 
-
-**测试接口**
+**[测试接口](#chapter-test)**
 - [/test](#interface-test)
 
-**WeixinAPI**
+**[WeixinAPI](#chapter-weixinapi)**
 - [/getOpenId](#interface-getopenid)
 
-**用户服务接口**
+**[用户服务接口](#chapter-userinfo)**
 - [/signIn](#interface-signin)
 - [/getGroupList](#interface-getgrouplist)
 - [/isClubManager](#interface-isclubmanager)
@@ -17,17 +29,25 @@
 - [/isAppliedActivity](#interface-isappliedactivity)
 - [/signUp](#interface-signup)
 
-**社团活动服务接口**
+**[社团活动服务接口](#chapter-clubservice)**
 - [/createClubManager](#interface-createclubmanager)
 - [/createClub](#interface-createclub)
 - [/getClubList](#interface-getclublist)
 - [/applyForClub](#interface-applyforclub)
+- [/getClubMembers](#interface-getclubmembers)
+- [/getClubApplications](#interface-getclubapplications)
+- [/getUserApplications](#interface-getuserapplications)
+- [/approveApplication](#interface-approveapplication)
+- [/deleteApplication](#interface-deleteapplication)
+- [/getUserActivityList](#interface-getuseractivitylist)
+- [/getClubActivityList](#interface-getclubactivitylist)
+- [/deleteActivity](#interface-deleteactivity)
 - [/createActivity](#interface-createactivity)
 - [/getActivityList](#interface-getactivitylist)
 - [/getActivityDetail](#interface-getactivitydetail)
 - [/applyForActivity](#interface-applyforactivity)
 
-**表白墙服务接口**
+**[表白墙服务接口](#chapter-messageservice)**
 - [/postMessage](#interface-postmessage)
 - [/getMessageList](#interface-getmessagelist)
 - [/addLike](#interface-addlike)
@@ -35,9 +55,11 @@
 
 
 ## 接口详情
+##  <a id="chapter-test">测试</a>
 ### <a id="interface-test"></a>/test
 GET
 
+## <a id="chapter-weixinapi">微信API</a>
 ### <a id="interface-getopenid"></a>/getOpenId
 GET
 #### 参数
@@ -53,6 +75,7 @@ GET
 |errcode|number|错误码|
 |errmsg|string|错误信息|
 
+## <a id="chapter-userinfo">用户服务接口</a>
 ### <a id="interface-signin"></a>/signIn
 GET
 #### 参数
@@ -157,6 +180,7 @@ POST
 |status|number|状态码|
 |errmsg|string|错误信息|
 
+## <a id="chapter-clubservice">社团活动服务接口</a>
 ### <a id="interface-createclubmanager"></a>/createClubManager
 POST
 #### 参数
@@ -187,7 +211,10 @@ POST
 ### <a id="interface-getclublist"></a>/getClubList
 GET
 #### 参数
-无
+|**属性**|**类型**|**说明**|
+|-|-|-|
+|wx_id|string|用户openid, 为空表示不筛选社团|
+|index|string|索引|
 #### 返回值
 |**属性**|**类型**|**说明**|
 |-|-|-|
@@ -215,6 +242,141 @@ POST
 |-|-|-|
 |status|number|状态码|
 |errmsg|string|错误信息|
+
+### <a id="interface-getclubmembers"></a>/getClubMembers
+GET
+#### 参数
+|**属性**|**类型**|**说明**|
+|-|-|-|
+|club_id|string|社团id
+|index|number|索引, 为0时获取最新数据; 使用上一次调用返回的next_index获取下一页数据
+#### 返回值
+|**属性**|**类型**|**说明**|
+|-|-|-|
+|status|number|状态码|
+|errmsg|string|错误信息|
+|data|json
+#### Data
+|**属性**|**类型**|**说明**|
+|-|-|-|
+|next_index|number|下一页索引|
+|member_list|list|成员列表|
+
+### <a id="interface-getclubapplications"></a>/getClubApplications
+GET
+#### 参数
+|**属性**|**类型**|**说明**|
+|-|-|-|
+|club_id|string|社团id
+|index|number|索引
+#### 返回值
+|**属性**|**类型**|**说明**|
+|-|-|-|
+|status|number|状态码|
+|errmsg|string|错误信息|
+|data|json|
+#### Data
+|**属性**|**类型**|**说明**|
+|-|-|-|
+|next_index|number|下一页索引
+|application_list|list|申请列表
+
+### <a id="interface-getuserapplications"></a>/getUserApplications
+GET
+#### 参数
+|**属性**|**类型**|**说明**|
+|-|-|-|
+|wx_id|string|用户openid
+|index|number|索引
+|apply_status|number|申请状态
+#### 返回值
+|**属性**|**类型**|**说明**|
+|-|-|-|
+|status|number|状态码|
+|errmsg|string|错误信息|
+|data|
+#### Data
+|**属性**|**类型**|**说明**|
+|-|-|-|
+|next_index|number|下一页索引
+|application_list|list|申请列表
+
+### <a id="interface-approveapplication"></a>/approveApplication
+POST
+#### 参数
+|**属性**|**类型**|**说明**|
+|-|-|-|
+|wx_id|string|用户openid|
+|club_id|string|社团id|
+#### 返回值
+|**属性**|**类型**|**说明**|
+|-|-|-|
+|status|number|状态码|
+|errmsg|string|错误信息|
+
+### <a id="interface-deleteapplication"></a>/deleteApplication
+POST
+#### 参数
+|**属性**|**类型**|**说明**|
+|-|-|-|
+|wx_id|string|用户openid
+|club_id|string|社团id
+#### 返回值
+|**属性**|**类型**|**说明**|
+|-|-|-|
+|status|number|状态码|
+|errmsg|string|错误信息|
+
+### <a id="interface-getuseractivitylist"></a>/getUserActivityList
+GET
+#### 参数
+|**属性**|**类型**|**说明**|
+|-|-|-|
+|wx_id|string|用户openid
+|index|number|索引
+#### 返回值
+|**属性**|**类型**|**说明**|
+|-|-|-|
+|status|number|状态码|
+|errmsg|string|错误信息|
+|data|json|
+#### Data
+|**属性**|**类型**|**说明**|
+|-|-|-|
+|next_index|number|下一页索引
+|activity_list|list|活动列表
+
+### <a id="interface-getclubactivitylist"></a>/getClubActivityList
+GET
+#### 参数
+|**属性**|**类型**|**说明**|
+|-|-|-|
+|club_id|string|社团id
+|index|number|索引
+#### 返回值
+|**属性**|**类型**|**说明**|
+|-|-|-|
+|status|number|状态码|
+|errmsg|string|错误信息|
+|data|json|
+#### Data
+|**属性**|**类型**|**说明**|
+|-|-|-|
+|next_index|number|下一页索引
+|activity_list|list|活动列表
+
+### <a id="interface-deleteactivity"></a>/deleteActivity
+POST
+#### 参数
+|**属性**|**类型**|**说明**|
+|-|-|-|
+|activity_id|string|活动id
+#### 返回值
+|**属性**|**类型**|**说明**|
+|-|-|-|
+|status|number|状态码|
+|errmsg|string|错误信息|
+
 
 ### <a id="interface-createactivity"></a>/createActivity
 POST
@@ -293,12 +455,14 @@ POST
 |status|number|状态码|
 |errmsg|string|错误信息|
 
+## <a id="chapter-messageservice">表白墙服务接口</a>
 ### <a id="interface-postmessage"></a>/postMessage
 POST
 #### 参数
 |**属性**|**类型**|**说明**|
 |-|-|-|
 |user_id|string|用户openid|
+|receiver|string|接收方(仅字符串, 无通知功能)|
 |content|string|内容|
 anonymous|bool|是否匿名|
 #### 返回值
