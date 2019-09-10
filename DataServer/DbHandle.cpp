@@ -75,11 +75,6 @@ int UserHandle::LoadDataFromDb()
 
 int UserHandle::InsertUserData(const string &wx_id, const LifeService::UserInfo &userInfo)
 {
-    {
-        TC_ThreadLock::Lock lock(_pLocker);
-        mUserInfo.insert(make_pair(wx_id, userInfo));
-    }
-
     map<string, pair<TC_Mysql::FT, string>> vColumns;
     vColumns.insert(make_pair(            "wx_id", make_pair(TC_Mysql::DB_STR, wx_id)));
     vColumns.insert(make_pair(             "name", make_pair(TC_Mysql::DB_STR, userInfo.name)));
@@ -88,8 +83,20 @@ int UserHandle::InsertUserData(const string &wx_id, const LifeService::UserInfo 
     vColumns.insert(make_pair(         "group_id", make_pair(TC_Mysql::DB_INT, TC_Common::tostr<tars::Int32>(userInfo.group))));
     vColumns.insert(make_pair(       "avatar_url", make_pair(TC_Mysql::DB_STR, userInfo.avatar_url)));
     vColumns.insert(make_pair("registration_time", make_pair(TC_Mysql::DB_STR, userInfo.registration_time)));
-
-    MDbQueryRecord::getInstance()->InsertData("users", vColumns);
+    
+    try 
+    {
+        MDbQueryRecord::getInstance()->GetMysqlObject()->insertRecord("users", vColumns);
+    }
+    catch(exception &e)
+    {
+        LOG->error() << "UserHandle::InsertUserData error: " << e.what() << endl;
+        return -1;
+    }
+    {
+        TC_ThreadLock::Lock lock(_pLocker);
+        mUserInfo.insert(make_pair(wx_id, userInfo));
+    }
 
     LOG->debug() << "UserHandle::InsertUserData : " 
                  << wx_id << "\t"
@@ -146,30 +153,44 @@ int ClubHandle::LoadDataFromDb()
             vClubInfo.push_back(clubInfo);
             mClub.insert(make_pair(clubInfo.club_id, (int)vClubInfo.size() - 1));
 
-            LOG->debug() << "club id : " << clubInfo.club_id
-                         << "\tclub name:" << clubInfo.name << endl;
+            LOG->debug() << "club id: " << clubInfo.club_id
+                         << "\tclub name: " << clubInfo.name << endl;
         }
+        LOG->debug() << "vector size: " << vClubInfo.size() << endl;
     }
     return 0;
 }
 
-int ClubHandle::InsertClubData(const LifeService::ClubInfo &clubInfo)
+int ClubHandle::InsertClubData(LifeService::ClubInfo clubInfo)
 {
+    
+
+    map<string, pair<TC_Mysql::FT, string>> mColumns;
+
+    // vColumns.insert(make_pair(     "club_id", make_pair(TC_Mysql::DB_INT, clubInfo.club_id)));
+    mColumns.insert(make_pair(        "name", make_pair(TC_Mysql::DB_STR, clubInfo.name)));
+    mColumns.insert(make_pair( "create_time", make_pair(TC_Mysql::DB_STR, clubInfo.create_time)));
+    mColumns.insert(make_pair(    "chairman", make_pair(TC_Mysql::DB_STR, clubInfo.chairman)));
+    mColumns.insert(make_pair("introduction", make_pair(TC_Mysql::DB_STR, clubInfo.introduction)));
     {
-        TC_ThreadLock::Lock lock(_pLocker);
-        vClubInfo.push_back(clubInfo);
-        mClub.insert(make_pair(clubInfo.club_id, (int)vClubInfo.size() - 1));
+        long last_insert_id;
+        try
+        {
+            MDbQueryRecord::getInstance()->GetMysqlObject()->insertRecord("clubs", mColumns);
+            last_insert_id = MDbQueryRecord::getInstance()->GetMysqlObject()->lastInsertID();
+        }
+        catch (exception &e)
+        {
+            LOG->error() << "ClubHandle::InsertClubData error: " << e.what() << endl;
+        }
+        clubInfo.club_id = TC_Common::tostr<long>(last_insert_id);
+        {
+            TC_ThreadLock::Lock lock(_pLocker);
+            vClubInfo.push_back(clubInfo);
+            mClub.insert(make_pair(clubInfo.club_id, (int)vClubInfo.size() - 1));
+        }
     }
-
-    map<string, pair<TC_Mysql::FT, string>> vColumns;
-
-    vColumns.insert(make_pair(     "club_id", make_pair(TC_Mysql::DB_INT, clubInfo.club_id)));
-    vColumns.insert(make_pair(        "name", make_pair(TC_Mysql::DB_STR, clubInfo.name)));
-    vColumns.insert(make_pair( "create_time", make_pair(TC_Mysql::DB_STR, clubInfo.create_time)));
-    vColumns.insert(make_pair(    "chairman", make_pair(TC_Mysql::DB_STR, clubInfo.chairman)));
-    vColumns.insert(make_pair("introduction", make_pair(TC_Mysql::DB_STR, clubInfo.introduction)));
-
-    MDbQueryRecord::getInstance()->InsertData("clubs", vColumns);
+    
 
     LOG->debug() << "Insert Club Data: " << clubInfo.name << endl;
 
@@ -188,17 +209,25 @@ int ClubHandle::GetClubList(const int &index, const int &batch, const string &wx
             nextIndex = -1;
             return 0;
         }
+        // 结束位置
         int endp = ((index + batch > lenofclub)? (lenofclub - 1):(index + batch - 1));
+        // 是否还有数据
         nextIndex = ((endp + 1 == lenofclub)? -1 : (endp + 1));
-        copy(vClubInfo.begin() + index, vClubInfo.begin() + endp, clubInfoList.begin());
-        // clubInfoList = ClubHandle::getInstance()->vClubInfo;
+        // 赋值
+        clubInfoList.assign(vClubInfo.begin() + index, vClubInfo.begin() + endp + 1);
+
+        LOG->debug() << "ClubHandle::GetClubList List size: " << clubInfoList.size() 
+                     << " index: " << index
+                     << " endp: " << endp << endl;
         return 0;
     }
+
     string sTableLeft = "apply_for_club";
     string sTableRight = "clubs";
-    vector<string> vColumns = {"club_id", "create_time", "name", "chairman", "introduction"};
-    string sOnFilter = sTableLeft + ".club_id=" + sTableRight + ".club_id where user_id='" + wx_id + "' and club_id>" + TC_Common::tostr<int>(index);
-    string sSql = buildJoinSQL(sTableLeft, sTableRight, LEFTJOIN, vColumns, sOnFilter, vColumns[0], DEFAULT, batch);
+    // 两张表有相同字段club_id
+    vector<string> vColumns = {"apply_for_club.club_id", "create_time", "name", "chairman", "introduction"};
+    string sOnFilter = sTableLeft + ".club_id=" + sTableRight + ".club_id where user_id='" + wx_id + "' and apply_for_club.club_id>" + TC_Common::tostr<int>(index);
+    string sSql = buildJoinSQL(sTableLeft, sTableRight, LEFTJOIN, vColumns, sOnFilter, "club_id", DEFAULT, batch);
 
     {
         TC_Mysql::MysqlData oResults;
@@ -216,12 +245,12 @@ int ClubHandle::GetClubList(const int &index, const int &batch, const string &wx
         if (oResultsCount < (size_t)batch)
             nextIndex = -1;
         else 
-            nextIndex = TC_Common::strto<int>(oResults[oResultsCount - 1][vColumns[0]]);
+            nextIndex = TC_Common::strto<int>(oResults[oResultsCount - 1]["club_id"]);
         
         for (size_t i = 0; i < oResultsCount; i++)
         {
             LifeService::ClubInfo clubInfo;
-            clubInfo.club_id      = oResults[i][vColumns[0]];
+            clubInfo.club_id      = oResults[i]["club_id"];
             clubInfo.create_time  = oResults[i][vColumns[1]];
             clubInfo.name         = oResults[i][vColumns[2]];
             clubInfo.chairman     = oResults[i][vColumns[3]];
@@ -474,7 +503,8 @@ int MsgWallHandle::InsertMessage(const LifeService::Message &msg)
     mColumns.insert(make_pair(  "content", make_pair(TC_Mysql::DB_STR, msg.content)));
     mColumns.insert(make_pair("anonymous", make_pair(TC_Mysql::DB_INT, TC_Common::tostr<bool>(msg.anonymous))));
 
-    MDbQueryRecord::getInstance()->InsertData("message_wall", mColumns);
+    string sSql = MDbQueryRecord::getInstance()->GetMysqlObject()->buildInsertSQL("message_wall", mColumns);
+    MDbExecuteRecord::getInstance()->AddExecuteSql(sSql);
 
     LOG->debug() << "Insert Message Wall Data " << msg.user_id << endl;
 
