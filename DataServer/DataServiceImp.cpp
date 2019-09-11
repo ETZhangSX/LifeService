@@ -22,17 +22,14 @@ void DataServiceImp::destroy()
 }
 
 //////////////////////////////////////////////////////
-int DataServiceImp::hasUser(const string &wx_id, bool &sRsp, tars::TarsCurrentPtr current)
+int DataServiceImp::hasUser(const string &wx_id, bool &userExist, tars::TarsCurrentPtr current)
 {
-    sRsp = UserHandle::getInstance()->hasUser(wx_id);
-    if (sRsp)
-    {
-        LOG->debug() << "hasUser: User exist" << endl;
-    }
+    userExist = UserHandle::getInstance()->hasUser(wx_id);
+    if (userExist)
+        LOG->debug() << "DataServiceImp::hasUser: User " << wx_id << " exist" << endl;
     else
-    {
-        LOG->debug() << "hasUser: User not exist" << endl;
-    }
+        LOG->debug() << "DataServiceImp::hasUser: User " << wx_id << " not exist" << endl;
+    
     return 0;
 }
 
@@ -229,7 +226,7 @@ int DataServiceImp::insertMessage(const LifeService::Message &msg, tars::TarsCur
 //////////////////////////////////////////////////////
 int DataServiceImp::getMsgList(tars::Int32 index, const string &date, const string &wx_id, tars::Int32 &nextIndex, vector<LifeService::Message> &msgList, tars::TarsCurrentPtr current)
 {
-    int batch = 8;
+    int batch = 6;
     int Ret = MsgWallHandle::getInstance()->GetMsgList(index, batch, date, wx_id, nextIndex, msgList);
     return Ret;
 }
@@ -249,17 +246,17 @@ int DataServiceImp::getLike(const string &message_id, tars::Int32 &like_count, t
 }
 
 //////////////////////////////////////////////////////
-int DataServiceImp::insertData(const string &sTableName, const vector<LifeService::Column> &sColumns, tars::TarsCurrentPtr current)
+int DataServiceImp::insertData(const string &sTableName, const vector<LifeService::Column> &vColumns, tars::TarsCurrentPtr current)
 {
-    MDbQueryRecord::getInstance()->InsertData(sTableName, sColumns);
+    MDbQueryRecord::getInstance()->InsertData(sTableName, vColumns);
     LOG->debug() << "DataServiceImp::insertData Execute Table: " << sTableName << endl;
     return 0;
 }
 
 //////////////////////////////////////////////////////
-int DataServiceImp::queryData(const string &sTableName, const vector<string> &sColumns, const string &sCondition, vector<map<string, string>> &sRsp, tars::TarsCurrentPtr current)
+int DataServiceImp::queryData(const string &sTableName, const vector<string> &vColumns, const string &sCondition, vector<map<string, string>> &vmpResults, tars::TarsCurrentPtr current)
 {
-    string sql = buildSelectSQL(sTableName, sColumns, sCondition);
+    string sql = buildSelectSQL(sTableName, vColumns, sCondition);
     
     TC_Mysql::MysqlData mysql_data;
 
@@ -273,7 +270,7 @@ int DataServiceImp::queryData(const string &sTableName, const vector<string> &sC
         return -1;
     }
     LOG->debug() << "DataServiceImp::queryData: Query Table: " << sTableName << endl;
-    sRsp = mysql_data.data();
+    vmpResults = mysql_data.data();
     return 0;
 }
 

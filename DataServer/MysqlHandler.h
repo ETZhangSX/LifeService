@@ -20,21 +20,22 @@ using namespace tars;
 class MDbQueryRecord: public TC_Singleton<MDbQueryRecord>
 {
 public:
+    /** 
+     * @brief 获取所在线程的TC_Mysql对象
+     * @return TC_Mysql对象
+     */
     tars::TC_Mysql * GetMysqlObject();
 
     /**
      * @brief 插入数据
-     * 
      * @param tableName string 表名
      * @param columns   vector 列
      */
     void InsertData(const std::string &tableName,const vector<LifeService::Column> &columns);
-    // TC_Mysql::MysqlData QueryData(const std::string &tableName, const vector<std::string> &columns, const std::string &conditions);
 private:
-    tars::TC_DBConf                     _tcDbConfig;
-    tars::TC_SharedPtr<tars::TC_Mysql>  _pMysql;
-
-    map<unsigned int, tars::TC_Mysql *> MysqlMap;
+    
+    tars::TC_DBConf _tcDbConfig;                        // 数据库配置接口
+    map<unsigned int, tars::TC_Mysql *> MysqlMap;       // 线程id对应的TC_Mysql对象
 };
 
 class MDbExecuteRecord: public tars::TC_Thread, public tars::TC_Singleton<MDbExecuteRecord>
@@ -48,10 +49,10 @@ protected:
     virtual void run();
 
 private:
-    tars::TC_DBConf                     _tcDbConfig;
-    queue<string>                       _qeWaitExeSql;
-    tars::TC_SharedPtr<tars::TC_Mysql>  _pMysql;
-    tars::TC_ThreadLock                 _pLocker;
+    tars::TC_DBConf                     _tcDbConfig;    // 数据库配置接口
+    queue<string>                       _qeWaitExeSql;  // 待执行SQL语句队列
+    tars::TC_SharedPtr<tars::TC_Mysql>  _pMysql;        // TC_Mysql对象
+    tars::TC_ThreadLock                 _pLocker;       // 线程锁
 };
 
 #endif

@@ -16,12 +16,12 @@ tars::TC_Mysql * MDbQueryRecord::GetMysqlObject()
     {
         tars::TC_Mysql * ptrMysql = new tars::TC_Mysql();
 
-        _tcDbConfig._port = SConfig::getInstance()->usPort;
-        _tcDbConfig._host = SConfig::getInstance()->strDbHost;
-        _tcDbConfig._user = SConfig::getInstance()->strUserName;
+        _tcDbConfig._port     = SConfig::getInstance()->usPort;
+        _tcDbConfig._host     = SConfig::getInstance()->strDbHost;
+        _tcDbConfig._user     = SConfig::getInstance()->strUserName;
         _tcDbConfig._password = SConfig::getInstance()->strPassWord;
         _tcDbConfig._database = SConfig::getInstance()->strDbName;
-        _tcDbConfig._charset = "utf8";
+        _tcDbConfig._charset  = "utf8";
 
         try
         {
@@ -32,7 +32,7 @@ tars::TC_Mysql * MDbQueryRecord::GetMysqlObject()
         {
             TarsRemoteNotify::getInstance()->report("CONNECT_MDB_ERROR");
             LOG->error() << "MDbTbUpdateThread::GetMysqlObject exception: " << e.what() << endl;
-            delete ptrMysql;
+            delete ptrMysql;    
             return NULL;
         }
         MysqlMap[uiThreadId] = ptrMysql;
@@ -57,11 +57,12 @@ void MDbQueryRecord::InsertData(const string &tableName,const vector<LifeService
     MDbExecuteRecord::getInstance()->AddExecuteSql(sql);
 }
 
+// 初始化
 bool MDbExecuteRecord::Init()
 {
-    _tcDbConfig._port = SConfig::getInstance()->usPort;
-    _tcDbConfig._host = SConfig::getInstance()->strDbHost;
-    _tcDbConfig._user = SConfig::getInstance()->strUserName;
+    _tcDbConfig._port     = SConfig::getInstance()->usPort;
+    _tcDbConfig._host     = SConfig::getInstance()->strDbHost;
+    _tcDbConfig._user     = SConfig::getInstance()->strUserName;
     _tcDbConfig._password = SConfig::getInstance()->strPassWord;
     _tcDbConfig._database = SConfig::getInstance()->strDbName;
     _tcDbConfig._charset = "utf8";
@@ -80,13 +81,14 @@ bool MDbExecuteRecord::Init()
     return true;
 }
 
-
+// 添加SQL语句到队列中
 void MDbExecuteRecord::AddExecuteSql(const string& strSql)
 {
     TC_ThreadLock::Lock lock(_pLocker);
     _qeWaitExeSql.push(strSql);
 }
 
+// 执行队列中的SQL语句
 void MDbExecuteRecord::Execute()
 {
     string strSql;
@@ -111,6 +113,7 @@ void MDbExecuteRecord::Execute()
     }
 }
 
+// 每0.1s执行一次
 void MDbExecuteRecord::run()
 {
     while(true)

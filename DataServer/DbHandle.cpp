@@ -73,6 +73,7 @@ int UserHandle::LoadDataFromDb()
     return 0;
 }
 
+//////////////////////////////////////////////////////
 int UserHandle::InsertUserData(const string &wx_id, const LifeService::UserInfo &userInfo)
 {
     map<string, pair<TC_Mysql::FT, string>> vColumns;
@@ -106,6 +107,7 @@ int UserHandle::InsertUserData(const string &wx_id, const LifeService::UserInfo 
     return 0;
 }
 
+//////////////////////////////////////////////////////
 bool UserHandle::hasUser(const string &wx_id)
 {
     if (mUserInfo.count(wx_id) == 0)
@@ -161,14 +163,14 @@ int ClubHandle::LoadDataFromDb()
     return 0;
 }
 
+//////////////////////////////////////////////////////
 int ClubHandle::InsertClubData(LifeService::ClubInfo clubInfo)
 {
     map<string, pair<TC_Mysql::FT, string>> mColumns;
 
-    // vColumns.insert(make_pair(     "club_id", make_pair(TC_Mysql::DB_INT, clubInfo.club_id)));
-    mColumns.insert(make_pair(        "name", make_pair(TC_Mysql::DB_STR, clubInfo.name)));
-    mColumns.insert(make_pair( "create_time", make_pair(TC_Mysql::DB_STR, clubInfo.create_time)));
-    mColumns.insert(make_pair(    "chairman", make_pair(TC_Mysql::DB_STR, clubInfo.chairman)));
+    mColumns.insert(make_pair("name"        , make_pair(TC_Mysql::DB_STR, clubInfo.name)));
+    mColumns.insert(make_pair("create_time" , make_pair(TC_Mysql::DB_STR, clubInfo.create_time)));
+    mColumns.insert(make_pair("chairman"    , make_pair(TC_Mysql::DB_STR, clubInfo.chairman)));
     mColumns.insert(make_pair("introduction", make_pair(TC_Mysql::DB_STR, clubInfo.introduction)));
     {
         long last_insert_id;
@@ -220,13 +222,14 @@ int ClubHandle::GetClubList(int index, int batch, const string &wx_id, int &next
         return 0;
     }
 
-    string sTableLeft = "apply_for_club";
+    string sTableLeft  = "apply_for_club";
     string sTableRight = "clubs";
     // 两张表有相同字段club_id
     vector<string> vColumns = {"apply_for_club.club_id", "create_time", "name", "chairman", "introduction"};
     string sOnFilter = sTableLeft + ".club_id=" + sTableRight + ".club_id where user_id='" + wx_id + "' and apply_for_club.club_id>" + TC_Common::tostr<int>(index);
+    // 构建join语句
     string sSql = buildJoinSQL(sTableLeft, sTableRight, LEFTJOIN, vColumns, sOnFilter, "club_id", DEFAULT, batch);
-
+    
     {
         TC_Mysql::MysqlData oResults;
         try 
@@ -270,8 +273,9 @@ int ClubHandle::GetManagerClubList(int index, int batch, const string &wx_id, in
     vector<string> vColumns = {"clubs.club_id", "create_time", "name", "chairman", "introduction"};
     string sOnFilter = "clubs.club_id=club_managers.club_id";
     string sCondition = " where `wx_id`='" + wx_id + "'";
-
+    // 构建join语句
     string sSql = buildJoinSQL(sTableLeft, sTableRight, LEFTJOIN, vColumns, sOnFilter + sCondition, vColumns[1], DESC, batch);
+    
     {
         TC_Mysql::MysqlData oResults;
         try 
@@ -283,6 +287,7 @@ int ClubHandle::GetManagerClubList(int index, int batch, const string &wx_id, in
             LOG->error() << "GetClubList query error: " << e.what() << endl;
             return -1;
         }
+
         size_t oResultsCount = oResults.size();
 
         if (oResultsCount >= (size_t)batch)
@@ -300,6 +305,7 @@ int ClubHandle::GetManagerClubList(int index, int batch, const string &wx_id, in
             clubInfoList.push_back(clubInfo);
         }
     }
+
     LOG->debug() << "ClubHandle::GetManagerClubList Execute SQL: " << sSql << endl;
     return 0;
 }
@@ -326,6 +332,7 @@ int ClubHandle::GetApplyListByClubId(const string &club_id, int index, int batch
     // 筛选社团和状态
     sCondition += " and `club_id`=" + club_id + " and `apply_status`=" + TC_Common::tostr<int>(apply_status);
     string sSql;
+    // 构建join语句
     sSql = buildJoinSQL(sTableLeft, sTableRight, LEFTJOIN, vColumns, sOnFilter + " where " + sCondition, vColumns[1], DESC, batch);
 
     {
@@ -384,6 +391,7 @@ int ClubHandle::GetApplyListByUserId(const string &wx_id, int index, int batch, 
     }
     // 筛选用户和状态
     sCondition += " and `user_id`=" + wx_id + " and `apply_status`=" + TC_Common::tostr<int>(apply_status);
+    // 构建join语句
     string sSql = buildJoinSQL(sTableLeft, sTableRight, LEFTJOIN, vColumns, sOnFilter + " where " + sCondition, vColumns[1], DESC, batch);
     
     {
@@ -426,6 +434,8 @@ int ClubHandle::SetApplyStatus(const string &wx_id, const string &club_id, int a
 {
     string sSql = "update apply_for_club set `apply_status`=" + TC_Common::tostr<int>(apply_status) 
                +  " where `user_id`='" + wx_id + "' and `club_id`=" + club_id;
+    
+    // 将sql语句添加到MDbExecuteRecord类的执行队列中
     MDbExecuteRecord::getInstance()->AddExecuteSql(sSql);
     LOG->debug() << "ClubHandle::SetApplyStatus Execute SQL: " << sSql << endl;
     return 0;
@@ -435,6 +445,8 @@ int ClubHandle::SetApplyStatus(const string &wx_id, const string &club_id, int a
 int ClubHandle::DeleteApply(const string &wx_id, const string &club_id)
 {
     string sSql = "delete from apply_for_club where `user_id`='" + wx_id + "' and `club_id`=1";
+    
+    // 将sql语句添加到MDbExecuteRecord类的执行队列中
     MDbExecuteRecord::getInstance()->AddExecuteSql(sSql);
     LOG->debug() << "ClubHandle::DeleteApply AddExecuteSql: " << sSql << endl;
     return 0;
@@ -463,17 +475,17 @@ int ActivityHandle::GetActivityList(const int &index, const int &batch, const st
         sCondition += " and `club_id`=" + club_id;
     }
 
-    string sql;
+    string sSql;
     // 筛选特定用户参加的活动, 需要联表查询
     if (wx_id != "")
     {
         string sTableLeft = "activity_records";
         string sOnFilter = sTableLeft + ".activity_id=" + sTableName + ".activity_id where " + sCondition + " and `user_id`=" + wx_id;
-        sql = buildJoinSQL(sTableLeft, sTableName, LEFTJOIN, vColumns, sOnFilter, vColumns[5], DESC, batch);
+        sSql = buildJoinSQL(sTableLeft, sTableName, LEFTJOIN, vColumns, sOnFilter, vColumns[5], DESC, batch);
     }
     else
     {
-        sql = buildSelectSQL(sTableName, vColumns, sCondition, vColumns[5], DESC, batch);
+        sSql = buildSelectSQL(sTableName, vColumns, sCondition, vColumns[5], DESC, batch);
     }
 
     // 根据创建时间排序
@@ -481,7 +493,7 @@ int ActivityHandle::GetActivityList(const int &index, const int &batch, const st
         TC_Mysql::MysqlData oResults;
         try
         {
-            oResults = MDbQueryRecord::getInstance()->GetMysqlObject()->queryRecord(sql);
+            oResults = MDbQueryRecord::getInstance()->GetMysqlObject()->queryRecord(sSql);
         }
         catch (exception &e)
         {
@@ -511,14 +523,14 @@ int ActivityHandle::GetActivityList(const int &index, const int &batch, const st
             item.insert(make_pair(vColumns[10], oResults[i][vColumns[10]]));
 
             // 获取社团名
-            int tempPos = ClubHandle::getInstance()->mClub[item["club_id"]];
-            string club_name = ClubHandle::getInstance()->vClubInfo[tempPos].name;
+            int    club_pos  = ClubHandle::getInstance()->mClub[item["club_id"]];
+            string club_name = ClubHandle::getInstance()->vClubInfo[club_pos].name;
+            
             item.insert(make_pair("club_name", club_name));
-
             activityList.push_back(item);
         }
     }
-    LOG->debug() << "ActivityHandle::GetActivityList AddExecuteSql: " << sql << endl;
+    LOG->debug() << "ActivityHandle::GetActivityList AddExecuteSql: " << sSql << endl;
 
     return 0;
 }
@@ -527,12 +539,12 @@ int ActivityHandle::GetActivityList(const int &index, const int &batch, const st
 int ActivityHandle::UpdateActivity(const LifeService::ActivityInfo &activityInfo)
 {
     TC_Mysql::RECORD_DATA updateItem;
-    updateItem.insert(make_pair("name", make_pair(TC_Mysql::DB_STR, activityInfo.name)));
-    updateItem.insert(make_pair("start_time", make_pair(TC_Mysql::DB_STR, activityInfo.start_time)));
-    updateItem.insert(make_pair("stop_time", make_pair(TC_Mysql::DB_STR, activityInfo.stop_time)));
+    updateItem.insert(make_pair("name"               , make_pair(TC_Mysql::DB_STR, activityInfo.name)));
+    updateItem.insert(make_pair("start_time"         , make_pair(TC_Mysql::DB_STR, activityInfo.start_time)));
+    updateItem.insert(make_pair("stop_time"          , make_pair(TC_Mysql::DB_STR, activityInfo.stop_time)));
     updateItem.insert(make_pair("registry_start_time", make_pair(TC_Mysql::DB_STR, activityInfo.registry_start_time)));
-    updateItem.insert(make_pair("registry_stop_time", make_pair(TC_Mysql::DB_STR, activityInfo.registry_stop_time)));
-    updateItem.insert(make_pair("content", make_pair(TC_Mysql::DB_STR, activityInfo.content)));
+    updateItem.insert(make_pair("registry_stop_time" , make_pair(TC_Mysql::DB_STR, activityInfo.registry_stop_time)));
+    updateItem.insert(make_pair("content"            , make_pair(TC_Mysql::DB_STR, activityInfo.content)));
     
     try
     {
@@ -551,7 +563,9 @@ int ActivityHandle::DeleteActivity(const string &activity_id)
 {
     string sql_delete_records = "delete from activity_records where `activity_id`=" + activity_id;
     string sql_delete_activity = "delete from activities where `activity_id`=" + activity_id;
+    // 删除该活动的所有报名记录
     MDbExecuteRecord::getInstance()->AddExecuteSql(sql_delete_records);
+    // 删除该活动
     MDbExecuteRecord::getInstance()->AddExecuteSql(sql_delete_activity);
 
     LOG->debug() << "ActivityHandle::DeleteActivity AddExecuteSql: " << sql_delete_records << ", " << sql_delete_activity << endl;
@@ -563,12 +577,13 @@ int MsgWallHandle::InsertMessage(const LifeService::Message &msg)
 {
     map<string, pair<TC_Mysql::FT, string>> mColumns;
 
-    mColumns.insert(make_pair(  "user_id", make_pair(TC_Mysql::DB_STR, msg.user_id)));
-    mColumns.insert(make_pair( "receiver", make_pair(TC_Mysql::DB_STR, msg.receiver)));
-    mColumns.insert(make_pair(  "content", make_pair(TC_Mysql::DB_STR, msg.content)));
+    mColumns.insert(make_pair("user_id"  , make_pair(TC_Mysql::DB_STR, msg.user_id)));
+    mColumns.insert(make_pair("receiver" , make_pair(TC_Mysql::DB_STR, msg.receiver)));
+    mColumns.insert(make_pair("content"  , make_pair(TC_Mysql::DB_STR, msg.content)));
     mColumns.insert(make_pair("anonymous", make_pair(TC_Mysql::DB_INT, TC_Common::tostr<bool>(msg.anonymous))));
 
     string sSql = MDbQueryRecord::getInstance()->GetMysqlObject()->buildInsertSQL("message_wall", mColumns);
+    // 将sql语句添加到MDbExecuteRecord类的执行队列中
     MDbExecuteRecord::getInstance()->AddExecuteSql(sSql);
 
     LOG->debug() << "Insert Message Wall Data " << msg.user_id << endl;
@@ -644,6 +659,8 @@ int MsgWallHandle::GetMsgList(const int &index, const int &batch, const string &
 int MsgWallHandle::AddLike(const string &message_id)
 {
     string sSql = "update message_wall set `like_count`=(`like_count`+1) where `message_id`=" + message_id;
+
+    // 将sql语句添加到MDbExecuteRecord类的执行队列中
     MDbExecuteRecord::getInstance()->AddExecuteSql(sSql);
     LOG->debug() << "MsgWallHandle::AddLike AddExecuteSql: " << sSql << endl;    
     return 0;
