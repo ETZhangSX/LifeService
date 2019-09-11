@@ -458,10 +458,11 @@ int ActivityHandle::GetActivityList(const int &index, const int &batch, const st
     nextIndex = -1;
 
     string sTableName = "activities";
+    string ambiguousColumn = "activity_id";
     vector<string> vColumns = {
-        "activity_id", "name", "sponsor", "club_id", "target_id", "create_time", "start_time", "stop_time", "registry_start_time", "registry_stop_time", "content"
+        "activities.activity_id", "name", "sponsor", "club_id", "target_id", "create_time", "start_time", "stop_time", "registry_start_time", "registry_stop_time", "content"
     };
-    string sCondition = "`" + vColumns[0] + "`";
+    string sCondition = vColumns[0];
 
     // 0代表第一次请求
     if (index == 0)
@@ -504,13 +505,13 @@ int ActivityHandle::GetActivityList(const int &index, const int &batch, const st
 
         // 若查询的数据小于batch, 说明以及没有更早的数据, 返回-1
         if (oResultsCount >= (size_t)batch)
-            nextIndex = TC_Common::strto<int>(oResults[oResultsCount - 1][vColumns[0]]);
+            nextIndex = TC_Common::strto<int>(oResults[oResultsCount - 1][ambiguousColumn]);
 
         for (size_t i = 0; i < oResultsCount; i++)
         {
             map<string, string> item;
             
-            item.insert(make_pair(vColumns[0] , oResults[i][vColumns[0]]));
+            item.insert(make_pair(ambiguousColumn , oResults[i][ambiguousColumn]));
             item.insert(make_pair(vColumns[1] , oResults[i][vColumns[1]]));
             item.insert(make_pair(vColumns[2] , oResults[i][vColumns[2]]));
             item.insert(make_pair(vColumns[3] , oResults[i][vColumns[3]]));
@@ -651,7 +652,7 @@ int MsgWallHandle::GetMsgList(const int &index, const int &batch, const string &
             msgList.push_back(msg);
         }
     }
-    LOG->debug() << "MsgWallHandle::GetMsgList AddExecuteSql: " << sql << endl;    
+    LOG->debug() << "MsgWallHandle::GetMsgList Execute SQL: " << sql << endl;    
     return 0;
 }
 
