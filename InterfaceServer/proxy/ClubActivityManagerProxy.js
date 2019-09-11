@@ -541,6 +541,89 @@ LifeService.ClubActivityManagerProxy.prototype.DeleteActivity = function (activi
 };
 LifeService.ClubActivityManagerProxy.DeleteActivity = __LifeService_ClubActivityManager$DeleteActivity$IF;
 
+var __LifeService_ClubActivityManager$DeleteActivityParticipate$IF = {
+    "name" : "DeleteActivityParticipate",
+    "return" : "int32",
+    "arguments" : [{
+        "name" : "activityId",
+        "class" : "string",
+        "direction" : "in"
+    }, {
+        "name" : "wxId",
+        "class" : "string",
+        "direction" : "in"
+    }, {
+        "name" : "RetCode",
+        "class" : "int32",
+        "direction" : "out"
+    }]
+};
+
+var __LifeService_ClubActivityManager$DeleteActivityParticipate$IE = function (activityId, wxId) {
+    var os = new TarsStream.TarsOutputStream();
+    os.writeString(1, activityId);
+    os.writeString(2, wxId);
+    return os.getBinBuffer();
+};
+
+var __LifeService_ClubActivityManager$DeleteActivityParticipate$ID = function (data) {
+    try {
+        var is = new TarsStream.TarsInputStream(data.response.sBuffer);
+        return {
+            "request" : data.request,
+            "response" : {
+                "costtime" : data.request.costtime,
+                "return" : is.readInt32(0, true, 0),
+                "arguments" : {
+                    "RetCode" : is.readInt32(3, true, 0)
+                }
+            }
+        };
+    } catch (e) {
+        throw _makeError(data, e.message, TarsError.CLIENT.DECODE_ERROR);
+    }
+};
+
+var __LifeService_ClubActivityManager$DeleteActivityParticipate$PE = function (activityId, wxId, __$PROTOCOL$VERSION) {
+    var tup = new TarsStream.UniAttribute();
+    tup.tupVersion = __$PROTOCOL$VERSION;
+    tup.writeString("activityId", activityId);
+    tup.writeString("wxId", wxId);
+    return tup;
+};
+
+var __LifeService_ClubActivityManager$DeleteActivityParticipate$PD = function (data) {
+    try {
+        var tup = data.response.tup;
+        return {
+            "request" : data.request,
+            "response" : {
+                "costtime" : data.request.costtime,
+                "return" : tup.readInt32("", 0),
+                "arguments" : {
+                    "RetCode" : tup.readInt32("RetCode")
+                }
+            }
+        };
+    } catch (e) {
+        throw _makeError(data, e.message, TarsError.CLIENT.DECODE_ERROR);
+    }
+};
+
+var __LifeService_ClubActivityManager$DeleteActivityParticipate$ER = function (data) {
+    throw _makeError(data, "Call ClubActivityManager::DeleteActivityParticipate failed");
+};
+
+LifeService.ClubActivityManagerProxy.prototype.DeleteActivityParticipate = function (activityId, wxId) {
+    var version = this._worker.version;
+    if (version === TarsStream.Tup.TUP_SIMPLE || version === TarsStream.Tup.TUP_COMPLEX) {
+        return this._worker.tup_invoke("DeleteActivityParticipate", __LifeService_ClubActivityManager$DeleteActivityParticipate$PE(activityId, wxId, version), arguments[arguments.length - 1], __LifeService_ClubActivityManager$DeleteActivityParticipate$IF).then(__LifeService_ClubActivityManager$DeleteActivityParticipate$PD, __LifeService_ClubActivityManager$DeleteActivityParticipate$ER);
+    } else {
+        return this._worker.tars_invoke("DeleteActivityParticipate", __LifeService_ClubActivityManager$DeleteActivityParticipate$IE(activityId, wxId), arguments[arguments.length - 1], __LifeService_ClubActivityManager$DeleteActivityParticipate$IF).then(__LifeService_ClubActivityManager$DeleteActivityParticipate$ID, __LifeService_ClubActivityManager$DeleteActivityParticipate$ER);
+    }
+};
+LifeService.ClubActivityManagerProxy.DeleteActivityParticipate = __LifeService_ClubActivityManager$DeleteActivityParticipate$IF;
+
 var __LifeService_ClubActivityManager$DeleteApply$IF = {
     "name" : "DeleteApply",
     "return" : "int32",
@@ -796,6 +879,83 @@ LifeService.ClubActivityManagerProxy.prototype.GetActivityList = function (index
 };
 LifeService.ClubActivityManagerProxy.GetActivityList = __LifeService_ClubActivityManager$GetActivityList$IF;
 
+var __LifeService_ClubActivityManager$GetActivityParticipate$IF = {
+    "name" : "GetActivityParticipate",
+    "return" : "int32",
+    "arguments" : [{
+        "name" : "activityId",
+        "class" : "string",
+        "direction" : "in"
+    }, {
+        "name" : "participateList",
+        "class" : "list(LifeService.ActivityRecord)",
+        "direction" : "out"
+    }]
+};
+
+var __LifeService_ClubActivityManager$GetActivityParticipate$IE = function (activityId) {
+    var os = new TarsStream.TarsOutputStream();
+    os.writeString(1, activityId);
+    return os.getBinBuffer();
+};
+
+var __LifeService_ClubActivityManager$GetActivityParticipate$ID = function (data) {
+    try {
+        var is = new TarsStream.TarsInputStream(data.response.sBuffer);
+        return {
+            "request" : data.request,
+            "response" : {
+                "costtime" : data.request.costtime,
+                "return" : is.readInt32(0, true, 0),
+                "arguments" : {
+                    "participateList" : is.readList(2, true, TarsStream.List(_TARS_MODULE_A_.LifeService.ActivityRecord))
+                }
+            }
+        };
+    } catch (e) {
+        throw _makeError(data, e.message, TarsError.CLIENT.DECODE_ERROR);
+    }
+};
+
+var __LifeService_ClubActivityManager$GetActivityParticipate$PE = function (activityId, __$PROTOCOL$VERSION) {
+    var tup = new TarsStream.UniAttribute();
+    tup.tupVersion = __$PROTOCOL$VERSION;
+    tup.writeString("activityId", activityId);
+    return tup;
+};
+
+var __LifeService_ClubActivityManager$GetActivityParticipate$PD = function (data) {
+    try {
+        var tup = data.response.tup;
+        return {
+            "request" : data.request,
+            "response" : {
+                "costtime" : data.request.costtime,
+                "return" : tup.readInt32("", 0),
+                "arguments" : {
+                    "participateList" : tup.readList("participateList", TarsStream.List(_TARS_MODULE_A_.LifeService.ActivityRecord))
+                }
+            }
+        };
+    } catch (e) {
+        throw _makeError(data, e.message, TarsError.CLIENT.DECODE_ERROR);
+    }
+};
+
+var __LifeService_ClubActivityManager$GetActivityParticipate$ER = function (data) {
+    throw _makeError(data, "Call ClubActivityManager::GetActivityParticipate failed");
+};
+
+LifeService.ClubActivityManagerProxy.prototype.GetActivityParticipate = function (activityId) {
+    var version = this._worker.version;
+    if (version === TarsStream.Tup.TUP_SIMPLE || version === TarsStream.Tup.TUP_COMPLEX) {
+        return this._worker.tup_invoke("GetActivityParticipate", __LifeService_ClubActivityManager$GetActivityParticipate$PE(activityId, version), arguments[arguments.length - 1], __LifeService_ClubActivityManager$GetActivityParticipate$IF).then(__LifeService_ClubActivityManager$GetActivityParticipate$PD, __LifeService_ClubActivityManager$GetActivityParticipate$ER);
+    } else {
+        return this._worker.tars_invoke("GetActivityParticipate", __LifeService_ClubActivityManager$GetActivityParticipate$IE(activityId), arguments[arguments.length - 1], __LifeService_ClubActivityManager$GetActivityParticipate$IF).then(__LifeService_ClubActivityManager$GetActivityParticipate$ID, __LifeService_ClubActivityManager$GetActivityParticipate$ER);
+    }
+};
+LifeService.ClubActivityManagerProxy.GetActivityParticipate = __LifeService_ClubActivityManager$GetActivityParticipate$IF;
+
 var __LifeService_ClubActivityManager$GetClubApply$IF = {
     "name" : "GetClubApply",
     "return" : "int32",
@@ -986,6 +1146,101 @@ LifeService.ClubActivityManagerProxy.prototype.GetClubList = function (index, wx
 };
 LifeService.ClubActivityManagerProxy.GetClubList = __LifeService_ClubActivityManager$GetClubList$IF;
 
+var __LifeService_ClubActivityManager$GetManagerClubList$IF = {
+    "name" : "GetManagerClubList",
+    "return" : "int32",
+    "arguments" : [{
+        "name" : "index",
+        "class" : "int32",
+        "direction" : "in"
+    }, {
+        "name" : "wxId",
+        "class" : "string",
+        "direction" : "in"
+    }, {
+        "name" : "nextIndex",
+        "class" : "int32",
+        "direction" : "out"
+    }, {
+        "name" : "clubInfoList",
+        "class" : "list(LifeService.ClubInfo)",
+        "direction" : "out"
+    }, {
+        "name" : "RetCode",
+        "class" : "int32",
+        "direction" : "out"
+    }]
+};
+
+var __LifeService_ClubActivityManager$GetManagerClubList$IE = function (index, wxId) {
+    var os = new TarsStream.TarsOutputStream();
+    os.writeInt32(1, index);
+    os.writeString(2, wxId);
+    return os.getBinBuffer();
+};
+
+var __LifeService_ClubActivityManager$GetManagerClubList$ID = function (data) {
+    try {
+        var is = new TarsStream.TarsInputStream(data.response.sBuffer);
+        return {
+            "request" : data.request,
+            "response" : {
+                "costtime" : data.request.costtime,
+                "return" : is.readInt32(0, true, 0),
+                "arguments" : {
+                    "nextIndex" : is.readInt32(3, true, 0),
+                    "clubInfoList" : is.readList(4, true, TarsStream.List(_TARS_MODULE_A_.LifeService.ClubInfo)),
+                    "RetCode" : is.readInt32(5, true, 0)
+                }
+            }
+        };
+    } catch (e) {
+        throw _makeError(data, e.message, TarsError.CLIENT.DECODE_ERROR);
+    }
+};
+
+var __LifeService_ClubActivityManager$GetManagerClubList$PE = function (index, wxId, __$PROTOCOL$VERSION) {
+    var tup = new TarsStream.UniAttribute();
+    tup.tupVersion = __$PROTOCOL$VERSION;
+    tup.writeInt32("index", index);
+    tup.writeString("wxId", wxId);
+    return tup;
+};
+
+var __LifeService_ClubActivityManager$GetManagerClubList$PD = function (data) {
+    try {
+        var tup = data.response.tup;
+        return {
+            "request" : data.request,
+            "response" : {
+                "costtime" : data.request.costtime,
+                "return" : tup.readInt32("", 0),
+                "arguments" : {
+                    "nextIndex" : tup.readInt32("nextIndex"),
+                    "clubInfoList" : tup.readList("clubInfoList", TarsStream.List(_TARS_MODULE_A_.LifeService.ClubInfo)),
+                    "RetCode" : tup.readInt32("RetCode")
+                }
+            }
+        };
+    } catch (e) {
+        throw _makeError(data, e.message, TarsError.CLIENT.DECODE_ERROR);
+    }
+};
+
+var __LifeService_ClubActivityManager$GetManagerClubList$ER = function (data) {
+    throw _makeError(data, "Call ClubActivityManager::GetManagerClubList failed");
+};
+
+LifeService.ClubActivityManagerProxy.prototype.GetManagerClubList = function (index, wxId) {
+    var version = this._worker.version;
+    if (version === TarsStream.Tup.TUP_SIMPLE || version === TarsStream.Tup.TUP_COMPLEX) {
+        return this._worker.tup_invoke("GetManagerClubList", __LifeService_ClubActivityManager$GetManagerClubList$PE(index, wxId, version), arguments[arguments.length - 1], __LifeService_ClubActivityManager$GetManagerClubList$IF).then(__LifeService_ClubActivityManager$GetManagerClubList$PD, __LifeService_ClubActivityManager$GetManagerClubList$ER);
+    } else {
+        return this._worker.tars_invoke("GetManagerClubList", __LifeService_ClubActivityManager$GetManagerClubList$IE(index, wxId), arguments[arguments.length - 1], __LifeService_ClubActivityManager$GetManagerClubList$IF).then(__LifeService_ClubActivityManager$GetManagerClubList$ID, __LifeService_ClubActivityManager$GetManagerClubList$ER);
+    }
+};
+LifeService.ClubActivityManagerProxy.GetManagerClubList = __LifeService_ClubActivityManager$GetManagerClubList$IF;
+
 var __LifeService_ClubActivityManager$GetUserApply$IF = {
     "name" : "GetUserApply",
     "return" : "int32",
@@ -1169,6 +1424,83 @@ LifeService.ClubActivityManagerProxy.prototype.ModifyApplyStatus = function (wxI
     }
 };
 LifeService.ClubActivityManagerProxy.ModifyApplyStatus = __LifeService_ClubActivityManager$ModifyApplyStatus$IF;
+
+var __LifeService_ClubActivityManager$UpdateActivity$IF = {
+    "name" : "UpdateActivity",
+    "return" : "int32",
+    "arguments" : [{
+        "name" : "activityInfo",
+        "class" : "LifeService.ActivityInfo",
+        "direction" : "in"
+    }, {
+        "name" : "RetCode",
+        "class" : "int32",
+        "direction" : "out"
+    }]
+};
+
+var __LifeService_ClubActivityManager$UpdateActivity$IE = function (activityInfo) {
+    var os = new TarsStream.TarsOutputStream();
+    os.writeStruct(1, activityInfo);
+    return os.getBinBuffer();
+};
+
+var __LifeService_ClubActivityManager$UpdateActivity$ID = function (data) {
+    try {
+        var is = new TarsStream.TarsInputStream(data.response.sBuffer);
+        return {
+            "request" : data.request,
+            "response" : {
+                "costtime" : data.request.costtime,
+                "return" : is.readInt32(0, true, 0),
+                "arguments" : {
+                    "RetCode" : is.readInt32(2, true, 0)
+                }
+            }
+        };
+    } catch (e) {
+        throw _makeError(data, e.message, TarsError.CLIENT.DECODE_ERROR);
+    }
+};
+
+var __LifeService_ClubActivityManager$UpdateActivity$PE = function (activityInfo, __$PROTOCOL$VERSION) {
+    var tup = new TarsStream.UniAttribute();
+    tup.tupVersion = __$PROTOCOL$VERSION;
+    tup.writeStruct("activityInfo", activityInfo);
+    return tup;
+};
+
+var __LifeService_ClubActivityManager$UpdateActivity$PD = function (data) {
+    try {
+        var tup = data.response.tup;
+        return {
+            "request" : data.request,
+            "response" : {
+                "costtime" : data.request.costtime,
+                "return" : tup.readInt32("", 0),
+                "arguments" : {
+                    "RetCode" : tup.readInt32("RetCode")
+                }
+            }
+        };
+    } catch (e) {
+        throw _makeError(data, e.message, TarsError.CLIENT.DECODE_ERROR);
+    }
+};
+
+var __LifeService_ClubActivityManager$UpdateActivity$ER = function (data) {
+    throw _makeError(data, "Call ClubActivityManager::UpdateActivity failed");
+};
+
+LifeService.ClubActivityManagerProxy.prototype.UpdateActivity = function (activityInfo) {
+    var version = this._worker.version;
+    if (version === TarsStream.Tup.TUP_SIMPLE || version === TarsStream.Tup.TUP_COMPLEX) {
+        return this._worker.tup_invoke("UpdateActivity", __LifeService_ClubActivityManager$UpdateActivity$PE(activityInfo, version), arguments[arguments.length - 1], __LifeService_ClubActivityManager$UpdateActivity$IF).then(__LifeService_ClubActivityManager$UpdateActivity$PD, __LifeService_ClubActivityManager$UpdateActivity$ER);
+    } else {
+        return this._worker.tars_invoke("UpdateActivity", __LifeService_ClubActivityManager$UpdateActivity$IE(activityInfo), arguments[arguments.length - 1], __LifeService_ClubActivityManager$UpdateActivity$IF).then(__LifeService_ClubActivityManager$UpdateActivity$ID, __LifeService_ClubActivityManager$UpdateActivity$ER);
+    }
+};
+LifeService.ClubActivityManagerProxy.UpdateActivity = __LifeService_ClubActivityManager$UpdateActivity$IF;
 
 
 

@@ -49,7 +49,14 @@ module LifeService
         7  optional string stop_time;
         8  optional string registry_start_time;
         9  optional string registry_stop_time;
-        10 optional string content; 
+        10 optional string content;
+    };
+
+    struct ActivityRecord
+    {
+        0 require string wx_id;
+        1 require string user_name;
+        2 require string record_time;
     };
 
     struct Message
@@ -76,6 +83,7 @@ module LifeService
         int createClub(ClubInfo clubInfo, out int iRetCode);
         // int getClubName(string club_id, out string club_name);
         int getClubList(int index, int batch, string wx_id, out int nextIndex, out vector<ClubInfo> clubInfoList);
+        int getManagerClubList(int index, int batch, string wx_id, out int nextIndex, out vector<ClubInfo> clubInfoList);
         
         int getApplyListByClubId(string club_id, int index, int batch, int apply_status, out int nextIndex, out vector<ApplyInfo> applyList);
         int getApplyListByUserId(string wx_id, int index, int batch, int apply_status, out int nextIndex, out vector<ApplyInfo> applyList);
@@ -84,8 +92,12 @@ module LifeService
         
         // int createActivity(ActivityInfo activityInfo, out int iRetCode);
         int getActivityList(int index, int batch, string wx_id, string club_id, out int nextIndex, out vector<map<string, string>> activityList);
+        int updateActivity(ActivityInfo activityIndo, out int iRetCode);
         int deleteActivity(string activity_id, out int iRetCode);
         // int getActivityDetail(string activityId, out ActivityInfo activityInfo);
+
+        int getActivityRecords(string activity_id, out vector<ActivityRecord> recordList);
+        int deleteActivityRecord(string activity_id, string wx_id, out int iRetCode);
 
         int insertMessage(Message msg);
         int getMsgList(int index, string date, string wx_id, out int nextIndex, out vector<Message> msgList);

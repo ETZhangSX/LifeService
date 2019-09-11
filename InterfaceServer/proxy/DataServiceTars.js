@@ -376,6 +376,61 @@ LifeService.ActivityInfo.create = function (is) {
     return LifeService.ActivityInfo._readFrom(is);
 };
 
+LifeService.ActivityRecord = function() {
+    this.wx_id = "";
+    this.user_name = "";
+    this.record_time = "";
+    this._classname = "LifeService.ActivityRecord";
+};
+LifeService.ActivityRecord._classname = "LifeService.ActivityRecord";
+LifeService.ActivityRecord._write = function (os, tag, value) { os.writeStruct(tag, value); };
+LifeService.ActivityRecord._read  = function (is, tag, def) { return is.readStruct(tag, true, def); };
+LifeService.ActivityRecord._readFrom = function (is) {
+    var tmp = new LifeService.ActivityRecord;
+    tmp.wx_id = is.readString(0, true, "");
+    tmp.user_name = is.readString(1, true, "");
+    tmp.record_time = is.readString(2, true, "");
+    return tmp;
+};
+LifeService.ActivityRecord.prototype._writeTo = function (os) {
+    os.writeString(0, this.wx_id);
+    os.writeString(1, this.user_name);
+    os.writeString(2, this.record_time);
+};
+LifeService.ActivityRecord.prototype._equal = function () {
+    assert.fail("this structure not define key operation");
+};
+LifeService.ActivityRecord.prototype._genKey = function () {
+    if (!this._proto_struct_name_) {
+        this._proto_struct_name_ = "STRUCT" + Math.random();
+    }
+    return this._proto_struct_name_;
+};
+LifeService.ActivityRecord.prototype.toObject = function() { 
+    return {
+        "wx_id" : this.wx_id,
+        "user_name" : this.user_name,
+        "record_time" : this.record_time
+    };
+};
+LifeService.ActivityRecord.prototype.readFromObject = function(json) { 
+    _hasOwnProperty.call(json, "wx_id") && (this.wx_id = json.wx_id);
+    _hasOwnProperty.call(json, "user_name") && (this.user_name = json.user_name);
+    _hasOwnProperty.call(json, "record_time") && (this.record_time = json.record_time);
+    return this;
+};
+LifeService.ActivityRecord.prototype.toBinBuffer = function () {
+    var os = new TarsStream.TarsOutputStream();
+    this._writeTo(os);
+    return os.getBinBuffer();
+};
+LifeService.ActivityRecord.new = function () {
+    return new LifeService.ActivityRecord();
+};
+LifeService.ActivityRecord.create = function (is) {
+    return LifeService.ActivityRecord._readFrom(is);
+};
+
 LifeService.Message = function() {
     this.message_id = "";
     this.user_id = "";

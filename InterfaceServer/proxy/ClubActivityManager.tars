@@ -5,6 +5,8 @@ module LifeService{
         int CreateClubManager(string wxId, string clubId, out int RetCode);
         int CreateClub(ClubInfo clubInfo, out int RetCode);
         int GetClubList(int index, string wxId, out int nextIndex, out vector<ClubInfo> clubInfoList, out int RetCode);
+        int GetManagerClubList(int index, string wxId, out int nextIndex, out vector<ClubInfo> clubInfoList, out int RetCode);
+        
         int ApplyForClub(string wxId, string clubId, out int RetCode);
         int GetClubApply(string clubId, int index, int applyStatus, out int nextIndex, out vector<ApplyInfo> applyList);
         int GetUserApply(string wxId, int index, int applyStatus, out int nextIndex, out vector<ApplyInfo> applyList);
@@ -13,8 +15,12 @@ module LifeService{
 
         int CreateActivity(string wxId, ActivityInfo activityInfo, out int RetCode);
         int GetActivityList(int index, string wxId, string clubId, out int nextIndex, out vector<map<string, string>> activityList);
+        int UpdateActivity(ActivityInfo activityInfo, out int RetCode);
         int DeleteActivity(string activityId, out int RetCode);
         int GetActivityDetail(string activityId, out ActivityInfo activityInfo);
+        
+        int GetActivityParticipate(string activityId, out vector<ActivityRecord> participateList);
         int ApplyForActivity(string wxId, string activityId, out int RetCode);
+        int DeleteActivityParticipate(string activityId, string wxId, out int RetCode);
     };
 };
