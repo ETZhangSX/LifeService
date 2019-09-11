@@ -78,6 +78,27 @@ ClubActivityServer.getClubList = async (ctx) => {
     }
 };
 
+// 获取管理员社团列表
+ClubActivityServer.getManagerClubList = async (ctx) => {
+    let {
+        wx_id,
+        index,
+    } = ctx.query;
+    try {
+        const prx = Tars.stringToProxy(ClubActivityManagerPrx, clubActivityObjName);
+        let result = await prx.GetManagerClubList(index, wx_id);
+
+        ctx.body = DataHandle.returnData(result.response.arguments.RetCode, DataHandle.Success, {
+            'next_index': result.response.arguments.nextIndex,
+            'club_list' : result.response.arguments.clubInfoList.toObject(),
+        });
+    }
+    catch(e) {
+        console.log(e);
+        ctx.body = DataHandle.returnError(400, e.message);
+    }
+};
+
 // 申请社团
 ClubActivityServer.applyForClub = async (ctx) => {
     const {

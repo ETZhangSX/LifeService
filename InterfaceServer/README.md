@@ -2,6 +2,7 @@
 ## 更新
 ### 2019.9.11
 **新增接口**
+* [/getManagerClubList](#interface-getmanagerclublist)
 * [/updateActivityInfo](#interface-updateactivityinfo)
 * [/getActivityParticipate](#interface-getactivityparticipate)
 * [/deleteActivityParticipate](#interface-deleteactivityparticipate)
@@ -220,6 +221,28 @@ POST
 |errmsg|string|错误信息|
 
 ### <a id="interface-getclublist"></a>/getClubList
+GET
+#### 参数
+|**属性**|**类型**|**说明**|
+|-|-|-|
+|wx_id|string|用户openid, 为空表示不筛选社团|
+|index|string|索引|
+#### 返回值
+|**属性**|**类型**|**说明**|
+|-|-|-|
+|status|number|状态码|
+|errmsg|string|错误信息|
+|data|list|社团列表
+#### Data
+|**属性**|**类型**|**说明**|
+|-|-|-|
+|club_id|string|社团id
+|name|string|社团名字
+|chairman|string|社团会长openid
+|create_time|string|创建时间
+|introduction|string|社团简介
+
+### <a id="interface-getmanagerclublist"></a>/getManagerClubList
 GET
 #### 参数
 |**属性**|**类型**|**说明**|

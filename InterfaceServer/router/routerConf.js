@@ -18,6 +18,7 @@ const apiConf = [
     ['post', '/createClubManager'        , ClubActivityServer.createClubManager],
     ['post', '/createClub'               , ClubActivityServer.createClub],
     ['get' , '/getClubList'              , ClubActivityServer.getClubList],
+    ['get' , '/getManagerClubList'       , ClubActivityServer.getManagerClubList],
     ['post', '/applyForClub'             , ClubActivityServer.applyForClub],
     ['get' , '/getClubMembers'           , ClubActivityServer.getClubMembers],
     ['get' , '/getClubApplications'      , ClubActivityServer.getClubApplications],
