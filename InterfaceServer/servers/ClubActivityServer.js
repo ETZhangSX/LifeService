@@ -259,6 +259,40 @@ ClubActivityServer.getActivityList = async (ctx) => {
     }
 };
 
+// 更新活动信息
+ClubActivityServer.updateActivity = async (ctx) => {
+    const {
+        activity_id,
+        name,
+        start_time,
+        stop_time,
+        registry_start_time,
+        registry_stop_time,
+        content,
+    } = ctx.request.body;
+
+    const activity_info = new DataServiceTars.LifeService.ActivityInfo();
+    activity_info.readFromObject({
+        activity_id,
+        name,
+        start_time,
+        stop_time,
+        registry_start_time,
+        registry_stop_time,
+        content,
+    });
+    try {
+        const prx = Tars.stringToProxy(ClubActivityManagerPrx, clubActivityObjName);
+        let result = await prx.UpdateActivity(activity_info);
+
+        ctx.body = DataHandle.returnData(result.response.arguments.RetCode, DataHandle.Success);
+    }
+    catch(e) {
+        console.log(e);
+        ctx.body = DataHandle.returnError(400, e.message);
+    }
+}
+
 // 获取用户报名的活动
 ClubActivityServer.getUserActivityList = async (ctx) => {
     let {
@@ -332,6 +366,23 @@ ClubActivityServer.getActivityDetail = async (ctx) => {
     }
 };
 
+// 获取活动参与人列表
+ClubActivityServer.getActivityParticipate = async (ctx) => {
+    let {activity_id} = ctx.query;
+    try {
+        const prx = Tars.stringToProxy(ClubActivityManagerPrx, clubActivityObjName);
+        let result = await prx.GetActivityParticipate(activity_id);
+
+        ctx.body = DataHandle.returnData(200, DataHandle.Success, {
+            "participate_list": result.response.arguments.participateList,
+        })
+    }
+    catch(e) {
+        console.log(e);
+        ctx.body = DataHandle.returnError(400, e.message);
+    }
+}
+
 // 申请活动
 ClubActivityServer.applyForActivity = async (ctx) => {
     const {
@@ -350,5 +401,23 @@ ClubActivityServer.applyForActivity = async (ctx) => {
         ctx.body = DataHandle.returnError(400, e.message);
     }
 };
+
+ClubActivityServer.deleteActivityParticipate = async (ctx) => {
+    const {
+        activity_id,
+        wx_id,
+    } = ctx.request.body;
+
+    try {
+        const prx = Tars.stringToProxy(ClubActivityManagerPrx, clubActivityObjName);
+        let result = prx.DeleteActivityParticipate(activity_id, wx_id);
+
+        ctx.body = DataHandle.returnData(result.response.arguments.RetCode, DataHandle.Success);
+    }
+    catch(e) {
+        console.log(e);
+        ctx.body = DataHandle.returnError(400, e.message);
+    }
+}
 
 module.exports = ClubActivityServer;
