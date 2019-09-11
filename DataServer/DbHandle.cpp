@@ -163,8 +163,6 @@ int ClubHandle::LoadDataFromDb()
 
 int ClubHandle::InsertClubData(LifeService::ClubInfo clubInfo)
 {
-    
-
     map<string, pair<TC_Mysql::FT, string>> mColumns;
 
     // vColumns.insert(make_pair(     "club_id", make_pair(TC_Mysql::DB_INT, clubInfo.club_id)));
@@ -176,13 +174,16 @@ int ClubHandle::InsertClubData(LifeService::ClubInfo clubInfo)
         long last_insert_id;
         try
         {
+            // 插入数据库
             MDbQueryRecord::getInstance()->GetMysqlObject()->insertRecord("clubs", mColumns);
+            // 获取自增id
             last_insert_id = MDbQueryRecord::getInstance()->GetMysqlObject()->lastInsertID();
         }
         catch (exception &e)
         {
             LOG->error() << "ClubHandle::InsertClubData error: " << e.what() << endl;
         }
+        // 新增数据到数组和map中
         clubInfo.club_id = TC_Common::tostr<long>(last_insert_id);
         {
             TC_ThreadLock::Lock lock(_pLocker);
@@ -198,17 +199,14 @@ int ClubHandle::InsertClubData(LifeService::ClubInfo clubInfo)
 }
 
 //////////////////////////////////////////////////////
-int ClubHandle::GetClubList(const int &index, const int &batch, const string &wx_id, int &nextIndex, vector<LifeService::ClubInfo> &clubInfoList)
+int ClubHandle::GetClubList(int index, int batch, const string &wx_id, int &nextIndex, vector<LifeService::ClubInfo> &clubInfoList)
 {
+    nextIndex = -1;
     // 不需要筛选用户, 从vClubInfo中获取
     if(wx_id == "") 
     {
         int lenofclub = (int)vClubInfo.size();
-        if (index >= lenofclub) 
-        {
-            nextIndex = -1;
-            return 0;
-        }
+        if (index >= lenofclub) return 0;
         // 结束位置
         int endp = ((index + batch > lenofclub)? (lenofclub - 1):(index + batch - 1));
         // 是否还有数据
@@ -242,9 +240,7 @@ int ClubHandle::GetClubList(const int &index, const int &batch, const string &wx
         }
         size_t oResultsCount = oResults.size();
 
-        if (oResultsCount < (size_t)batch)
-            nextIndex = -1;
-        else 
+        if (oResultsCount >= (size_t)batch)
             nextIndex = TC_Common::strto<int>(oResults[oResultsCount - 1]["club_id"]);
         
         for (size_t i = 0; i < oResultsCount; i++)
@@ -259,13 +255,60 @@ int ClubHandle::GetClubList(const int &index, const int &batch, const string &wx
             clubInfoList.push_back(clubInfo);
         }
     }
+
     LOG->debug() << "ClubHandle::GetClubList Execute SQL: " << sSql << endl;
+    return 0;
+}
+
+//////////////////////////////////////////////////////
+int ClubHandle::GetManagerClubList(int index, int batch, const string &wx_id, int &nextIndex, vector<LifeService::ClubInfo> &clubInfoList)
+{
+    nextIndex = -1;
+
+    string sTableLeft = "club_managers";
+    string sTableRight = "clubs";
+    vector<string> vColumns = {"clubs.club_id", "create_time", "name", "chairman", "introduction"};
+    string sOnFilter = "clubs.club_id=club_managers.club_id";
+    string sCondition = " where `wx_id`='" + wx_id + "'";
+
+    string sSql = buildJoinSQL(sTableLeft, sTableRight, LEFTJOIN, vColumns, sOnFilter + sCondition, vColumns[1], DESC, batch);
+    {
+        TC_Mysql::MysqlData oResults;
+        try 
+        {
+            oResults = MDbQueryRecord::getInstance()->GetMysqlObject()->queryRecord(sSql);
+        }
+        catch (exception &e)
+        {
+            LOG->error() << "GetClubList query error: " << e.what() << endl;
+            return -1;
+        }
+        size_t oResultsCount = oResults.size();
+
+        if (oResultsCount >= (size_t)batch)
+            nextIndex = TC_Common::strto<int>(oResults[oResultsCount - 1]["club_id"]);
+        
+        for (size_t i = 0; i < oResultsCount; i++)
+        {
+            LifeService::ClubInfo clubInfo;
+            clubInfo.club_id      = oResults[i]["club_id"];
+            clubInfo.create_time  = oResults[i][vColumns[1]];
+            clubInfo.name         = oResults[i][vColumns[2]];
+            clubInfo.chairman     = oResults[i][vColumns[3]];
+            clubInfo.introduction = oResults[i][vColumns[4]];
+
+            clubInfoList.push_back(clubInfo);
+        }
+    }
+    LOG->debug() << "ClubHandle::GetManagerClubList Execute SQL: " << sSql << endl;
     return 0;
 }
 
 //////////////////////////////////////////////////////
 int ClubHandle::GetApplyListByClubId(const string &club_id, int index, int batch, int apply_status, int &nextIndex, vector<LifeService::ApplyInfo> &applyList)
 {
+    nextIndex = -1;
+
     string sTableLeft = "apply_for_club";
     string sTableRight = "users";
     vector<string> vColumns = {"apply_id", "apply_time", "user_id", "club_id", "name", "avatar_url"};
@@ -299,9 +342,7 @@ int ClubHandle::GetApplyListByClubId(const string &club_id, int index, int batch
         size_t oResultsCount = oResults.size();
 
         // 若查询的数据小于batch, 说明以及没有更早的数据, 返回-1
-        if (oResultsCount < (size_t)batch)
-            nextIndex = -1;
-        else
+        if (oResultsCount >= (size_t)batch)
             nextIndex = TC_Common::strto<int>(oResults[oResultsCount - 1][vColumns[0]]);
 
         for (size_t i = 0; i < oResultsCount; i++)
@@ -325,6 +366,8 @@ int ClubHandle::GetApplyListByClubId(const string &club_id, int index, int batch
 //////////////////////////////////////////////////////
 int ClubHandle::GetApplyListByUserId(const string &wx_id, int index, int batch, int apply_status, int &nextIndex, vector<LifeService::ApplyInfo> &applyList)
 {
+    nextIndex = -1;
+
     string sTableLeft = "apply_for_club";
     string sTableRight = "clubs";
     vector<string> vColumns = {"apply_id", "apply_time", "user_id", "club_id", "name"};
@@ -357,9 +400,7 @@ int ClubHandle::GetApplyListByUserId(const string &wx_id, int index, int batch, 
         size_t oResultsCount = oResults.size();
 
         // 若查询的数据小于batch, 说明以及没有更早的数据, 返回-1
-        if (oResultsCount < (size_t)batch)
-            nextIndex = -1;
-        else
+        if (oResultsCount >= (size_t)batch)
             nextIndex = TC_Common::strto<int>(oResults[oResultsCount - 1][vColumns[0]]);
 
         for (size_t i = 0; i < oResultsCount; i++)
@@ -384,7 +425,7 @@ int ClubHandle::GetApplyListByUserId(const string &wx_id, int index, int batch, 
 int ClubHandle::SetApplyStatus(const string &wx_id, const string &club_id, int apply_status)
 {
     string sSql = "update apply_for_club set `apply_status`=" + TC_Common::tostr<int>(apply_status) 
-               +  " where `user_id`='" + wx_id + "' and `club_id`=`" + club_id + "'";
+               +  " where `user_id`='" + wx_id + "' and `club_id`=" + club_id;
     MDbExecuteRecord::getInstance()->AddExecuteSql(sSql);
     LOG->debug() << "ClubHandle::SetApplyStatus Execute SQL: " << sSql << endl;
     return 0;
@@ -402,6 +443,8 @@ int ClubHandle::DeleteApply(const string &wx_id, const string &club_id)
 //////////////////////////////////////////////////////
 int ActivityHandle::GetActivityList(const int &index, const int &batch, const string &wx_id, const string &club_id, int &nextIndex, vector<map<string, string>> &activityList)
 {
+    nextIndex = -1;
+
     string sTableName = "activities";
     vector<string> vColumns = {
         "activity_id", "name", "sponsor", "club_id", "target_id", "create_time", "start_time", "stop_time", "registry_start_time", "registry_stop_time", "content"
@@ -448,9 +491,7 @@ int ActivityHandle::GetActivityList(const int &index, const int &batch, const st
         size_t oResultsCount = oResults.size();
 
         // 若查询的数据小于batch, 说明以及没有更早的数据, 返回-1
-        if (oResultsCount < (size_t)batch)
-            nextIndex = -1;
-        else
+        if (oResultsCount >= (size_t)batch)
             nextIndex = TC_Common::strto<int>(oResults[oResultsCount - 1][vColumns[0]]);
 
         for (size_t i = 0; i < oResultsCount; i++)
@@ -481,6 +522,30 @@ int ActivityHandle::GetActivityList(const int &index, const int &batch, const st
 
     return 0;
 }
+
+//////////////////////////////////////////////////////
+int ActivityHandle::UpdateActivity(const LifeService::ActivityInfo &activityInfo)
+{
+    TC_Mysql::RECORD_DATA updateItem;
+    updateItem.insert(make_pair("name", make_pair(TC_Mysql::DB_STR, activityInfo.name)));
+    updateItem.insert(make_pair("start_time", make_pair(TC_Mysql::DB_STR, activityInfo.start_time)));
+    updateItem.insert(make_pair("stop_time", make_pair(TC_Mysql::DB_STR, activityInfo.stop_time)));
+    updateItem.insert(make_pair("registry_start_time", make_pair(TC_Mysql::DB_STR, activityInfo.registry_start_time)));
+    updateItem.insert(make_pair("registry_stop_time", make_pair(TC_Mysql::DB_STR, activityInfo.registry_stop_time)));
+    updateItem.insert(make_pair("content", make_pair(TC_Mysql::DB_STR, activityInfo.content)));
+    
+    try
+    {
+        MDbQueryRecord::getInstance()->GetMysqlObject()->updateRecord("activities", updateItem, "where `activity_id`=" + activityInfo.activity_id);
+    }
+    catch(exception &e)
+    {
+        LOG->error() << "ActivityHandle::UpdateActivity error: " << e.what() << endl;
+        return -1;
+    }
+    return 0;
+}
+
 //////////////////////////////////////////////////////
 int ActivityHandle::DeleteActivity(const string &activity_id)
 {
@@ -514,6 +579,8 @@ int MsgWallHandle::InsertMessage(const LifeService::Message &msg)
 //////////////////////////////////////////////////////
 int MsgWallHandle::GetMsgList(const int &index, const int &batch, const string &date, const string wx_id, int &nextIndex, vector<LifeService::Message> &msgList)
 {
+    nextIndex = -1;
+
     string sTableName = "message_wall";
     vector<string> vColumns = {"message_id", "user_id", "receiver", "content", "anonymous", "message_time", "like_count"};
     string sCondition = "`" + vColumns[0] + "`";
@@ -549,9 +616,7 @@ int MsgWallHandle::GetMsgList(const int &index, const int &batch, const string &
         size_t oResultsCount = oResults.size();
 
         // 若查询的数据小于batch, 说明以及没有更早的数据, 返回-1
-        if (oResultsCount < (size_t)batch)
-            nextIndex = -1;
-        else
+        if (oResultsCount >= (size_t)batch)
             nextIndex = TC_Common::strto<int>(oResults[oResultsCount - 1][vColumns[0]]);
 
         for (size_t i = 0; i < oResultsCount; i++)

@@ -47,7 +47,8 @@ public:
      * @brief 新建社团信息
      */
     int InsertClubData(LifeService::ClubInfo clubInfo);
-    int GetClubList(const int &index, const int &batch, const std::string &wx_id, int &nextIndex, vector<LifeService::ClubInfo> &clubInfoList);
+    int GetClubList(int index, int batch, const std::string &wx_id, int &nextIndex, vector<LifeService::ClubInfo> &clubInfoList);
+    int GetManagerClubList(int index, int batch, const std::string &wx_id, int &nextIndex, vector<LifeService::ClubInfo> &clubInfoList);
     int GetApplyListByClubId(const std::string &club_id, int index, int batch, int apply_status, int &nextIndex, vector<LifeService::ApplyInfo> &applyList);
     int GetApplyListByUserId(const std::string &wx_id, int index, int batch, int apply_status, int &nextIndex, vector<LifeService::ApplyInfo> &applyList);
     int SetApplyStatus(const std::string &wx_id, const std::string &club_id, int apply_status);
@@ -64,6 +65,7 @@ class ActivityHandle: public tars::TC_Singleton<ActivityHandle>
 {
 public:
     int GetActivityList(const int &index, const int &batch, const std::string &wx_id, const std::string &club_id, int &nextIndex, vector<map<std::string, std::string>> &activityList);
+    int UpdateActivity(const LifeService::ActivityInfo &activityInfo);
     int DeleteActivity(const std::string &activity_id);
 };
 
