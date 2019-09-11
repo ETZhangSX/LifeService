@@ -157,7 +157,7 @@ ClubActivityServer.getUserApplications = async (ctx) => {
 
         ctx.body = DataHandle.returnData(200, DataHandle.Success, {
             'next_index': result.response.arguments.nextIndex,
-            'club_list': result.response.arguments.applyList.toObject(),
+            'application_list': result.response.arguments.applyList.toObject(),
         });
     }
     catch(e) {
@@ -186,7 +186,7 @@ ClubActivityServer.approveApplication = async (ctx) => {
 };
 
 // 删除申请
-ClubActivityServer.deleteApply = async (ctx) => {
+ClubActivityServer.deleteApplication = async (ctx) => {
     const {
         wx_id,
         club_id,
