@@ -1,9 +1,17 @@
 # InterfaceServer
-## 更新接口
+## 更新
+### 2019.9.11
+**新增接口**
+* [/updateActivityInfo](#interface-updateactivityinfo)
+* [/getActivityParticipate](#interface-getactivityparticipate)
+* [/deleteActivityParticipate](#interface-deleteactivityparticipate)
+
+### 2019.9.10
+**更新接口**
 * [/getClubList](#interface-getclublist)
 * [/postMessage](#interface-postmessage)
 
-## 新增接口
+**新增接口**
 * [/getClubMembers](#interface-getclubmembers)
 * [/getClubApplications](#interface-getclubapplications)
 * [/getUserApplications](#interface-getuserapplications)
@@ -44,8 +52,11 @@
 - [/deleteActivity](#interface-deleteactivity)
 - [/createActivity](#interface-createactivity)
 - [/getActivityList](#interface-getactivitylist)
+- [/updateActivityInfo](#interface-updateactivityinfo)
 - [/getActivityDetail](#interface-getactivitydetail)
+- [/getActivityParticipate](#interface-getactivityparticipate)
 - [/applyForActivity](#interface-applyforactivity)
+- [/deleteActivityParticipate](#interface-deleteactivityparticipate)
 
 **[表白墙服务接口](#chapter-messageservice)**
 - [/postMessage](#interface-postmessage)
@@ -415,6 +426,24 @@ GET
 |next_index|number|下一页开始index，用于获取下一页内容|
 |activity_list|list|活动列表
 
+### <a id="interface-updateactivityinfo"></a> /updateActivityInfo
+POST
+#### 参数
+|**属性**|**类型**|**说明**|
+|-|-|-|
+|activity_id|string|活动id|
+|name|string|活动名称
+|start_time|string|开始时间(YYYY-MM-DD hh:mm:ss)
+|stop_time|string|结束时间(YYYY-MM-DD hh:mm:ss)
+|registry_start_time|string|报名开始时间(YYYY-MM-DD hh:mm:ss)
+|registry_stop_time|string|报名结束时间(YYYY-MM-DD hh:mm:ss)
+|content|string|活动内容
+#### 返回值
+|**属性**|**类型**|**说明**|
+|-|-|-|
+|status|number|状态码|
+|errmsg|string|错误信息|
+
 ### <a id="interface-getactivitydetail"></a>/getActivityDetail
 GET
 #### 参数
@@ -442,6 +471,23 @@ GET
 |registry_stop_time|string|结束报名时间
 |content|string|活动内容
 
+### <a id="interface-getactivityparticipate"></a> /getActivityParticipate
+GET
+#### 参数
+|**属性**|**类型**|**说明**|
+|-|-|-|
+|activity_id|string|活动id|
+#### 返回值
+|**属性**|**类型**|**说明**|
+|-|-|-|
+|status|number|状态码|
+|errmsg|string|错误信息|
+|data|json|
+#### Data
+|**属性**|**类型**|**说明**|
+|-|-|-|
+|participate_list|list|参加用户列表
+
 ### <a id="interface-applyforactivity"></a>/applyForActivity
 POST
 #### 参数
@@ -449,6 +495,18 @@ POST
 |-|-|-|
 |wx_id|string|用户openid|
 |activity_id|string|活动id|
+#### 返回值
+|**属性**|**类型**|**说明**|
+|-|-|-|
+|status|number|状态码|
+|errmsg|string|错误信息|
+
+### <a id="interface-deleteactivityparticipate"></a> /deleteActivityParticipate
+POST#### 参数
+|**属性**|**类型**|**说明**|
+|-|-|-|
+|activity_id|string|活动id|
+|wx_id|string|用户id
 #### 返回值
 |**属性**|**类型**|**说明**|
 |-|-|-|
