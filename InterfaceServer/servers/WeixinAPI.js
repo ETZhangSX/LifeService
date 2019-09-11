@@ -5,6 +5,7 @@ const appConf    = require('../config/appConf');
 
 const WeixinAPI = {};
 
+// Promise化, 使request能够同步调用
 const getPromise = util.promisify(request.get);
 
 WeixinAPI.getOpenId = async (ctx) => {

@@ -14,8 +14,9 @@ const getRouter = (router, routerConf) => {
 
     });
 };
-
+//创建路由对象
 const apiRouter = new Router();
+//加载所有API路由
 getRouter(apiRouter, apiConf);
 
 module.exports = apiRouter;

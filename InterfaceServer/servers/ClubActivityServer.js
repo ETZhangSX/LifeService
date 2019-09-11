@@ -8,9 +8,7 @@ const clubActivityObjName = "LifeService.ClubActivityServer.ClubActivityManagerO
 // 引入util工具
 const DataHandle = require('../tools/util').DataHandle;
 
-
 const ClubActivityServer = {};
-
 
 // 创建社团管理员
 ClubActivityServer.createClubManager = async (ctx) => {
