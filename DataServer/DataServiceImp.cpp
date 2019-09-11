@@ -118,6 +118,13 @@ int DataServiceImp::getClubList(tars::Int32 index, tars::Int32 batch, const stri
 }
 
 //////////////////////////////////////////////////////
+int DataServiceImp::getManagerClubList(tars::Int32 index, tars::Int32 batch, const string &wx_id, tars::Int32 &nextIndex, vector<LifeService::ClubInfo> &clubInfoList, tars::TarsCurrentPtr current)
+{
+    int ret = ClubHandle::getInstance()->GetManagerClubList(index, batch, wx_id, nextIndex, clubInfoList);
+    return ret;
+}
+
+//////////////////////////////////////////////////////
 int DataServiceImp::getApplyListByClubId(const string &club_id, tars::Int32 index, tars::Int32 batch, tars::Int32 apply_status, tars::Int32 &nextIndex, vector<LifeService::ApplyInfo> &applyList, tars::TarsCurrentPtr current)
 {
     int ret = ClubHandle::getInstance()->GetApplyListByClubId(club_id, index, batch, apply_status, nextIndex, applyList);
@@ -152,9 +159,63 @@ int DataServiceImp::getActivityList(tars::Int32 index, tars::Int32 batch, const 
     return ret;
 }
 
+//////////////////////////////////////////////////////
+int DataServiceImp::updateActivity(const LifeService::ActivityInfo &activityInfo, tars::Int32 &iRetCode, tars::TarsCurrentPtr current)
+{
+    iRetCode = ActivityHandle::getInstance()->UpdateActivity(activityInfo);
+    return 0;
+}
+
+//////////////////////////////////////////////////////
 int DataServiceImp::deleteActivity(const std::string &activity_id, tars::Int32 &iRetCode, tars::TarsCurrentPtr current)
 {
     iRetCode = ActivityHandle::getInstance()->DeleteActivity(activity_id);
+    return 0;
+}
+
+//////////////////////////////////////////////////////
+int DataServiceImp::getActivityRecords(const string &activity_id, vector<LifeService::ActivityRecord> &recordList, tars::TarsCurrentPtr current)
+{
+    string sSql = buildSelectSQL("activity_records", vector<string>{"user_id", "record_time"}, "`activity_id`=" + activity_id);
+    TC_Mysql::MysqlData oResults;
+    try
+    {
+        oResults = MDbQueryRecord::getInstance()->GetMysqlObject()->queryRecord(sSql);
+    }
+    catch (exception &e)
+    {
+        LOG->error() << "DataServiceImp::getActivityRecords error: " << e.what() << endl;
+        return -1;
+    }
+    size_t oResultCount = oResults.size();
+
+    for (size_t i = 0; i < oResultCount; i++)
+    {
+        LifeService::ActivityRecord record;
+        record.wx_id = oResults[i]["user_id"];
+        record.record_time = oResults[i]["record_time"];
+        record.user_name = UserHandle::getInstance()->mUserInfo[record.wx_id].name;
+
+        recordList.push_back(record);
+    }
+
+    LOG->debug() << "DataServiceImp::getActivityRecords Execute SQL: " << sSql << endl;
+
+    return 0;
+}
+
+//////////////////////////////////////////////////////
+int DataServiceImp::deleteActivityRecord(const string &activity_id, const string &wx_id, tars::Int32 &iRetCode, tars::TarsCurrentPtr current)
+{
+    try
+    {
+        MDbQueryRecord::getInstance()->GetMysqlObject()->deleteRecord("activity_records", "where `user_id`='" + wx_id + "' and `activity_id`=" + activity_id);
+    }
+    catch(exception &e)
+    {
+        LOG->error() << "DataServiceImp::deleteActivityRecord error: " << e.what() << endl;
+        return -1;
+    }
     return 0;
 }
 
@@ -191,7 +252,7 @@ int DataServiceImp::getLike(const string &message_id, tars::Int32 &like_count, t
 int DataServiceImp::insertData(const string &sTableName, const vector<LifeService::Column> &sColumns, tars::TarsCurrentPtr current)
 {
     MDbQueryRecord::getInstance()->InsertData(sTableName, sColumns);
-    LOG->debug() << "Insert Data Successfully" << endl;
+    LOG->debug() << "DataServiceImp::insertData Execute Table: " << sTableName << endl;
     return 0;
 }
 
@@ -211,6 +272,7 @@ int DataServiceImp::queryData(const string &sTableName, const vector<string> &sC
         LOG->error() << "DataServiceImp::queryData: " << e.what() << endl;
         return -1;
     }
+    LOG->debug() << "DataServiceImp::queryData: Query Table: " << sTableName << endl;
     sRsp = mysql_data.data();
     return 0;
 }
@@ -228,5 +290,6 @@ int DataServiceImp::getRecordCount(const string &sTableName, const string &sCond
         iCount = -1;
         return -1;
     }
+    LOG->debug() << "DataServiceImp::getRecordCount Count Table: " << sTableName << " Condition: " << sCondition << endl;
     return 0;
 }
