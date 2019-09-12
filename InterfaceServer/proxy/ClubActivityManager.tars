@@ -19,7 +19,7 @@ module LifeService{
         int DeleteActivity(string activityId, out int RetCode);
         int GetActivityDetail(string activityId, out ActivityInfo activityInfo);
         
-        int GetActivityParticipate(string activityId, out vector<ActivityRecord> participateList);
+        int GetActivityParticipate(int index, string activityId, out int nextIndex, out vector<ActivityRecord> participateList);
         int ApplyForActivity(string wxId, string activityId, out int RetCode);
         int DeleteActivityParticipate(string activityId, string wxId, out int RetCode);
     };

@@ -883,9 +883,17 @@ var __LifeService_ClubActivityManager$GetActivityParticipate$IF = {
     "name" : "GetActivityParticipate",
     "return" : "int32",
     "arguments" : [{
+        "name" : "index",
+        "class" : "int32",
+        "direction" : "in"
+    }, {
         "name" : "activityId",
         "class" : "string",
         "direction" : "in"
+    }, {
+        "name" : "nextIndex",
+        "class" : "int32",
+        "direction" : "out"
     }, {
         "name" : "participateList",
         "class" : "list(LifeService.ActivityRecord)",
@@ -893,9 +901,10 @@ var __LifeService_ClubActivityManager$GetActivityParticipate$IF = {
     }]
 };
 
-var __LifeService_ClubActivityManager$GetActivityParticipate$IE = function (activityId) {
+var __LifeService_ClubActivityManager$GetActivityParticipate$IE = function (index, activityId) {
     var os = new TarsStream.TarsOutputStream();
-    os.writeString(1, activityId);
+    os.writeInt32(1, index);
+    os.writeString(2, activityId);
     return os.getBinBuffer();
 };
 
@@ -908,7 +917,8 @@ var __LifeService_ClubActivityManager$GetActivityParticipate$ID = function (data
                 "costtime" : data.request.costtime,
                 "return" : is.readInt32(0, true, 0),
                 "arguments" : {
-                    "participateList" : is.readList(2, true, TarsStream.List(_TARS_MODULE_A_.LifeService.ActivityRecord))
+                    "nextIndex" : is.readInt32(3, true, 0),
+                    "participateList" : is.readList(4, true, TarsStream.List(_TARS_MODULE_A_.LifeService.ActivityRecord))
                 }
             }
         };
@@ -917,9 +927,10 @@ var __LifeService_ClubActivityManager$GetActivityParticipate$ID = function (data
     }
 };
 
-var __LifeService_ClubActivityManager$GetActivityParticipate$PE = function (activityId, __$PROTOCOL$VERSION) {
+var __LifeService_ClubActivityManager$GetActivityParticipate$PE = function (index, activityId, __$PROTOCOL$VERSION) {
     var tup = new TarsStream.UniAttribute();
     tup.tupVersion = __$PROTOCOL$VERSION;
+    tup.writeInt32("index", index);
     tup.writeString("activityId", activityId);
     return tup;
 };
@@ -933,6 +944,7 @@ var __LifeService_ClubActivityManager$GetActivityParticipate$PD = function (data
                 "costtime" : data.request.costtime,
                 "return" : tup.readInt32("", 0),
                 "arguments" : {
+                    "nextIndex" : tup.readInt32("nextIndex"),
                     "participateList" : tup.readList("participateList", TarsStream.List(_TARS_MODULE_A_.LifeService.ActivityRecord))
                 }
             }
@@ -946,12 +958,12 @@ var __LifeService_ClubActivityManager$GetActivityParticipate$ER = function (data
     throw _makeError(data, "Call ClubActivityManager::GetActivityParticipate failed");
 };
 
-LifeService.ClubActivityManagerProxy.prototype.GetActivityParticipate = function (activityId) {
+LifeService.ClubActivityManagerProxy.prototype.GetActivityParticipate = function (index, activityId) {
     var version = this._worker.version;
     if (version === TarsStream.Tup.TUP_SIMPLE || version === TarsStream.Tup.TUP_COMPLEX) {
-        return this._worker.tup_invoke("GetActivityParticipate", __LifeService_ClubActivityManager$GetActivityParticipate$PE(activityId, version), arguments[arguments.length - 1], __LifeService_ClubActivityManager$GetActivityParticipate$IF).then(__LifeService_ClubActivityManager$GetActivityParticipate$PD, __LifeService_ClubActivityManager$GetActivityParticipate$ER);
+        return this._worker.tup_invoke("GetActivityParticipate", __LifeService_ClubActivityManager$GetActivityParticipate$PE(index, activityId, version), arguments[arguments.length - 1], __LifeService_ClubActivityManager$GetActivityParticipate$IF).then(__LifeService_ClubActivityManager$GetActivityParticipate$PD, __LifeService_ClubActivityManager$GetActivityParticipate$ER);
     } else {
-        return this._worker.tars_invoke("GetActivityParticipate", __LifeService_ClubActivityManager$GetActivityParticipate$IE(activityId), arguments[arguments.length - 1], __LifeService_ClubActivityManager$GetActivityParticipate$IF).then(__LifeService_ClubActivityManager$GetActivityParticipate$ID, __LifeService_ClubActivityManager$GetActivityParticipate$ER);
+        return this._worker.tars_invoke("GetActivityParticipate", __LifeService_ClubActivityManager$GetActivityParticipate$IE(index, activityId), arguments[arguments.length - 1], __LifeService_ClubActivityManager$GetActivityParticipate$IF).then(__LifeService_ClubActivityManager$GetActivityParticipate$ID, __LifeService_ClubActivityManager$GetActivityParticipate$ER);
     }
 };
 LifeService.ClubActivityManagerProxy.GetActivityParticipate = __LifeService_ClubActivityManager$GetActivityParticipate$IF;
