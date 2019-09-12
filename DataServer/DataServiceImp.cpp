@@ -99,10 +99,18 @@ int DataServiceImp::getGroupByGroupId(tars::Int32 groupId, string &group, tars::
 }
 
 //////////////////////////////////////////////////////
-int DataServiceImp::createClub(const LifeService::ClubInfo &clubInfo, tars::Int32 &iRetCode, tars::TarsCurrentPtr current)
+int DataServiceImp::createClubManager(const string &wx_id, const string &club_id, tars::TarsCurrentPtr current)
 {
-    ClubHandle::getInstance()->InsertClubData(clubInfo);
-    iRetCode = 0;
+    int iRet = ClubHandle::getInstance()->InsertClubManager(wx_id, club_id);
+    if (iRet != 0)
+        return 300;
+    return 0;
+}
+//////////////////////////////////////////////////////
+int DataServiceImp::createClub(const LifeService::ClubInfo &clubInfo, string &club_id, tars::TarsCurrentPtr current)
+{
+    club_id = "";
+    ClubHandle::getInstance()->InsertClubData(clubInfo, club_id);
     LOG->debug() << "Create Club Successfully" << endl;
     return 0;
 }
@@ -171,34 +179,10 @@ int DataServiceImp::deleteActivity(const std::string &activity_id, tars::Int32 &
 }
 
 //////////////////////////////////////////////////////
-int DataServiceImp::getActivityRecords(const string &activity_id, vector<LifeService::ActivityRecord> &recordList, tars::TarsCurrentPtr current)
+int DataServiceImp::getActivityRecords(tars::Int32 index, tars::Int32 batch, const string &activity_id, tars::Int32 &nextIndex, vector<LifeService::ActivityRecord> &recordList, tars::TarsCurrentPtr current)
 {
-    string sSql = buildSelectSQL("activity_records", vector<string>{"user_id", "record_time"}, "`activity_id`=" + activity_id);
-    TC_Mysql::MysqlData oResults;
-    try
-    {
-        oResults = MDbQueryRecord::getInstance()->GetMysqlObject()->queryRecord(sSql);
-    }
-    catch (exception &e)
-    {
-        LOG->error() << "DataServiceImp::getActivityRecords error: " << e.what() << endl;
-        return -1;
-    }
-    size_t oResultCount = oResults.size();
-
-    for (size_t i = 0; i < oResultCount; i++)
-    {
-        LifeService::ActivityRecord record;
-        record.wx_id = oResults[i]["user_id"];
-        record.record_time = oResults[i]["record_time"];
-        record.user_name = UserHandle::getInstance()->mUserInfo[record.wx_id].name;
-
-        recordList.push_back(record);
-    }
-
-    LOG->debug() << "DataServiceImp::getActivityRecords Execute SQL: " << sSql << endl;
-
-    return 0;
+    int iRet = ActivityHandle::getInstance()->GetActivityRecords(index, batch, activity_id, nextIndex, recordList);
+    return iRet;
 }
 
 //////////////////////////////////////////////////////

@@ -80,7 +80,8 @@ module LifeService
         int getGroupByUserId(string wx_id, out string group);
         int getGroupByGroupId(int groupId, out string group);
 
-        int createClub(ClubInfo clubInfo, out int iRetCode);
+        int createClubManager(string wx_id, string club_id);
+        int createClub(ClubInfo clubInfo, out string club_id);
         // int getClubName(string club_id, out string club_name);
         int getClubList(int index, int batch, string wx_id, out int nextIndex, out vector<ClubInfo> clubInfoList);
         int getManagerClubList(int index, int batch, string wx_id, out int nextIndex, out vector<ClubInfo> clubInfoList);
@@ -96,7 +97,7 @@ module LifeService
         int deleteActivity(string activity_id, out int iRetCode);
         // int getActivityDetail(string activityId, out ActivityInfo activityInfo);
 
-        int getActivityRecords(string activity_id, out vector<ActivityRecord> recordList);
+        int getActivityRecords(int index, int batch, string activity_id, out int nextIndex, out vector<ActivityRecord> recordList);
         int deleteActivityRecord(string activity_id, string wx_id, out int iRetCode);
 
         int insertMessage(Message msg);

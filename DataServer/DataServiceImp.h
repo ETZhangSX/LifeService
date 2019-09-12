@@ -67,13 +67,20 @@ public:
      * @out   group   对应权限组类型
      */
     virtual int getGroupByGroupId(tars::Int32 groupId, std::string &group, tars::TarsCurrentPtr current);
+
+    /**
+     * @brief 创建社团管理员
+     * @param wx_id   用户id
+     * @param club_id 社团id
+     */
+    virtual int createClubManager(const std::string &wx_id, const std::string &club_id, tars::TarsCurrentPtr current);
     
     /**
      * @brief 创建社团
      * @param clubInfo 社团信息, ClubInfo(tars文件中定义)
-     * @out   iRetCode 返回状态码
+     * @out   club_id  返回创建社团的id
      */
-    virtual int createClub(const LifeService::ClubInfo &clubInfo, tars::Int32 &iRetCode, tars::TarsCurrentPtr current);
+    virtual int createClub(const LifeService::ClubInfo &clubInfo, std::string &club_id, tars::TarsCurrentPtr current);
 
     /**
      * @brief 获取社团列表
@@ -165,10 +172,13 @@ public:
     
     /**
      * @brief 获取活动记录
+     * @param index       返回信息索引, 传入0获取第一页, 每次调用传入上一次返回的nextIndex
+     * @param batch       返回的信息条数
      * @param activity_id 活动id
+     * @out   nextIndex   下一页索引
      * @out   recordList  活动报名记录列表, ActivityRecord在tars文件中定义
      */
-    virtual int getActivityRecords(const std::string &activity_id, vector<LifeService::ActivityRecord> &recordList, tars::TarsCurrentPtr current);
+    virtual int getActivityRecords(tars::Int32 index, tars::Int32 batch, const std::string &activity_id, tars::Int32 &nextIndex, vector<LifeService::ActivityRecord> &recordList, tars::TarsCurrentPtr current);
     
     /**
      * @brief 删除活动记录
