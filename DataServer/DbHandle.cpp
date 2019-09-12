@@ -505,7 +505,7 @@ int ActivityHandle::GetActivityList(const int &index, const int &batch, const st
     if (wx_id != "")
     {
         string sTableLeft = "activity_records";
-        string sOnFilter = sTableLeft + ".activity_id=" + sTableName + ".activity_id where " + sCondition + " and `user_id`=" + wx_id;
+        string sOnFilter = sTableLeft + ".activity_id=" + sTableName + ".activity_id where " + sCondition + " and `user_id`='" + wx_id + "'";
         sSql = buildJoinSQL(sTableLeft, sTableName, LEFTJOIN, vColumns, sOnFilter, vColumns[5], DESC, batch);
     }
     else
