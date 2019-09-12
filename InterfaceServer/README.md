@@ -1,5 +1,11 @@
 # InterfaceServer
 ## 更新
+### 2019.9.12
+**更新日志**
+修复若干bug
+**更新接口**
+* [/getActivityParticipate](#interface-getactivityparticipate)
+
 ### 2019.9.11
 **新增接口**
 * [/getManagerClubList](#interface-getmanagerclublist)
@@ -500,6 +506,7 @@ GET
 |**属性**|**类型**|**说明**|
 |-|-|-|
 |activity_id|string|活动id|
+|index|number|为0表示获取最新活动信息|
 #### 返回值
 |**属性**|**类型**|**说明**|
 |-|-|-|
@@ -509,6 +516,7 @@ GET
 #### Data
 |**属性**|**类型**|**说明**|
 |-|-|-|
+|next_index|number|下一页开始index，用于获取下一页内容|
 |participate_list|list|参加用户列表
 
 ### <a id="interface-applyforactivity"></a>/applyForActivity
