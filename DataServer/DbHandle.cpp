@@ -77,12 +77,12 @@ int UserHandle::LoadDataFromDb()
 int UserHandle::InsertUserData(const string &wx_id, const LifeService::UserInfo &userInfo)
 {
     map<string, pair<TC_Mysql::FT, string>> vColumns;
-    vColumns.insert(make_pair(            "wx_id", make_pair(TC_Mysql::DB_STR, wx_id)));
-    vColumns.insert(make_pair(             "name", make_pair(TC_Mysql::DB_STR, userInfo.name)));
-    vColumns.insert(make_pair(            "phone", make_pair(TC_Mysql::DB_STR, userInfo.phone)));
-    vColumns.insert(make_pair(           "gender", make_pair(TC_Mysql::DB_STR, userInfo.gender)));
-    vColumns.insert(make_pair(         "group_id", make_pair(TC_Mysql::DB_INT, TC_Common::tostr<tars::Int32>(userInfo.group))));
-    vColumns.insert(make_pair(       "avatar_url", make_pair(TC_Mysql::DB_STR, userInfo.avatar_url)));
+    vColumns.insert(make_pair("wx_id"            , make_pair(TC_Mysql::DB_STR, wx_id)));
+    vColumns.insert(make_pair("name"             , make_pair(TC_Mysql::DB_STR, userInfo.name)));
+    vColumns.insert(make_pair("phone"            , make_pair(TC_Mysql::DB_STR, userInfo.phone)));
+    vColumns.insert(make_pair("gender"           , make_pair(TC_Mysql::DB_STR, userInfo.gender)));
+    vColumns.insert(make_pair("group_id"         , make_pair(TC_Mysql::DB_INT, TC_Common::tostr<tars::Int32>(userInfo.group))));
+    vColumns.insert(make_pair("avatar_url"       , make_pair(TC_Mysql::DB_STR, userInfo.avatar_url)));
     vColumns.insert(make_pair("registration_time", make_pair(TC_Mysql::DB_STR, userInfo.registration_time)));
     
     try 
@@ -164,7 +164,29 @@ int ClubHandle::LoadDataFromDb()
 }
 
 //////////////////////////////////////////////////////
-int ClubHandle::InsertClubData(LifeService::ClubInfo clubInfo)
+int ClubHandle::InsertClubManager(const string &wx_id, const string &club_id)
+{
+    TC_Mysql::RECORD_DATA mColumns;
+
+    mColumns.insert(make_pair("wx_id", make_pair(TC_Mysql::DB_STR, wx_id)));
+    mColumns.insert(make_pair("club_id", make_pair(TC_Mysql::DB_INT, club_id)));
+
+    try
+    {
+        MDbQueryRecord::getInstance()->GetMysqlObject()->insertRecord("club_managers", mColumns);
+    }
+    catch (exception &e)
+    {
+        LOG->error() << "ClubHandle::InsertClubManager error: " << e.what() << endl;
+        return -1;
+    }
+
+    LOG->debug() << "ClubHandle::InsertClubManager user: " << wx_id << " club_id: " << club_id << endl;
+    return 0;
+}
+
+//////////////////////////////////////////////////////
+int ClubHandle::InsertClubData(LifeService::ClubInfo clubInfo, string &club_id)
 {
     map<string, pair<TC_Mysql::FT, string>> mColumns;
 
@@ -184,6 +206,7 @@ int ClubHandle::InsertClubData(LifeService::ClubInfo clubInfo)
         catch (exception &e)
         {
             LOG->error() << "ClubHandle::InsertClubData error: " << e.what() << endl;
+            return -1;
         }
         // 新增数据到数组和map中
         clubInfo.club_id = TC_Common::tostr<long>(last_insert_id);
@@ -192,6 +215,7 @@ int ClubHandle::InsertClubData(LifeService::ClubInfo clubInfo)
             vClubInfo.push_back(clubInfo);
             mClub.insert(make_pair(clubInfo.club_id, (int)vClubInfo.size() - 1));
         }
+        club_id = clubInfo.club_id;
     }
     
 
@@ -570,6 +594,50 @@ int ActivityHandle::DeleteActivity(const string &activity_id)
     MDbExecuteRecord::getInstance()->AddExecuteSql(sql_delete_activity);
 
     LOG->debug() << "ActivityHandle::DeleteActivity AddExecuteSql: " << sql_delete_records << ", " << sql_delete_activity << endl;
+    return 0;
+}
+
+int ActivityHandle::GetActivityRecords(int index, int batch, const string &activity_id, int &nextIndex, vector<LifeService::ActivityRecord> &recordList)
+{
+    nextIndex = -1;
+    
+    string sCondition = "`activity_id`=" + activity_id + " and `record_id`";
+    // 0代表第一次请求
+    if (index == 0)
+        sCondition += ">=0";
+    else 
+        sCondition += "<" + TC_Common::tostr<int>(index);
+    
+    string sSql = buildSelectSQL("activity_records", vector<string>{"user_id", "record_time"}, sCondition, "record_time", DESC, batch);
+    {
+        TC_Mysql::MysqlData oResults;
+        try
+        {
+            oResults = MDbQueryRecord::getInstance()->GetMysqlObject()->queryRecord(sSql);
+        }
+        catch (exception &e)
+        {
+            LOG->error() << "DataServiceImp::getActivityRecords error: " << e.what() << endl;
+            return -1;
+        }
+        size_t oResultsCount = oResults.size();
+
+        // 若查询的数据小于batch, 说明以及没有更早的数据, 返回-1
+        if (oResultsCount >= (size_t)batch)
+            nextIndex = TC_Common::strto<int>(oResults[oResultsCount - 1]["record_id"]);
+
+        for (size_t i = 0; i < oResultsCount; i++)
+        {
+            LifeService::ActivityRecord record;
+            record.wx_id = oResults[i]["user_id"];
+            record.record_time = oResults[i]["record_time"];
+            record.user_name = UserHandle::getInstance()->mUserInfo[record.wx_id].name;
+
+            recordList.push_back(record);
+        }
+    }
+    
+    LOG->debug() << "DataServiceImp::getActivityRecords Execute SQL: " << sSql << endl;
     return 0;
 }
 

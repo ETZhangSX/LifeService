@@ -42,8 +42,10 @@ public:
      * @brief 从数据库加载数据到内存
      */
     int LoadDataFromDb();
+    // 插入社团管理者
+    int InsertClubManager(const std::string &wx_id, const std::string &club_id);
     // 插入社团信息
-    int InsertClubData(LifeService::ClubInfo clubInfo);
+    int InsertClubData(LifeService::ClubInfo clubInfo, std::string &club_id);
     // 获取社团列表
     int GetClubList(int index, int batch, const std::string &wx_id, int &nextIndex, vector<LifeService::ClubInfo> &clubInfoList);
     // 获取管理社团列表
@@ -69,12 +71,15 @@ private:
 class ActivityHandle: public tars::TC_Singleton<ActivityHandle>
 {
 public:
+    int CreateActivity();
     // 获取活动列表
     int GetActivityList(const int &index, const int &batch, const std::string &wx_id, const std::string &club_id, int &nextIndex, vector<map<std::string, std::string>> &activityList);
     // 更新活动信息
     int UpdateActivity(const LifeService::ActivityInfo &activityInfo);
     // 删除活动
     int DeleteActivity(const std::string &activity_id);
+    // 获取活动参与记录
+    int GetActivityRecords(int index, int batch, const std::string &activity_id, int &nextIndex, vector<LifeService::ActivityRecord> &recordList);
 };
 
 // 表白墙信息操作类
