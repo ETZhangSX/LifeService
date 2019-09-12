@@ -323,7 +323,7 @@ ClubActivityServer.getUserActivityList = async (ctx) => {
         let result = await prx.GetActivityList(index, wx_id, "");
 
         ctx.body = DataHandle.returnData(200, DataHandle.Success, {
-            'next_index': result.response.arguments.nextIndex,
+            'next_index'    : result.response.arguments.nextIndex,
             'activity_list' : result.response.arguments.activityList.toObject(),
         })
     }
@@ -344,7 +344,7 @@ ClubActivityServer.getClubActivityList = async (ctx) => {
         let result = await prx.GetActivityList(index, "", club_id);
 
         ctx.body = DataHandle.returnData(200, DataHandle.Success, {
-            'next_index': result.response.arguments.nextIndex,
+            'next_index'    : result.response.arguments.nextIndex,
             'activity_list' : result.response.arguments.activityList.toObject(),
         })
     }
@@ -387,12 +387,16 @@ ClubActivityServer.getActivityDetail = async (ctx) => {
 
 // 获取活动参与人列表
 ClubActivityServer.getActivityParticipate = async (ctx) => {
-    let {activity_id} = ctx.query;
+    let {
+        activity_id,
+        index,
+    } = ctx.query;
     try {
         const prx = Tars.stringToProxy(ClubActivityManagerPrx, clubActivityObjName);
-        let result = await prx.GetActivityParticipate(activity_id);
+        let result = await prx.GetActivityParticipate(index, activity_id);
 
         ctx.body = DataHandle.returnData(200, DataHandle.Success, {
+            "next_index"      : result.response.arguments.nextIndex,
             "participate_list": result.response.arguments.participateList,
         })
     }
