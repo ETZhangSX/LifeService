@@ -8,20 +8,21 @@
 using namespace std;
 
 //////////////////////////////////////////////////////
+
 void DataServiceImp::initialize()
 {
     //initialize servant here:
     //...
 }
-
 //////////////////////////////////////////////////////
+
 void DataServiceImp::destroy()
 {
     //destroy servant here:
     //...
 }
-
 //////////////////////////////////////////////////////
+
 int DataServiceImp::hasUser(const string &wx_id, bool &userExist, tars::TarsCurrentPtr current)
 {
     userExist = UserHandle::getInstance()->hasUser(wx_id);
@@ -32,8 +33,8 @@ int DataServiceImp::hasUser(const string &wx_id, bool &userExist, tars::TarsCurr
     
     return 0;
 }
-
 //////////////////////////////////////////////////////
+
 int DataServiceImp::createUser(const string &wx_id, const LifeService::UserInfo &userInfo, tars::TarsCurrentPtr current)
 {
     if (UserHandle::getInstance()->hasUser(wx_id))
@@ -46,8 +47,8 @@ int DataServiceImp::createUser(const string &wx_id, const LifeService::UserInfo 
     LOG->debug() << "Create user successfully" << endl;
     return 0;
 }
-
 //////////////////////////////////////////////////////
+
 int DataServiceImp::getUserInfo(const string &wx_id, LifeService::UserInfo &sRsp, tars::TarsCurrentPtr current)
 {
     if (UserHandle::getInstance()->hasUser(wx_id))
@@ -59,16 +60,16 @@ int DataServiceImp::getUserInfo(const string &wx_id, LifeService::UserInfo &sRsp
     LOG->error() << "getUserInfo: User not exist." << endl;
     return -1;
 }
-
 //////////////////////////////////////////////////////
+
 int DataServiceImp::getGroupInfo(map<tars::Int32, string> &groupInfo, tars::TarsCurrentPtr current)
 {
     groupInfo = UserHandle::getInstance()->mGroupInfo;
     LOG->debug() << "getGroupInfo successfully" << endl;
     return 0;
 }
-
 //////////////////////////////////////////////////////
+
 int DataServiceImp::getGroupByUserId(const string &wx_id, string &group, tars::TarsCurrentPtr current)
 {
     if (UserHandle::getInstance()->hasUser(wx_id))
@@ -85,8 +86,8 @@ int DataServiceImp::getGroupByUserId(const string &wx_id, string &group, tars::T
     LOG->error() << "DataServiceImp::getGroupByUserId: User does not exist." << endl;
     return -1;
 }
-
 //////////////////////////////////////////////////////
+
 int DataServiceImp::getGroupByGroupId(tars::Int32 groupId, string &group, tars::TarsCurrentPtr current)
 {
     if (UserHandle::getInstance()->mGroupInfo.count(groupId) == 0)
@@ -97,8 +98,8 @@ int DataServiceImp::getGroupByGroupId(tars::Int32 groupId, string &group, tars::
     group = UserHandle::getInstance()->mGroupInfo[groupId];
     return 0;
 }
-
 //////////////////////////////////////////////////////
+
 int DataServiceImp::createClubManager(const string &wx_id, const string &club_id, tars::TarsCurrentPtr current)
 {
     int iRet = ClubHandle::getInstance()->InsertClubManager(wx_id, club_id);
@@ -107,6 +108,7 @@ int DataServiceImp::createClubManager(const string &wx_id, const string &club_id
     return 0;
 }
 //////////////////////////////////////////////////////
+
 int DataServiceImp::createClub(const LifeService::ClubInfo &clubInfo, string &club_id, tars::TarsCurrentPtr current)
 {
     club_id = "";
@@ -114,78 +116,94 @@ int DataServiceImp::createClub(const LifeService::ClubInfo &clubInfo, string &cl
     LOG->debug() << "Create Club Successfully" << endl;
     return 0;
 }
-
 //////////////////////////////////////////////////////
+
 int DataServiceImp::getClubList(tars::Int32 index, tars::Int32 batch, const string &wx_id, tars::Int32 &nextIndex, vector<LifeService::ClubInfo> &clubInfoList, tars::TarsCurrentPtr current)
 {
     int ret = ClubHandle::getInstance()->GetClubList(index, batch, wx_id, nextIndex, clubInfoList);
     return ret;
 }
-
 //////////////////////////////////////////////////////
+
 int DataServiceImp::getManagerClubList(tars::Int32 index, tars::Int32 batch, const string &wx_id, tars::Int32 &nextIndex, vector<LifeService::ClubInfo> &clubInfoList, tars::TarsCurrentPtr current)
 {
     int ret = ClubHandle::getInstance()->GetManagerClubList(index, batch, wx_id, nextIndex, clubInfoList);
     return ret;
 }
-
 //////////////////////////////////////////////////////
+
 int DataServiceImp::getApplyListByClubId(const string &club_id, tars::Int32 index, tars::Int32 batch, tars::Int32 apply_status, tars::Int32 &nextIndex, vector<LifeService::ApplyInfo> &applyList, tars::TarsCurrentPtr current)
 {
     int ret = ClubHandle::getInstance()->GetApplyListByClubId(club_id, index, batch, apply_status, nextIndex, applyList);
     return ret;
 }
-
 //////////////////////////////////////////////////////
+
 int DataServiceImp::getApplyListByUserId(const string &wx_id, tars::Int32 index, tars::Int32 batch, tars::Int32 apply_status, tars::Int32 &nextIndex, vector<LifeService::ApplyInfo> &applyList, tars::TarsCurrentPtr current)
 {
     int ret = ClubHandle::getInstance()->GetApplyListByUserId(wx_id, index, batch, apply_status, nextIndex, applyList);
     return ret;
 }
-
 //////////////////////////////////////////////////////
+
 int DataServiceImp::setApplyStatus(const string &wx_id, const string &club_id, tars::Int32 apply_status, tars::Int32 &iRetCode, tars::TarsCurrentPtr current)
 {
     iRetCode = ClubHandle::getInstance()->SetApplyStatus(wx_id, club_id, apply_status);
     return 0;
 }
-
 //////////////////////////////////////////////////////
+
 int DataServiceImp::deleteApply(const string &wx_id, const string &club_id, tars::Int32 &iRetCode, tars::TarsCurrentPtr current)
 {
     iRetCode = ClubHandle::getInstance()->DeleteApply(wx_id, club_id);
     return 0;
 }
-
 //////////////////////////////////////////////////////
+
+int DataServiceImp::createActivity(const LifeService::ActivityInfo &activityInfo, tars::TarsCurrentPtr current)
+{
+    int iRet = ActivityHandle::getInstance()->InsertActivityData(activityInfo);
+    if (iRet != 0) return 300;
+    return 0;
+}
+//////////////////////////////////////////////////////
+
 int DataServiceImp::getActivityList(tars::Int32 index, tars::Int32 batch, const string &wx_id, const string &club_id, tars::Int32 &nextIndex, vector<map<string, string>> &activityList, tars::TarsCurrentPtr current)
 {
     int ret = ActivityHandle::getInstance()->GetActivityList(index, batch, wx_id, club_id, nextIndex, activityList);
     return ret;
 }
-
 //////////////////////////////////////////////////////
+
 int DataServiceImp::updateActivity(const LifeService::ActivityInfo &activityInfo, tars::Int32 &iRetCode, tars::TarsCurrentPtr current)
 {
     iRetCode = ActivityHandle::getInstance()->UpdateActivity(activityInfo);
     return 0;
 }
-
 //////////////////////////////////////////////////////
+
 int DataServiceImp::deleteActivity(const std::string &activity_id, tars::Int32 &iRetCode, tars::TarsCurrentPtr current)
 {
     iRetCode = ActivityHandle::getInstance()->DeleteActivity(activity_id);
     return 0;
 }
-
 //////////////////////////////////////////////////////
+
+int DataServiceImp::createActivityRecord(const string &wx_id, const string &activity_id, tars::TarsCurrentPtr current)
+{
+    int iRet = ActivityHandle::getInstance()->InsertActivityRecord(wx_id, activity_id);
+    if (iRet != 0) return 300;
+    return 0;
+}
+//////////////////////////////////////////////////////
+
 int DataServiceImp::getActivityRecords(tars::Int32 index, tars::Int32 batch, const string &activity_id, tars::Int32 &nextIndex, vector<LifeService::ActivityRecord> &recordList, tars::TarsCurrentPtr current)
 {
     int iRet = ActivityHandle::getInstance()->GetActivityRecords(index, batch, activity_id, nextIndex, recordList);
     return iRet;
 }
-
 //////////////////////////////////////////////////////
+
 int DataServiceImp::deleteActivityRecord(const string &activity_id, const string &wx_id, tars::Int32 &iRetCode, tars::TarsCurrentPtr current)
 {
     try
@@ -199,45 +217,54 @@ int DataServiceImp::deleteActivityRecord(const string &activity_id, const string
     }
     return 0;
 }
-
 //////////////////////////////////////////////////////
+
+int DataServiceImp::getActivityInfo(const string &activity_id, LifeService::ActivityInfo &activityInfo, tars::TarsCurrentPtr current)
+{
+    int iRet = ActivityHandle::getInstance()->GetActivityInfo(activity_id, activityInfo);
+    
+    if (iRet != 0) return 300;
+    return 0;
+}
+//////////////////////////////////////////////////////
+
 int DataServiceImp::insertMessage(const LifeService::Message &msg, tars::TarsCurrentPtr current)
 {
     MsgWallHandle::getInstance()->InsertMessage(msg);
     return 0;
 }
-
 //////////////////////////////////////////////////////
+
 int DataServiceImp::getMsgList(tars::Int32 index, const string &date, const string &wx_id, tars::Int32 &nextIndex, vector<LifeService::Message> &msgList, tars::TarsCurrentPtr current)
 {
     int batch = 6;
     int Ret = MsgWallHandle::getInstance()->GetMsgList(index, batch, date, wx_id, nextIndex, msgList);
     return Ret;
 }
-
 //////////////////////////////////////////////////////
+
 int DataServiceImp::addLike(const string &message_id, tars::TarsCurrentPtr current)
 {
     MsgWallHandle::getInstance()->AddLike(message_id);
     return 0;
 }
-
 //////////////////////////////////////////////////////
+
 int DataServiceImp::getLike(const string &message_id, tars::Int32 &like_count, tars::TarsCurrentPtr current)
 {
     int Ret = MsgWallHandle::getInstance()->GetLike(message_id, like_count);
     return Ret;
 }
-
 //////////////////////////////////////////////////////
+
 int DataServiceImp::insertData(const string &sTableName, const vector<LifeService::Column> &vColumns, tars::TarsCurrentPtr current)
 {
     MDbQueryRecord::getInstance()->InsertData(sTableName, vColumns);
     LOG->debug() << "DataServiceImp::insertData Execute Table: " << sTableName << endl;
     return 0;
 }
-
 //////////////////////////////////////////////////////
+
 int DataServiceImp::queryData(const string &sTableName, const vector<string> &vColumns, const string &sCondition, vector<map<string, string>> &vmpResults, tars::TarsCurrentPtr current)
 {
     string sql = buildSelectSQL(sTableName, vColumns, sCondition);
@@ -257,8 +284,8 @@ int DataServiceImp::queryData(const string &sTableName, const vector<string> &vC
     vmpResults = mysql_data.data();
     return 0;
 }
-
 //////////////////////////////////////////////////////
+
 int DataServiceImp::getRecordCount(const string &sTableName, const string &sCondition, tars::Int32 &iCount, tars::TarsCurrentPtr current)
 {
     try

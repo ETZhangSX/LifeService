@@ -141,7 +141,12 @@ public:
      */
     virtual int deleteApply(const std::string &wx_id, const std::string &club_id, tars::Int32 &iRetCode, tars::TarsCurrentPtr current);
 
-    // virtual int createActivity(const LifeService::ActivityInfo &activityInfo, tars::Int32 &iRetCode, tars::TarsCurrentPtr current);
+    /**
+     * @brief 新建活动
+     * @param activityInfo 活动信息, ActivityInfo(在tars文件中定义)
+     */
+    virtual int createActivity(const LifeService::ActivityInfo &activityInfo, tars::TarsCurrentPtr current);
+    
     /**
      * @brief 获取活动列表
      * @param index     返回信息索引, 传入0获取第一页, 每次调用传入上一次返回的nextIndex
@@ -165,11 +170,21 @@ public:
      * @out   iRetCode    返回状态码
      */
     virtual int deleteActivity(const std::string &activity_id, tars::Int32 &iRetCode, tars::TarsCurrentPtr current);
+    
     /**
      * @brief 获取活动详情
+     * @param activityId   活动id
+     * @param activityInfo 活动信息
      */
-    // virtual int getActivityDetail(std::string activityId, LifeService::ActivityInfo activityInfo, tars::TarsCurrentPtr current);
+    virtual int getActivityInfo(const std::string &activity_id, LifeService::ActivityInfo &activityInfo, tars::TarsCurrentPtr current);
     
+    /**
+     * @brief 新建活动记录
+     * @param wx_id       用户微信id
+     * @param activity_id 活动id
+     */
+    virtual int createActivityRecord(const std::string &wx_id, const std::string &activity_id, tars::TarsCurrentPtr current);
+
     /**
      * @brief 获取活动记录
      * @param index       返回信息索引, 传入0获取第一页, 每次调用传入上一次返回的nextIndex
