@@ -6,7 +6,7 @@
 #include <map>
 
 /**
- *
+ * @brief DataService实现类
  *
  */
 class DataServiceImp : public LifeService::DataService
@@ -35,6 +35,12 @@ public:
     virtual int hasUser(const std::string &wx_id, bool &userExist, tars::TarsCurrentPtr current);
 
     /**
+     * @brief 判断手机号是否存在
+     * @param phone      手机号
+     * @out   phoneExist true表示手机号存在; false表示不存在
+     */
+    virtual int hasPhone (const std::string &phone, bool &phoneExist, tars::TarsCurrentPtr current);
+    /**
      * @brief 创建用户
      * @param wx_id    用户微信id
      * @param userInfo 用户信息, UserInfo(tars文件中定义)
@@ -53,20 +59,6 @@ public:
      * @out   groupInfo 用户权限组(包含所有group_id对应的权限类型)
      */
     virtual int getGroupInfo(map<tars::Int32, std::string> &groupInfo, tars::TarsCurrentPtr current);
-
-    /**
-     * @brief 通过用户id查询用户分组权限
-     * @param wx_id 用户微信id
-     * @out   group 返回用户所属权限组
-     */
-    virtual int getGroupByUserId(const std::string &wx_id, std::string &group, tars::TarsCurrentPtr current);
-
-    /**
-     * @brief 通过分组id查询分组
-     * @param groupId 权限组id
-     * @out   group   对应权限组类型
-     */
-    virtual int getGroupByGroupId(tars::Int32 groupId, std::string &group, tars::TarsCurrentPtr current);
 
     /**
      * @brief 创建社团管理员
@@ -101,6 +93,13 @@ public:
      * @out   clubInfoList 社团信息列表
      */
     virtual int getManagerClubList(tars::Int32 index, tars::Int32 batch, const std::string &wx_id, tars::Int32 &nextIndex, vector<LifeService::ClubInfo> &clubInfoList, tars::TarsCurrentPtr current);
+    
+    /**
+     * @brief 创建社团申请
+     * @param wx_id   用户微信id
+     * @param club_id 社团id
+     */
+    virtual int createApply(const std::string &wx_id, const std::string &club_id, tars::TarsCurrentPtr current);
     
     /**
      * @brief 通过club_id获取社团申请列表

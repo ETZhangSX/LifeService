@@ -74,17 +74,17 @@ module LifeService
     interface DataService
     {
         int hasUser(string wx_id, out bool userExist);
+        int hasPhone(string phone, out bool phoneExist);
         int createUser(string wx_id, UserInfo userInfo);
         int getUserInfo(string wx_id, out UserInfo userInfo);
         int getGroupInfo(out map<int, string> groupInfo);
-        int getGroupByUserId(string wx_id, out string group);
-        int getGroupByGroupId(int groupId, out string group);
 
         int createClubManager(string wx_id, string club_id);
         int createClub(ClubInfo clubInfo, out string club_id);
         int getClubList(int index, int batch, string wx_id, out int nextIndex, out vector<ClubInfo> clubInfoList);
         int getManagerClubList(int index, int batch, string wx_id, out int nextIndex, out vector<ClubInfo> clubInfoList);
         
+        int createApply(string wx_id, string club_id);
         int getApplyListByClubId(string club_id, int index, int batch, int apply_status, out int nextIndex, out vector<ApplyInfo> applyList);
         int getApplyListByUserId(string wx_id, int index, int batch, int apply_status, out int nextIndex, out vector<ApplyInfo> applyList);
         int setApplyStatus(string wx_id, string club_id, int apply_status, out int iRetCode);

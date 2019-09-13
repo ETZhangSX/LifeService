@@ -35,6 +35,17 @@ int DataServiceImp::hasUser(const string &wx_id, bool &userExist, tars::TarsCurr
 }
 //////////////////////////////////////////////////////
 
+int DataServiceImp::hasPhone(const string &phone, bool &phoneExist, tars::TarsCurrentPtr current)
+{
+    phoneExist = UserHandle::getInstance()->hasPhone(phone);
+    if (phoneExist)
+        LOG->debug() << "DataServiceImp::hasPhone: Phone " << phone << " exist" << endl;
+    else
+        LOG->debug() << "DataServiceImp::hasPhone: Phone " << phone << " not exist" << endl;
+    return 0;
+}
+//////////////////////////////////////////////////////
+
 int DataServiceImp::createUser(const string &wx_id, const LifeService::UserInfo &userInfo, tars::TarsCurrentPtr current)
 {
     if (UserHandle::getInstance()->hasUser(wx_id))
@@ -53,7 +64,7 @@ int DataServiceImp::getUserInfo(const string &wx_id, LifeService::UserInfo &sRsp
 {
     if (UserHandle::getInstance()->hasUser(wx_id))
     {
-        sRsp = UserHandle::getInstance()->mUserInfo[wx_id];
+        sRsp = UserHandle::getInstance()->getUserInfoById(wx_id);
         LOG->debug() << "getUserInfo: " << wx_id << " successfully" << endl;
         return 0;
     }
@@ -66,36 +77,6 @@ int DataServiceImp::getGroupInfo(map<tars::Int32, string> &groupInfo, tars::Tars
 {
     groupInfo = UserHandle::getInstance()->mGroupInfo;
     LOG->debug() << "getGroupInfo successfully" << endl;
-    return 0;
-}
-//////////////////////////////////////////////////////
-
-int DataServiceImp::getGroupByUserId(const string &wx_id, string &group, tars::TarsCurrentPtr current)
-{
-    if (UserHandle::getInstance()->hasUser(wx_id))
-    {
-        int group_id = UserHandle::getInstance()->mUserInfo[wx_id].group;
-        if (UserHandle::getInstance()->mGroupInfo.count(group_id) == 0) 
-        {
-            LOG->error() << "DataServiceImp::getGroupByUserId: No match group" << endl;
-            return -1;
-        }
-        group = UserHandle::getInstance()->mGroupInfo[group_id];
-        return 0;
-    }
-    LOG->error() << "DataServiceImp::getGroupByUserId: User does not exist." << endl;
-    return -1;
-}
-//////////////////////////////////////////////////////
-
-int DataServiceImp::getGroupByGroupId(tars::Int32 groupId, string &group, tars::TarsCurrentPtr current)
-{
-    if (UserHandle::getInstance()->mGroupInfo.count(groupId) == 0)
-    {
-        LOG->error() << "DataServiceImp::getGroupByGroupId: No match group" << endl;
-        return -1;
-    }
-    group = UserHandle::getInstance()->mGroupInfo[groupId];
     return 0;
 }
 //////////////////////////////////////////////////////
@@ -132,6 +113,14 @@ int DataServiceImp::getManagerClubList(tars::Int32 index, tars::Int32 batch, con
 }
 //////////////////////////////////////////////////////
 
+int DataServiceImp::createApply(const string &wx_id, const string &club_id, tars::TarsCurrentPtr current)
+{
+    int ret = ClubHandle::getInstance()->InsertApplyData(wx_id, club_id);
+    if (ret != 0) return 300;
+    return 0;
+}
+//////////////////////////////////////////////////////
+
 int DataServiceImp::getApplyListByClubId(const string &club_id, tars::Int32 index, tars::Int32 batch, tars::Int32 apply_status, tars::Int32 &nextIndex, vector<LifeService::ApplyInfo> &applyList, tars::TarsCurrentPtr current)
 {
     int ret = ClubHandle::getInstance()->GetApplyListByClubId(club_id, index, batch, apply_status, nextIndex, applyList);
@@ -162,8 +151,8 @@ int DataServiceImp::deleteApply(const string &wx_id, const string &club_id, tars
 
 int DataServiceImp::createActivity(const LifeService::ActivityInfo &activityInfo, tars::TarsCurrentPtr current)
 {
-    int iRet = ActivityHandle::getInstance()->InsertActivityData(activityInfo);
-    if (iRet != 0) return 300;
+    int ret = ActivityHandle::getInstance()->InsertActivityData(activityInfo);
+    if (ret != 0) return 300;
     return 0;
 }
 //////////////////////////////////////////////////////
@@ -191,16 +180,16 @@ int DataServiceImp::deleteActivity(const std::string &activity_id, tars::Int32 &
 
 int DataServiceImp::createActivityRecord(const string &wx_id, const string &activity_id, tars::TarsCurrentPtr current)
 {
-    int iRet = ActivityHandle::getInstance()->InsertActivityRecord(wx_id, activity_id);
-    if (iRet != 0) return 300;
+    int ret = ActivityHandle::getInstance()->InsertActivityRecord(wx_id, activity_id);
+    if (ret != 0) return 300;
     return 0;
 }
 //////////////////////////////////////////////////////
 
 int DataServiceImp::getActivityRecords(tars::Int32 index, tars::Int32 batch, const string &activity_id, tars::Int32 &nextIndex, vector<LifeService::ActivityRecord> &recordList, tars::TarsCurrentPtr current)
 {
-    int iRet = ActivityHandle::getInstance()->GetActivityRecords(index, batch, activity_id, nextIndex, recordList);
-    return iRet;
+    int ret = ActivityHandle::getInstance()->GetActivityRecords(index, batch, activity_id, nextIndex, recordList);
+    return ret;
 }
 //////////////////////////////////////////////////////
 
@@ -221,9 +210,9 @@ int DataServiceImp::deleteActivityRecord(const string &activity_id, const string
 
 int DataServiceImp::getActivityInfo(const string &activity_id, LifeService::ActivityInfo &activityInfo, tars::TarsCurrentPtr current)
 {
-    int iRet = ActivityHandle::getInstance()->GetActivityInfo(activity_id, activityInfo);
+    int ret = ActivityHandle::getInstance()->GetActivityInfo(activity_id, activityInfo);
     
-    if (iRet != 0) return 300;
+    if (ret != 0) return 300;
     return 0;
 }
 //////////////////////////////////////////////////////
