@@ -25,15 +25,26 @@ public:
     int LoadDataFromDb();
     // 插入用户信息
     int InsertUserData(const std::string &wx_id, const LifeService::UserInfo &userInfo);
+    
+    /**线程安全的数据获取接口, 避免直接读取数据**/ 
     // 判断用户是否存在
     bool hasUser(const std::string &wx_id);
+    // 判断手机号是否存在
+    bool hasPhone(const std::string &phone);
+    // 通过wx_id获取用户姓名
+    std::string getUserNameById(const std::string &wx_id);
+    // 通过wx_id获取用户信息对象
+    LifeService::UserInfo getUserInfoById(const std::string &wx_id);
 public:
     // 用户信息
     map<string, LifeService::UserInfo>  mUserInfo;
+    // 手机号码到用户id的map
+    map<string, string> mPhoneToWxId;
     // 权限组信息
-    map<tars::Int32, std::string>            mGroupInfo;
+    map<tars::Int32, std::string> mGroupInfo;
 private:
-    tars::TC_ThreadLock _pLocker;
+    // 读写锁
+    tars::TC_ThreadRWLocker _pRWLocker;
 };
 
 /**
@@ -54,6 +65,8 @@ public:
     int GetClubList(int index, int batch, const std::string &wx_id, int &nextIndex, vector<LifeService::ClubInfo> &clubInfoList);
     // 获取管理社团列表
     int GetManagerClubList(int index, int batch, const std::string &wx_id, int &nextIndex, vector<LifeService::ClubInfo> &clubInfoList);
+    // 插入社团申请信息
+    int InsertApplyData(const std::string &wx_id, const std::string &club_id);
     // 获取特定社团的申请
     int GetApplyListByClubId(const std::string &club_id, int index, int batch, int apply_status, int &nextIndex, vector<LifeService::ApplyInfo> &applyList);
     // 获取特定用户的申请

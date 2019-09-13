@@ -44,6 +44,7 @@ int UserHandle::LoadDataFromDb()
             userInfo.group              = TC_Common::strto<tars::Int32>(oResults[i][vColumns[6]]);
 
             mUserInfo.insert(make_pair(oResults[i][vColumns[0]], userInfo));
+            mPhoneToWxId.insert(make_pair(userInfo.phone, oResults[i][vColumns[0]]));
             LOG->debug() << "UserHandle::LoadDataFromDb : "
                          << oResults[i]["wx_id"] << "\t" 
                          << oResults[i]["name"] << "\t"
@@ -94,9 +95,11 @@ int UserHandle::InsertUserData(const string &wx_id, const LifeService::UserInfo 
         LOG->error() << "UserHandle::InsertUserData error: " << e.what() << endl;
         return -1;
     }
+    
     {
-        TC_ThreadLock::Lock lock(_pLocker);
+        TC_ThreadWLock wlock(_pRWLocker);
         mUserInfo.insert(make_pair(wx_id, userInfo));
+        mPhoneToWxId.insert(make_pair(userInfo.phone, wx_id));
     }
 
     LOG->debug() << "UserHandle::InsertUserData : " 
@@ -110,10 +113,33 @@ int UserHandle::InsertUserData(const string &wx_id, const LifeService::UserInfo 
 
 bool UserHandle::hasUser(const string &wx_id)
 {
+    TC_ThreadRLock rlock(_pRWLocker);
     if (mUserInfo.count(wx_id) == 0)
         return false;
-    
     return true;
+}
+//////////////////////////////////////////////////////
+
+bool UserHandle::hasPhone(const string &phone)
+{
+    TC_ThreadRLock rlock(_pRWLocker);
+    if (mPhoneToWxId.count(phone) == 0)
+        return false;
+    return true;
+}
+//////////////////////////////////////////////////////
+
+string UserHandle::getUserNameById(const string &wx_id)
+{
+    TC_ThreadRLock rlock(_pRWLocker);
+    return mUserInfo[wx_id].name;
+}
+//////////////////////////////////////////////////////
+
+LifeService::UserInfo UserHandle::getUserInfoById(const string &wx_id)
+{
+    TC_ThreadRLock rlock(_pRWLocker);
+    return mUserInfo[wx_id];
 }
 //////////////////////////////////////////////////////
 
@@ -335,6 +361,28 @@ int ClubHandle::GetManagerClubList(int index, int batch, const string &wx_id, in
 }
 //////////////////////////////////////////////////////
 
+int ClubHandle::InsertApplyData(const string &wx_id, const string &club_id)
+{
+    string sTableName = "apply_for_club";
+    TC_Mysql::RECORD_DATA mpColumns;
+    mpColumns.insert(make_pair("apply_status", make_pair(TC_Mysql::DB_INT, "0")));
+    mpColumns.insert(make_pair("user_id"     , make_pair(TC_Mysql::DB_STR, wx_id)));
+    mpColumns.insert(make_pair("club_id"     , make_pair(TC_Mysql::DB_INT, club_id)));
+
+    try
+    {
+        MDbQueryRecord::getInstance()->GetMysqlObject()->insertRecord(sTableName, mpColumns);
+    }
+    catch (exception &e)
+    {
+        LOG->error() << "ClubHandle::InsertApplyData Insert Error: " << e.what() << endl;
+        return -1;
+    }
+    LOG->debug() << "ClubHandle::InsertApplyData wx_id: " << wx_id << " club_id: " << club_id << endl;
+    return 0;
+}
+//////////////////////////////////////////////////////
+
 int ClubHandle::GetApplyListByClubId(const string &club_id, int index, int batch, int apply_status, int &nextIndex, vector<LifeService::ApplyInfo> &applyList)
 {
     nextIndex = -1;
@@ -474,10 +522,10 @@ int ActivityHandle::InsertActivityData(const LifeService::ActivityInfo activityI
     }
     catch (exception &e)
     {
-        LOG->error() << "ActivityHandle::CreateActivity Insert Error: " << e.what() << endl;
+        LOG->error() << "ActivityHandle::InsertActivityData Insert Error: " << e.what() << endl;
         return -1;
     }
-    LOG->debug() << "ActivityHandle::CreateActivity Name: " << activityInfo.name << endl;
+    LOG->debug() << "ActivityHandle::InsertActivityData Name: " << activityInfo.name << endl;
     return 0;
 }
 //////////////////////////////////////////////////////
@@ -726,7 +774,7 @@ int ActivityHandle::GetActivityRecords(int index, int batch, const string &activ
             LifeService::ActivityRecord record;
             record.wx_id = oResults[i]["user_id"];
             record.record_time = oResults[i]["record_time"];
-            record.user_name = UserHandle::getInstance()->mUserInfo[record.wx_id].name;
+            record.user_name = UserHandle::getInstance()->getUserNameById(record.wx_id);
 
             recordList.push_back(record);
         }
@@ -810,7 +858,7 @@ int MsgWallHandle::GetMsgList(int index, int batch, const string &date, const st
             msg.like_count   = TC_Common::strto<int>(oResults[i][vColumns[6]]);
             // 判断是否匿名
             if (!msg.anonymous)
-                msg.user_name = UserHandle::getInstance()->mUserInfo[msg.user_id].name;
+                msg.user_name = UserHandle::getInstance()->getUserNameById(msg.user_id);
             
             msgList.push_back(msg);
         }
