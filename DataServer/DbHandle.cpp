@@ -72,8 +72,8 @@ int UserHandle::LoadDataFromDb()
     }
     return 0;
 }
-
 //////////////////////////////////////////////////////
+
 int UserHandle::InsertUserData(const string &wx_id, const LifeService::UserInfo &userInfo)
 {
     map<string, pair<TC_Mysql::FT, string>> vColumns;
@@ -106,8 +106,8 @@ int UserHandle::InsertUserData(const string &wx_id, const LifeService::UserInfo 
     
     return 0;
 }
-
 //////////////////////////////////////////////////////
+
 bool UserHandle::hasUser(const string &wx_id)
 {
     if (mUserInfo.count(wx_id) == 0)
@@ -115,8 +115,8 @@ bool UserHandle::hasUser(const string &wx_id)
     
     return true;
 }
-
 //////////////////////////////////////////////////////
+
 int ClubHandle::LoadDataFromDb()
 {
     TC_Mysql mysql(SConfig::getInstance()->strDbHost, \
@@ -162,8 +162,8 @@ int ClubHandle::LoadDataFromDb()
     }
     return 0;
 }
-
 //////////////////////////////////////////////////////
+
 int ClubHandle::InsertClubManager(const string &wx_id, const string &club_id)
 {
     TC_Mysql::RECORD_DATA mColumns;
@@ -184,8 +184,8 @@ int ClubHandle::InsertClubManager(const string &wx_id, const string &club_id)
     LOG->debug() << "ClubHandle::InsertClubManager user: " << wx_id << " club_id: " << club_id << endl;
     return 0;
 }
-
 //////////////////////////////////////////////////////
+
 int ClubHandle::InsertClubData(LifeService::ClubInfo clubInfo, string &club_id)
 {
     map<string, pair<TC_Mysql::FT, string>> mColumns;
@@ -223,8 +223,8 @@ int ClubHandle::InsertClubData(LifeService::ClubInfo clubInfo, string &club_id)
 
     return 0;
 }
-
 //////////////////////////////////////////////////////
+
 int ClubHandle::GetClubList(int index, int batch, const string &wx_id, int &nextIndex, vector<LifeService::ClubInfo> &clubInfoList)
 {
     nextIndex = -1;
@@ -286,8 +286,8 @@ int ClubHandle::GetClubList(int index, int batch, const string &wx_id, int &next
     LOG->debug() << "ClubHandle::GetClubList Execute SQL: " << sSql << endl;
     return 0;
 }
-
 //////////////////////////////////////////////////////
+
 int ClubHandle::GetManagerClubList(int index, int batch, const string &wx_id, int &nextIndex, vector<LifeService::ClubInfo> &clubInfoList)
 {
     nextIndex = -1;
@@ -333,8 +333,8 @@ int ClubHandle::GetManagerClubList(int index, int batch, const string &wx_id, in
     LOG->debug() << "ClubHandle::GetManagerClubList Execute SQL: " << sSql << endl;
     return 0;
 }
-
 //////////////////////////////////////////////////////
+
 int ClubHandle::GetApplyListByClubId(const string &club_id, int index, int batch, int apply_status, int &nextIndex, vector<LifeService::ApplyInfo> &applyList)
 {
     nextIndex = -1;
@@ -393,8 +393,8 @@ int ClubHandle::GetApplyListByClubId(const string &club_id, int index, int batch
     LOG->debug() << "ClubHandle::GetApplyListByClubId Execute SQL: " << sSql << endl;
     return 0;
 }
-
 //////////////////////////////////////////////////////
+
 int ClubHandle::GetApplyListByUserId(const string &wx_id, int index, int batch, int apply_status, int &nextIndex, vector<LifeService::ApplyInfo> &applyList)
 {
     nextIndex = -1;
@@ -452,8 +452,36 @@ int ClubHandle::GetApplyListByUserId(const string &wx_id, int index, int batch, 
     LOG->debug() << "ClubHandle::GetApplyListByUserId Execute SQL: " << sSql << endl;
     return 0;
 }
-
 //////////////////////////////////////////////////////
+
+int ActivityHandle::InsertActivityData(const LifeService::ActivityInfo activityInfo)
+{
+    string sTableName = "activities";
+    TC_Mysql::RECORD_DATA mpColumns;
+    mpColumns.insert(make_pair("name"               , make_pair(TC_Mysql::DB_STR, activityInfo.name)));
+    mpColumns.insert(make_pair("sponsor"            , make_pair(TC_Mysql::DB_STR, activityInfo.sponsor)));
+    mpColumns.insert(make_pair("club_id"            , make_pair(TC_Mysql::DB_STR, activityInfo.club_id)));
+    mpColumns.insert(make_pair("target_id"          , make_pair(TC_Mysql::DB_STR, activityInfo.target_id)));
+    mpColumns.insert(make_pair("start_time"         , make_pair(TC_Mysql::DB_STR, activityInfo.start_time)));
+    mpColumns.insert(make_pair("stop_time"          , make_pair(TC_Mysql::DB_STR, activityInfo.stop_time)));
+    mpColumns.insert(make_pair("registry_start_time", make_pair(TC_Mysql::DB_STR, activityInfo.registry_start_time)));
+    mpColumns.insert(make_pair("registry_stop_time" , make_pair(TC_Mysql::DB_STR, activityInfo.registry_stop_time)));
+    mpColumns.insert(make_pair("content"            , make_pair(TC_Mysql::DB_STR, activityInfo.content)));
+
+    try
+    {
+        MDbQueryRecord::getInstance()->GetMysqlObject()->insertRecord(sTableName, mpColumns);
+    }
+    catch (exception &e)
+    {
+        LOG->error() << "ActivityHandle::CreateActivity Insert Error: " << e.what() << endl;
+        return -1;
+    }
+    LOG->debug() << "ActivityHandle::CreateActivity Name: " << activityInfo.name << endl;
+    return 0;
+}
+//////////////////////////////////////////////////////
+
 int ClubHandle::SetApplyStatus(const string &wx_id, const string &club_id, int apply_status)
 {
     string sSql = "update apply_for_club set `apply_status`=" + TC_Common::tostr<int>(apply_status) 
@@ -464,8 +492,8 @@ int ClubHandle::SetApplyStatus(const string &wx_id, const string &club_id, int a
     LOG->debug() << "ClubHandle::SetApplyStatus Execute SQL: " << sSql << endl;
     return 0;
 }
-
 //////////////////////////////////////////////////////
+
 int ClubHandle::DeleteApply(const string &wx_id, const string &club_id)
 {
     string sSql = "delete from apply_for_club where `user_id`='" + wx_id + "' and `club_id`=1";
@@ -475,9 +503,9 @@ int ClubHandle::DeleteApply(const string &wx_id, const string &club_id)
     LOG->debug() << "ClubHandle::DeleteApply AddExecuteSql: " << sSql << endl;
     return 0;
 }
-
 //////////////////////////////////////////////////////
-int ActivityHandle::GetActivityList(const int &index, const int &batch, const string &wx_id, const string &club_id, int &nextIndex, vector<map<string, string>> &activityList)
+
+int ActivityHandle::GetActivityList(int index, int batch, const string &wx_id, const string &club_id, int &nextIndex, vector<map<string, string>> &activityList)
 {
     nextIndex = -1;
 
@@ -559,8 +587,8 @@ int ActivityHandle::GetActivityList(const int &index, const int &batch, const st
 
     return 0;
 }
-
 //////////////////////////////////////////////////////
+
 int ActivityHandle::UpdateActivity(const LifeService::ActivityInfo &activityInfo)
 {
     TC_Mysql::RECORD_DATA updateItem;
@@ -582,8 +610,8 @@ int ActivityHandle::UpdateActivity(const LifeService::ActivityInfo &activityInfo
     }
     return 0;
 }
-
 //////////////////////////////////////////////////////
+
 int ActivityHandle::DeleteActivity(const string &activity_id)
 {
     string sql_delete_records = "delete from activity_records where `activity_id`=" + activity_id;
@@ -596,6 +624,73 @@ int ActivityHandle::DeleteActivity(const string &activity_id)
     LOG->debug() << "ActivityHandle::DeleteActivity AddExecuteSql: " << sql_delete_records << ", " << sql_delete_activity << endl;
     return 0;
 }
+//////////////////////////////////////////////////////
+
+int ActivityHandle::GetActivityInfo(const string &activity_id, LifeService::ActivityInfo &activityInfo)
+{
+    string sTableName = "activities";
+    vector<string> vColumns = {"name", "sponsor", "club_id", "target_id", "create_time", "start_time", "stop_time", "registry_start_time", "registry_stop_time", "content"};
+    string sCondition = "`activity_id`=" + activity_id;
+
+    string sSql = buildSelectSQL(sTableName, vColumns, sCondition);
+    
+    {
+        TC_Mysql::MysqlData oResults;
+        try
+        {
+            oResults = MDbQueryRecord::getInstance()->GetMysqlObject()->queryRecord(sSql);
+        }
+        catch (exception &e)
+        {
+            LOG->error() << "ActivityHandle::GetActivityInfo Execute SQL ERROR: " << sSql << endl;
+            return -1;
+        }
+
+        size_t oResultsCount = oResults.size();
+
+        if (oResultsCount < 1)
+        {
+            LOG->error() << "ActivityHandle::GetActivityInfo No Query Result For SQL: " << sSql << endl;
+            return -1;
+        }
+
+        activityInfo.activity_id         = activity_id;
+        activityInfo.name                = oResults[0][vColumns[0]];
+        activityInfo.sponsor             = oResults[0][vColumns[1]];
+        activityInfo.club_id             = oResults[0][vColumns[2]];
+        activityInfo.target_id           = oResults[0][vColumns[3]];
+        activityInfo.create_time         = oResults[0][vColumns[4]];
+        activityInfo.start_time          = oResults[0][vColumns[5]];
+        activityInfo.stop_time           = oResults[0][vColumns[6]];
+        activityInfo.registry_start_time = oResults[0][vColumns[7]];
+        activityInfo.registry_stop_time  = oResults[0][vColumns[8]];
+        activityInfo.content             = oResults[0][vColumns[9]];
+    }
+    return 0;
+}
+//////////////////////////////////////////////////////
+
+int ActivityHandle::InsertActivityRecord(const string &wx_id, const string &activity_id)
+{
+    string sTableName = "activity_records";
+    
+    TC_Mysql::RECORD_DATA mpColumns;
+    mpColumns.insert(make_pair("user_id"    , make_pair(TC_Mysql::DB_STR, wx_id)));
+    mpColumns.insert(make_pair("activity_id", make_pair(TC_Mysql::DB_INT, activity_id)));
+
+    try
+    {
+        MDbQueryRecord::getInstance()->GetMysqlObject()->insertRecord(sTableName, mpColumns);
+    }
+    catch (exception &e)
+    {
+        LOG->error() << "ActivityHandle::InsertActivityRecord Error: " << e.what() << endl;
+        return -1;
+    }
+    LOG->debug() << "ActivityHandle::InsertActivityRecord Inser Record: user_id " << wx_id << " activity_id " << activity_id << endl;
+    return 0;
+}
+//////////////////////////////////////////////////////
 
 int ActivityHandle::GetActivityRecords(int index, int batch, const string &activity_id, int &nextIndex, vector<LifeService::ActivityRecord> &recordList)
 {
@@ -640,8 +735,8 @@ int ActivityHandle::GetActivityRecords(int index, int batch, const string &activ
     LOG->debug() << "DataServiceImp::getActivityRecords Execute SQL: " << sSql << endl;
     return 0;
 }
-
 //////////////////////////////////////////////////////
+
 int MsgWallHandle::InsertMessage(const LifeService::Message &msg)
 {
     map<string, pair<TC_Mysql::FT, string>> mColumns;
@@ -659,9 +754,9 @@ int MsgWallHandle::InsertMessage(const LifeService::Message &msg)
 
     return 0;
 }
-
 //////////////////////////////////////////////////////
-int MsgWallHandle::GetMsgList(const int &index, const int &batch, const string &date, const string wx_id, int &nextIndex, vector<LifeService::Message> &msgList)
+
+int MsgWallHandle::GetMsgList(int index, int batch, const string &date, const string wx_id, int &nextIndex, vector<LifeService::Message> &msgList)
 {
     nextIndex = -1;
 
@@ -723,8 +818,8 @@ int MsgWallHandle::GetMsgList(const int &index, const int &batch, const string &
     LOG->debug() << "MsgWallHandle::GetMsgList Execute SQL: " << sql << endl;    
     return 0;
 }
-
 //////////////////////////////////////////////////////
+
 int MsgWallHandle::AddLike(const string &message_id)
 {
     string sSql = "update message_wall set `like_count`=(`like_count`+1) where `message_id`=" + message_id;
@@ -734,8 +829,8 @@ int MsgWallHandle::AddLike(const string &message_id)
     LOG->debug() << "MsgWallHandle::AddLike AddExecuteSql: " << sSql << endl;    
     return 0;
 }
-
 //////////////////////////////////////////////////////
+
 int MsgWallHandle::GetLike(const string &message_id, int &like_count)
 {
     string sSql = buildSelectSQL("message_wall", "like_count", "`message_id`=" + message_id);

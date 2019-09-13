@@ -13,7 +13,9 @@
 
 using namespace std;
 
-// 用户信息操作类
+/**
+ * @brief 用户信息操作类
+ */
 class UserHandle: public tars::TC_Singleton<UserHandle>
 {
 public:
@@ -29,12 +31,14 @@ public:
     // 用户信息
     map<string, LifeService::UserInfo>  mUserInfo;
     // 权限组信息
-    map<tars::Int32, string>            mGroupInfo;
+    map<tars::Int32, std::string>            mGroupInfo;
 private:
     tars::TC_ThreadLock _pLocker;
 };
 
-// 社团信息操作类
+/**
+ * @brief 社团信息操作类
+ */
 class ClubHandle: public tars::TC_Singleton<ClubHandle>
 {
 public:
@@ -67,29 +71,38 @@ private:
     tars::TC_ThreadLock _pLocker;
 };
 
-// 活动信息操作类
+/**
+ * @brief 活动信息操作类
+ */
 class ActivityHandle: public tars::TC_Singleton<ActivityHandle>
 {
 public:
-    int CreateActivity();
+    // 插入活动信息
+    int InsertActivityData(const LifeService::ActivityInfo activityInfo);
     // 获取活动列表
-    int GetActivityList(const int &index, const int &batch, const std::string &wx_id, const std::string &club_id, int &nextIndex, vector<map<std::string, std::string>> &activityList);
+    int GetActivityList(int index, int batch, const std::string &wx_id, const std::string &club_id, int &nextIndex, vector<map<std::string, std::string>> &activityList);
     // 更新活动信息
     int UpdateActivity(const LifeService::ActivityInfo &activityInfo);
     // 删除活动
     int DeleteActivity(const std::string &activity_id);
+    // 获取活动信息
+    int GetActivityInfo(const std::string &activity_id, LifeService::ActivityInfo &activityInfo);
+    // 插入活动记录
+    int InsertActivityRecord(const std::string &wx_id, const std::string &activity_id);
     // 获取活动参与记录
     int GetActivityRecords(int index, int batch, const std::string &activity_id, int &nextIndex, vector<LifeService::ActivityRecord> &recordList);
 };
 
-// 表白墙信息操作类
+/**
+ * @brief 表白墙信息操作类
+ */
 class MsgWallHandle: public tars::TC_Singleton<MsgWallHandle>
 {
 public:
     // 插入新留言信息
     int InsertMessage(const LifeService::Message &msg);
     // 获取留言列表
-    int GetMsgList(const int &index, const int &batch, const std::string &date, const std::string wx_id, int &nextIndex, vector<LifeService::Message> &msgList);
+    int GetMsgList(int index, int batch, const std::string &date, const std::string wx_id, int &nextIndex, vector<LifeService::Message> &msgList);
     // 点赞
     int AddLike(const std::string &message_id);
     // 获取点赞数
