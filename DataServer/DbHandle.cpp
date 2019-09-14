@@ -237,7 +237,7 @@ int ClubHandle::InsertClubData(LifeService::ClubInfo clubInfo, string &club_id)
         // 新增数据到数组和map中
         clubInfo.club_id = TC_Common::tostr<long>(last_insert_id);
         {
-            TC_ThreadLock::Lock lock(_pLocker);
+            TC_ThreadWLock wlock(_pRWLocker);
             vClubInfo.push_back(clubInfo);
             mClub.insert(make_pair(clubInfo.club_id, (int)vClubInfo.size() - 1));
         }
@@ -257,14 +257,21 @@ int ClubHandle::GetClubList(int index, int batch, const string &wx_id, int &next
     // 不需要筛选用户, 从vClubInfo中获取
     if(wx_id == "") 
     {
-        int lenofclub = (int)vClubInfo.size();
-        if (index >= lenofclub) return 0;
-        // 结束位置
-        int endp = ((index + batch > lenofclub)? (lenofclub - 1):(index + batch - 1));
+        int lenofclub;  // 数组长度
+        int endp;       // 结束位置
+        
+        {// 读锁
+            TC_ThreadRLock rlock(_pRWLocker);
+            lenofclub = (int)vClubInfo.size();
+            if (index >= lenofclub) return 0;
+            // 若请求的位置超过数组长度则返回数组末端
+            endp = ((index + batch > lenofclub)? (lenofclub - 1):(index + batch - 1));
+            // 复制数组
+            clubInfoList.assign(vClubInfo.begin() + index, vClubInfo.begin() + endp + 1);
+        }
+
         // 是否还有数据
         nextIndex = ((endp + 1 == lenofclub)? -1 : (endp + 1));
-        // 赋值
-        clubInfoList.assign(vClubInfo.begin() + index, vClubInfo.begin() + endp + 1);
 
         LOG->debug() << "ClubHandle::GetClubList List size: " << clubInfoList.size() 
                      << " index: " << index
@@ -502,6 +509,13 @@ int ClubHandle::GetApplyListByUserId(const string &wx_id, int index, int batch, 
 }
 //////////////////////////////////////////////////////
 
+string ClubHandle::getClubNameById(const string &club_id)
+{
+    TC_ThreadRLock rlock(_pRWLocker);
+    return vClubInfo[mClub[club_id]].name;
+}
+//////////////////////////////////////////////////////
+
 int ActivityHandle::InsertActivityData(const LifeService::ActivityInfo activityInfo)
 {
     string sTableName = "activities";
@@ -624,8 +638,7 @@ int ActivityHandle::GetActivityList(int index, int batch, const string &wx_id, c
             item.insert(make_pair(vColumns[10], oResults[i][vColumns[10]]));
 
             // 获取社团名
-            int    club_pos  = ClubHandle::getInstance()->mClub[item["club_id"]];
-            string club_name = ClubHandle::getInstance()->vClubInfo[club_pos].name;
+            string club_name = ClubHandle::getInstance()->getClubNameById(item["club_id"]);
             
             item.insert(make_pair("club_name", club_name));
             activityList.push_back(item);

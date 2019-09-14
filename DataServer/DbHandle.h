@@ -76,12 +76,14 @@ public:
     // 删除申请
     int DeleteApply(const std::string &wx_id, const std::string &club_id);
 public:
+    // 通过id获取club名
+    std::string getClubNameById(const std::string &club_id);
     // 存储club_id对应的vClubInfo下标
     map<string, int> mClub;
     // 社团信息
     vector<LifeService::ClubInfo> vClubInfo;
 private:
-    tars::TC_ThreadLock _pLocker;
+    tars::TC_ThreadRWLocker _pRWLocker;
 };
 
 /**
