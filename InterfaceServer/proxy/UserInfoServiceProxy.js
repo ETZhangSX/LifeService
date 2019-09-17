@@ -126,30 +126,37 @@ LifeService.UserInfoServiceProxy.prototype.GetGroupList = function () {
 };
 LifeService.UserInfoServiceProxy.GetGroupList = __LifeService_UserInfoService$GetGroupList$IF;
 
-var __LifeService_UserInfoService$GetUserPermissionInfo$IF = {
-    "name" : "GetUserPermissionInfo",
+var __LifeService_UserInfoService$HasPhone$IF = {
+    "name" : "HasPhone",
     "return" : "int32",
     "arguments" : [{
-        "name" : "wxId",
+        "name" : "phone",
         "class" : "string",
         "direction" : "in"
+    }, {
+        "name" : "phoneExist",
+        "class" : "bool",
+        "direction" : "out"
     }]
 };
 
-var __LifeService_UserInfoService$GetUserPermissionInfo$IE = function (wxId) {
+var __LifeService_UserInfoService$HasPhone$IE = function (phone) {
     var os = new TarsStream.TarsOutputStream();
-    os.writeString(1, wxId);
+    os.writeString(1, phone);
     return os.getBinBuffer();
 };
 
-var __LifeService_UserInfoService$GetUserPermissionInfo$ID = function (data) {
+var __LifeService_UserInfoService$HasPhone$ID = function (data) {
     try {
         var is = new TarsStream.TarsInputStream(data.response.sBuffer);
         return {
             "request" : data.request,
             "response" : {
                 "costtime" : data.request.costtime,
-                "return" : is.readInt32(0, true, 0)
+                "return" : is.readInt32(0, true, 0),
+                "arguments" : {
+                    "phoneExist" : is.readBoolean(2, true, true)
+                }
             }
         };
     } catch (e) {
@@ -157,21 +164,24 @@ var __LifeService_UserInfoService$GetUserPermissionInfo$ID = function (data) {
     }
 };
 
-var __LifeService_UserInfoService$GetUserPermissionInfo$PE = function (wxId, __$PROTOCOL$VERSION) {
+var __LifeService_UserInfoService$HasPhone$PE = function (phone, __$PROTOCOL$VERSION) {
     var tup = new TarsStream.UniAttribute();
     tup.tupVersion = __$PROTOCOL$VERSION;
-    tup.writeString("wxId", wxId);
+    tup.writeString("phone", phone);
     return tup;
 };
 
-var __LifeService_UserInfoService$GetUserPermissionInfo$PD = function (data) {
+var __LifeService_UserInfoService$HasPhone$PD = function (data) {
     try {
         var tup = data.response.tup;
         return {
             "request" : data.request,
             "response" : {
                 "costtime" : data.request.costtime,
-                "return" : tup.readInt32("", 0)
+                "return" : tup.readInt32("", 0),
+                "arguments" : {
+                    "phoneExist" : tup.readBoolean("phoneExist")
+                }
             }
         };
     } catch (e) {
@@ -179,19 +189,19 @@ var __LifeService_UserInfoService$GetUserPermissionInfo$PD = function (data) {
     }
 };
 
-var __LifeService_UserInfoService$GetUserPermissionInfo$ER = function (data) {
-    throw _makeError(data, "Call UserInfoService::GetUserPermissionInfo failed");
+var __LifeService_UserInfoService$HasPhone$ER = function (data) {
+    throw _makeError(data, "Call UserInfoService::HasPhone failed");
 };
 
-LifeService.UserInfoServiceProxy.prototype.GetUserPermissionInfo = function (wxId) {
+LifeService.UserInfoServiceProxy.prototype.HasPhone = function (phone) {
     var version = this._worker.version;
     if (version === TarsStream.Tup.TUP_SIMPLE || version === TarsStream.Tup.TUP_COMPLEX) {
-        return this._worker.tup_invoke("GetUserPermissionInfo", __LifeService_UserInfoService$GetUserPermissionInfo$PE(wxId, version), arguments[arguments.length - 1], __LifeService_UserInfoService$GetUserPermissionInfo$IF).then(__LifeService_UserInfoService$GetUserPermissionInfo$PD, __LifeService_UserInfoService$GetUserPermissionInfo$ER);
+        return this._worker.tup_invoke("HasPhone", __LifeService_UserInfoService$HasPhone$PE(phone, version), arguments[arguments.length - 1], __LifeService_UserInfoService$HasPhone$IF).then(__LifeService_UserInfoService$HasPhone$PD, __LifeService_UserInfoService$HasPhone$ER);
     } else {
-        return this._worker.tars_invoke("GetUserPermissionInfo", __LifeService_UserInfoService$GetUserPermissionInfo$IE(wxId), arguments[arguments.length - 1], __LifeService_UserInfoService$GetUserPermissionInfo$IF).then(__LifeService_UserInfoService$GetUserPermissionInfo$ID, __LifeService_UserInfoService$GetUserPermissionInfo$ER);
+        return this._worker.tars_invoke("HasPhone", __LifeService_UserInfoService$HasPhone$IE(phone), arguments[arguments.length - 1], __LifeService_UserInfoService$HasPhone$IF).then(__LifeService_UserInfoService$HasPhone$ID, __LifeService_UserInfoService$HasPhone$ER);
     }
 };
-LifeService.UserInfoServiceProxy.GetUserPermissionInfo = __LifeService_UserInfoService$GetUserPermissionInfo$IF;
+LifeService.UserInfoServiceProxy.HasPhone = __LifeService_UserInfoService$HasPhone$IF;
 
 var __LifeService_UserInfoService$IsAppliedActivity$IF = {
     "name" : "IsAppliedActivity",
@@ -456,7 +466,7 @@ var __LifeService_UserInfoService$SignIn$IF = {
         "class" : "string",
         "direction" : "in"
     }, {
-        "name" : "sRsp",
+        "name" : "userInfo",
         "class" : "LifeService.UserInfo",
         "direction" : "out"
     }]
@@ -477,7 +487,7 @@ var __LifeService_UserInfoService$SignIn$ID = function (data) {
                 "costtime" : data.request.costtime,
                 "return" : is.readInt32(0, true, 0),
                 "arguments" : {
-                    "sRsp" : is.readStruct(2, true, _TARS_MODULE_A_.LifeService.UserInfo)
+                    "userInfo" : is.readStruct(2, true, _TARS_MODULE_A_.LifeService.UserInfo)
                 }
             }
         };
@@ -502,7 +512,7 @@ var __LifeService_UserInfoService$SignIn$PD = function (data) {
                 "costtime" : data.request.costtime,
                 "return" : tup.readInt32("", 0),
                 "arguments" : {
-                    "sRsp" : tup.readStruct("sRsp", _TARS_MODULE_A_.LifeService.UserInfo)
+                    "userInfo" : tup.readStruct("userInfo", _TARS_MODULE_A_.LifeService.UserInfo)
                 }
             }
         };
