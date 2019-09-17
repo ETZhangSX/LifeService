@@ -397,7 +397,7 @@ ClubActivityServer.getActivityParticipate = async (ctx) => {
 
         ctx.body = DataHandle.returnData(200, DataHandle.Success, {
             "next_index"      : result.response.arguments.nextIndex,
-            "participate_list": result.response.arguments.participateList,
+            "participate_list": result.response.arguments.participateList.toObject(),
         })
     }
     catch(e) {
