@@ -8,6 +8,7 @@ using namespace std;
 tars::TC_Mysql * MDbQueryRecord::GetMysqlObject()
 {
     unsigned int uiThreadId = (unsigned int) pthread_self();
+    // 查询此线程是否存在Mysql对象, 存在则返回; 不存在则新建并保存
     if (MysqlMap.find(uiThreadId) != MysqlMap.end())
     {
         return MysqlMap[uiThreadId];
@@ -30,11 +31,13 @@ tars::TC_Mysql * MDbQueryRecord::GetMysqlObject()
         }
         catch (exception &e)
         {
+            // 向Notify节点报告异常
             TarsRemoteNotify::getInstance()->report("CONNECT_MDB_ERROR");
             LOG->error() << "MDbTbUpdateThread::GetMysqlObject exception: " << e.what() << endl;
             delete ptrMysql;    
             return NULL;
         }
+        // 将对象存储在map中
         MysqlMap[uiThreadId] = ptrMysql;
         return ptrMysql;
     }
@@ -106,9 +109,10 @@ void MDbExecuteRecord::Execute()
         }
         catch(exception& e)
         {
+            string errMsg(e.what());
             LOG->error() << "MDbExcuteRecord::Excute:" << strSql
-                         << " exception:" << e.what() << endl;
-            TarsRemoteNotify::getInstance()->report("MysqlExcuteError");
+                         << " exception:" << errMsg << endl;
+            TarsRemoteNotify::getInstance()->report("MysqlExcuteError: " + errMsg);
         }
     }
 }
