@@ -30,7 +30,7 @@ UserInfoServer.signIn = async (ctx) => {
         const prx = Tars.stringToProxy(UserInfoServicePrx, userInfoObjName);
         
         let result = await prx.SignIn(wx_id);
-        let userInfo = result.response.arguments.sRsp;
+        let userInfo = result.response.arguments.userInfo;
         ctx.body = DataHandle.returnData(200, 'success', userInfo.toObject());
 
     } catch(e) {
@@ -150,5 +150,24 @@ UserInfoServer.signUp = async (ctx) => {
         ctx.body = DataHandle.returnError(400, e.message);
     }
 };
+
+UserInfoServer.hasPhone = async (ctx) => {
+    let {
+        phone
+    } = ctx.query;
+
+    try {
+        const prx = Tars.stringToProxy(UserInfoServicePrx, userInfoObjName);
+
+        let result = await prx.HasPhone(phone);
+        ctx.body = DataHandle.returnData(200, 'success', {
+            'phoneExist': result.response.arguments.phoneExist,
+        })
+    }
+    catch(e) {
+        console.log(e);
+        ctx.body = DataHandle.returnError(400, e.message);
+    }
+}
 
 module.exports = UserInfoServer;

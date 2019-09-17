@@ -8,6 +8,7 @@ const apiConf = [
     ['get' , '/getOpenId'                , WeixinAPI.getOpenId],
     //用户服务接口
     ['get' , '/test'                     , UserInfoServer.test],
+    ['get' , '/hasPhone'                 , UserInfoServer.hasPhone],
     ['get' , '/signIn'                   , UserInfoServer.signIn],
     ['get' , '/getGroupList'             , UserInfoServer.getGroupList],
     ['post', '/isClubManager'            , UserInfoServer.isClubManager],
