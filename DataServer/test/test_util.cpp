@@ -10,7 +10,7 @@ using namespace std;
 // 测试用例结构体
 struct BuildSQLTest;
 // 生成测试用例
-vector<vector<BuildSQLTest>> TestCases();
+vector<vector<BuildSQLTest>> SQLTestCases();
 // 测试函数
 void test_buildSelectSQL_simple(vector<BuildSQLTest> vTestCases);
 void test_buildSelectSQL_simple_multi_columns(vector<BuildSQLTest> vTestCases);
@@ -20,7 +20,7 @@ void test_buildJoinSQL(vector<BuildSQLTest> vTestCases);
 
 int main()
 {
-    vector<vector<BuildSQLTest>> vvTestCases = TestCases();
+    vector<vector<BuildSQLTest>> vvTestCases = SQLTestCases();
     
     test_buildSelectSQL_simple(vvTestCases[0]);
     test_buildSelectSQL_simple_multi_columns(vvTestCases[1]);
@@ -66,7 +66,7 @@ struct BuildSQLTest
 };
 
 /////////////////////////////////////////////
-vector<vector<BuildSQLTest>> TestCases()
+vector<vector<BuildSQLTest>> SQLTestCases()
 {
     vector<vector<BuildSQLTest>> testCases;
 
