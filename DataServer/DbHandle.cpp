@@ -368,6 +368,25 @@ int ClubHandle::GetManagerClubList(int index, int batch, const string &wx_id, in
 }
 //////////////////////////////////////////////////////
 
+int ClubHandle::GetClubManagerCount(const string &wx_id, const string &club_id)
+{
+    string sTableName = "club_managers";
+    string sCondition = "where `wx_id`='" + wx_id + "' and `club_id`=" + club_id;
+    int count = 0;
+    try
+    {
+        count = MDbQueryRecord::getInstance()->GetMysqlObject()->getRecordCount(sTableName, sCondition);
+    }
+    catch (exception &e)
+    {
+        LOG->error() << "ClubHandle::GetClubManagerCount error: " << e.what() << endl;
+        return -1;
+    }
+    LOG->debug() << "ClubHandle::GetClubManagerCount Table: " << sTableName << " Condition: " << sCondition << endl;
+    return count;
+}
+//////////////////////////////////////////////////////
+
 int ClubHandle::InsertApplyData(const string &wx_id, const string &club_id)
 {
     string sTableName = "apply_for_club";
@@ -516,6 +535,74 @@ string ClubHandle::getClubNameById(const string &club_id)
 }
 //////////////////////////////////////////////////////
 
+int ClubHandle::SetApplyStatus(const string &wx_id, const string &club_id, int apply_status)
+{
+    TC_Mysql::RECORD_DATA mpColumn;
+    mpColumn.insert(make_pair("apply_status", make_pair(TC_Mysql::DB_INT, TC_Common::tostr<int>(apply_status))));
+    string sCondition =  "where `user_id`='" + wx_id + "' and `club_id`=" + club_id;
+    
+    int affectRows = 0;
+    try 
+    {
+        affectRows = (int)MDbQueryRecord::getInstance()->GetMysqlObject()->updateRecord("apply_for_club", mpColumn, sCondition);
+    }
+    catch(exception &e)
+    {
+        LOG->error() << "ClubHandle::SetApplyStatus Execute update error:" << e.what() << endl;
+        return -1;
+    }
+    
+    // MDbExecuteRecord::getInstance()->AddExecuteSql(sSql);
+    LOG->debug() << "ClubHandle::SetApplyStatus Execute update apply_status: " << apply_status << endl;
+    return affectRows;
+}
+//////////////////////////////////////////////////////
+
+int ClubHandle::GetApplyCount(const string &wx_id, const string &club_id, int apply_status)
+{
+    string sTableName = "apply_for_club";
+    string sCondition = "where `user_id`='" + wx_id + "' and `club_id`=" + club_id + " and `apply_status`";
+    int count = 0;
+    if (apply_status >= 0)
+        sCondition += "=" + TC_Common::tostr<tars::Int32>(apply_status);
+    else
+        sCondition += "!=" + TC_Common::tostr<tars::Int32>(-apply_status);
+    
+    try
+    {
+        count = MDbQueryRecord::getInstance()->GetMysqlObject()->getRecordCount(sTableName, sCondition);
+    }
+    catch (exception &e)
+    {
+        LOG->error() << "ClubHandle::GetApplyCount error: " << e.what() << endl;
+        return -1;
+    }
+    LOG->debug() << "ClubHandle::GetApplyCount Table: " << sTableName << " Condition: " << sCondition << endl;
+    return count;
+}
+//////////////////////////////////////////////////////
+
+int ClubHandle::DeleteApply(const string &wx_id, const string &club_id)
+{
+    string sCondition = "where `user_id`='" + wx_id + "' and `club_id`=1";
+    int affectRows = 0;
+    
+    try 
+    {
+        affectRows = (int)MDbQueryRecord::getInstance()->GetMysqlObject()->deleteRecord("apply_for_club",sCondition);
+    }
+    catch(exception &e)
+    {
+        LOG->error() << "ClubHandle::DeleteApply Execute delete error:" << e.what() << endl;
+        return -1;
+    }
+    // 将sql语句添加到MDbExecuteRecord类的执行队列中
+    // MDbExecuteRecord::getInstance()->AddExecuteSql(sSql);
+    LOG->debug() << "ClubHandle::DeleteApply delete record :" << sCondition << endl;
+    return affectRows;
+}
+//////////////////////////////////////////////////////
+
 int ActivityHandle::InsertActivityData(const LifeService::ActivityInfo activityInfo)
 {
     string sTableName = "activities";
@@ -540,29 +627,6 @@ int ActivityHandle::InsertActivityData(const LifeService::ActivityInfo activityI
         return -1;
     }
     LOG->debug() << "ActivityHandle::InsertActivityData Name: " << activityInfo.name << endl;
-    return 0;
-}
-//////////////////////////////////////////////////////
-
-int ClubHandle::SetApplyStatus(const string &wx_id, const string &club_id, int apply_status)
-{
-    string sSql = "update apply_for_club set `apply_status`=" + TC_Common::tostr<int>(apply_status) 
-               +  " where `user_id`='" + wx_id + "' and `club_id`=" + club_id;
-    
-    // 将sql语句添加到MDbExecuteRecord类的执行队列中
-    MDbExecuteRecord::getInstance()->AddExecuteSql(sSql);
-    LOG->debug() << "ClubHandle::SetApplyStatus Execute SQL: " << sSql << endl;
-    return 0;
-}
-//////////////////////////////////////////////////////
-
-int ClubHandle::DeleteApply(const string &wx_id, const string &club_id)
-{
-    string sSql = "delete from apply_for_club where `user_id`='" + wx_id + "' and `club_id`=1";
-    
-    // 将sql语句添加到MDbExecuteRecord类的执行队列中
-    MDbExecuteRecord::getInstance()->AddExecuteSql(sSql);
-    LOG->debug() << "ClubHandle::DeleteApply AddExecuteSql: " << sSql << endl;
     return 0;
 }
 //////////////////////////////////////////////////////
@@ -659,31 +723,39 @@ int ActivityHandle::UpdateActivity(const LifeService::ActivityInfo &activityInfo
     updateItem.insert(make_pair("registry_start_time", make_pair(TC_Mysql::DB_STR, activityInfo.registry_start_time)));
     updateItem.insert(make_pair("registry_stop_time" , make_pair(TC_Mysql::DB_STR, activityInfo.registry_stop_time)));
     updateItem.insert(make_pair("content"            , make_pair(TC_Mysql::DB_STR, activityInfo.content)));
-    
+    int affectRows = 0;
     try
     {
-        MDbQueryRecord::getInstance()->GetMysqlObject()->updateRecord("activities", updateItem, "where `activity_id`=" + activityInfo.activity_id);
+        affectRows = (int)MDbQueryRecord::getInstance()->GetMysqlObject()->updateRecord("activities", updateItem, "where `activity_id`=" + activityInfo.activity_id);
     }
     catch(exception &e)
     {
         LOG->error() << "ActivityHandle::UpdateActivity error: " << e.what() << endl;
         return -1;
     }
-    return 0;
+    return affectRows;
 }
 //////////////////////////////////////////////////////
 
 int ActivityHandle::DeleteActivity(const string &activity_id)
 {
-    string sql_delete_records = "delete from activity_records where `activity_id`=" + activity_id;
-    string sql_delete_activity = "delete from activities where `activity_id`=" + activity_id;
-    // 删除该活动的所有报名记录
-    MDbExecuteRecord::getInstance()->AddExecuteSql(sql_delete_records);
-    // 删除该活动
-    MDbExecuteRecord::getInstance()->AddExecuteSql(sql_delete_activity);
+    string sql_delete_records = "where `activity_id`=" + activity_id;
+    string sql_delete_activity = "where `activity_id`=" + activity_id;
+
+    int affectRows = 0;
+    try
+    {
+        MDbQueryRecord::getInstance()->GetMysqlObject()->deleteRecord("activity_records", sql_delete_records);
+        affectRows = (int)MDbQueryRecord::getInstance()->GetMysqlObject()->deleteRecord("activities", sql_delete_activity);
+    }
+    catch(exception &e)
+    {
+        LOG->error() << "ActivityHandle::DeleteActivity error: " << e.what() << endl;
+        return -1;
+    }
 
     LOG->debug() << "ActivityHandle::DeleteActivity AddExecuteSql: " << sql_delete_records << ", " << sql_delete_activity << endl;
-    return 0;
+    return affectRows;
 }
 //////////////////////////////////////////////////////
 
@@ -795,6 +867,26 @@ int ActivityHandle::GetActivityRecords(int index, int batch, const string &activ
     
     LOG->debug() << "DataServiceImp::getActivityRecords Execute SQL: " << sSql << endl;
     return 0;
+}
+//////////////////////////////////////////////////////
+
+int ActivityHandle::GetRecordCount(const string &wx_id, const string &activity_id)
+{
+    string sTableName = "club_managers";
+    string sCondition = "where `wx_id`='" + wx_id + "' and `club_id`=" + activity_id;
+    int count = 0;
+    try
+    {
+        count = MDbQueryRecord::getInstance()->GetMysqlObject()->getRecordCount(sTableName, sCondition);
+    }
+    catch (exception &e)
+    {
+        LOG->error() << "ActivityHandle::GetRecordCount: " << e.what() << endl;
+        count = -1;
+        return 0;
+    }
+    LOG->debug() << "ActivityHandle::GetRecordCount Table: " << sTableName << " Condition: " << sCondition << endl;
+    return count;
 }
 //////////////////////////////////////////////////////
 

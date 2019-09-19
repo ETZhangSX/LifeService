@@ -65,6 +65,8 @@ public:
     int GetClubList(int index, int batch, const std::string &wx_id, int &nextIndex, vector<LifeService::ClubInfo> &clubInfoList);
     // 获取管理社团列表
     int GetManagerClubList(int index, int batch, const std::string &wx_id, int &nextIndex, vector<LifeService::ClubInfo> &clubInfoList);
+    // 获取社团管理者记录数
+    int GetClubManagerCount(const std::string &wx_id, const std::string &club_id);
     // 插入社团申请信息
     int InsertApplyData(const std::string &wx_id, const std::string &club_id);
     // 获取特定社团的申请
@@ -73,6 +75,8 @@ public:
     int GetApplyListByUserId(const std::string &wx_id, int index, int batch, int apply_status, int &nextIndex, vector<LifeService::ApplyInfo> &applyList);
     // 设置申请状态
     int SetApplyStatus(const std::string &wx_id, const std::string &club_id, int apply_status);
+    // 获取社团申请数
+    int GetApplyCount(const std::string &wx_id, const std::string &club_id, int apply_status);
     // 删除申请
     int DeleteApply(const std::string &wx_id, const std::string &club_id);
 public:
@@ -106,6 +110,8 @@ public:
     int InsertActivityRecord(const std::string &wx_id, const std::string &activity_id);
     // 获取活动参与记录
     int GetActivityRecords(int index, int batch, const std::string &activity_id, int &nextIndex, vector<LifeService::ActivityRecord> &recordList);
+    // 获取活动记录数
+    int GetRecordCount(const std::string &wx_id, const std::string &activity_id);
 };
 
 /**
