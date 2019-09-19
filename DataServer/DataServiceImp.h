@@ -95,6 +95,13 @@ public:
     virtual int getManagerClubList(tars::Int32 index, tars::Int32 batch, const std::string &wx_id, tars::Int32 &nextIndex, vector<LifeService::ClubInfo> &clubInfoList, tars::TarsCurrentPtr current);
     
     /**
+     * @brief 获取社团管理者记录数
+     * @param wx_id   用户id
+     * @param club_id 社团id
+     * @out   count   记录数
+     */
+    virtual int getClubManagerCount(const std::string &wx_id, const std::string &club_id, tars::Int32 &count, tars::TarsCurrentPtr current);
+    /**
      * @brief 创建社团申请
      * @param wx_id   用户微信id
      * @param club_id 社团id
@@ -132,6 +139,14 @@ public:
      */
     virtual int setApplyStatus(const std::string &wx_id, const std::string &club_id, tars::Int32 apply_status, tars::Int32 &iRetCode, tars::TarsCurrentPtr current);
     
+    /**
+     * @brief 获取社团申请数量
+     * @param wx_id        用户id
+     * @param club_id      社团id
+     * @param apply_status 申请状态,为正数时返回对应状态记录数;为负数时返回除其绝对值外的状态记录数
+     * @out   count        记录数
+     */
+    virtual int getApplyCount(const std::string &wx_id, const std::string &club_id, tars::Int32 apply_status, tars::Int32 &count, tars::TarsCurrentPtr current);
     /**
      * @brief 删除申请
      * @param wx_id    用户微信id
@@ -195,6 +210,14 @@ public:
     virtual int getActivityRecords(tars::Int32 index, tars::Int32 batch, const std::string &activity_id, tars::Int32 &nextIndex, vector<LifeService::ActivityRecord> &recordList, tars::TarsCurrentPtr current);
     
     /**
+     * @brief 获取活动记录数
+     * @param wx_id       用户id
+     * @param activity_id 活动id
+     * @out   count       记录数
+     */
+    virtual int getRecordCount(const std::string &wx_id, const std::string &activity_id, tars::Int32 &count, tars::TarsCurrentPtr current);
+
+    /**
      * @brief 删除活动记录
      * @param activity_id 活动id
      * @param wx_id       用户微信id
@@ -231,28 +254,20 @@ public:
     virtual int getLike(const std::string &message_id, tars::Int32 &like_count, tars::TarsCurrentPtr current);
     
     /**
-     * @brief 向数据库插入数据
+     * @brief 向数据库插入数据, 取消权限过高的接口
      * @param sTableName 表名
      * @param vColumns   列名, 值。Column在tars文件中定义, 其中DBInt字段为true时代表不需要转译, false代表需要转译
      */
-    virtual int insertData(const std::string &sTableName, const vector<LifeService::Column> &vColumns, tars::TarsCurrentPtr current);
+    // virtual int insertData(const std::string &sTableName, const vector<LifeService::Column> &vColumns, tars::TarsCurrentPtr current);
     
     /**
-     * @brief 查询数据
+     * @brief 查询数据, 取消权限过高的接口
      * @param sTableName 表名
      * @param vColumns   列名
      * @param sCondition where域条件
      * @out   vmpResults 查询结果, 类型为map<列名,值> 
      */
-    virtual int queryData(const std::string &sTableName, const vector<std::string> &vColumns, const std::string &sCondition, vector<map<std::string, std::string>> &vmpResults, tars::TarsCurrentPtr current);
-
-    /**
-     * @brief 获取记录数
-     * @param sTableName 表名
-     * @param sCondition where子语句
-     * @out   iCount     记录数
-     */
-    virtual int getRecordCount(const std::string &sTableName, const std::string &sCondition, tars::Int32 &iCount, tars::TarsCurrentPtr current);
+    // virtual int queryData(const std::string &sTableName, const vector<std::string> &vColumns, const std::string &sCondition, vector<map<std::string, std::string>> &vmpResults, tars::TarsCurrentPtr current);
 };
 /////////////////////////////////////////////////////
 #endif
