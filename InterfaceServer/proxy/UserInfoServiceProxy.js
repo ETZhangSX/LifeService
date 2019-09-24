@@ -11,6 +11,7 @@
 var TarsStream = require("@tars/stream");
 var TarsError  = require("@tars/rpc").error;
 var _TARS_MODULE_A_ = require("./DataServiceTars.js");
+var _TARS_MODULE_B_ = require("./ServerStatusTars.js");
 
 var _makeError = function (data, message, type) {
     var error = new Error(message || "");
@@ -469,6 +470,10 @@ var __LifeService_UserInfoService$SignIn$IF = {
         "name" : "userInfo",
         "class" : "LifeService.UserInfo",
         "direction" : "out"
+    }, {
+        "name" : "errCode",
+        "class" : "int32",
+        "direction" : "out"
     }]
 };
 
@@ -487,7 +492,8 @@ var __LifeService_UserInfoService$SignIn$ID = function (data) {
                 "costtime" : data.request.costtime,
                 "return" : is.readInt32(0, true, 0),
                 "arguments" : {
-                    "userInfo" : is.readStruct(2, true, _TARS_MODULE_A_.LifeService.UserInfo)
+                    "userInfo" : is.readStruct(2, true, _TARS_MODULE_A_.LifeService.UserInfo),
+                    "errCode" : is.readInt32(3, true, _TARS_MODULE_B_.LifeService.ErrorCode.SUCCESS)
                 }
             }
         };
@@ -512,7 +518,8 @@ var __LifeService_UserInfoService$SignIn$PD = function (data) {
                 "costtime" : data.request.costtime,
                 "return" : tup.readInt32("", 0),
                 "arguments" : {
-                    "userInfo" : tup.readStruct("userInfo", _TARS_MODULE_A_.LifeService.UserInfo)
+                    "userInfo" : tup.readStruct("userInfo", _TARS_MODULE_A_.LifeService.UserInfo),
+                    "errCode" : tup.readInt32("errCode")
                 }
             }
         };
@@ -547,7 +554,7 @@ var __LifeService_UserInfoService$SignUp$IF = {
         "class" : "LifeService.UserInfo",
         "direction" : "in"
     }, {
-        "name" : "retCode",
+        "name" : "errCode",
         "class" : "int32",
         "direction" : "out"
     }]
@@ -569,7 +576,7 @@ var __LifeService_UserInfoService$SignUp$ID = function (data) {
                 "costtime" : data.request.costtime,
                 "return" : is.readInt32(0, true, 0),
                 "arguments" : {
-                    "retCode" : is.readInt32(3, true, 0)
+                    "errCode" : is.readInt32(3, true, _TARS_MODULE_B_.LifeService.ErrorCode.SUCCESS)
                 }
             }
         };
@@ -595,7 +602,7 @@ var __LifeService_UserInfoService$SignUp$PD = function (data) {
                 "costtime" : data.request.costtime,
                 "return" : tup.readInt32("", 0),
                 "arguments" : {
-                    "retCode" : tup.readInt32("retCode")
+                    "errCode" : tup.readInt32("errCode")
                 }
             }
         };

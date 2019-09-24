@@ -1,26 +1,27 @@
 #include "DataService.tars"
+#include "ServerStatus.tars"
 
 module LifeService{
     interface ClubActivityManager{
-        int CreateClubManager(string wxId, string clubId, out int RetCode);
-        int CreateClub(ClubInfo clubInfo, out int RetCode);
-        int GetClubList(int index, string wxId, out int nextIndex, out vector<ClubInfo> clubInfoList, out int RetCode);
-        int GetManagerClubList(int index, string wxId, out int nextIndex, out vector<ClubInfo> clubInfoList, out int RetCode);
+        int CreateClubManager(string wxId, string clubId, out ErrorCode ErrCode);
+        int CreateClub(ClubInfo clubInfo, out ErrorCode ErrCode);
+        int GetClubList(int index, string wxId, out int nextIndex, out vector<ClubInfo> clubInfoList, out ErrorCode ErrCode);
+        int GetManagerClubList(int index, string wxId, out int nextIndex, out vector<ClubInfo> clubInfoList, out ErrorCode ErrCode);
         
-        int ApplyForClub(string wxId, string clubId, out int RetCode);
+        int ApplyForClub(string wxId, string clubId, out ErrorCode ErrCode);
         int GetClubApply(string clubId, int index, int applyStatus, out int nextIndex, out vector<ApplyInfo> applyList);
         int GetUserApply(string wxId, int index, int applyStatus, out int nextIndex, out vector<ApplyInfo> applyList);
-        int ModifyApplyStatus(string wxId, string clubId, int applyStatus, out int RetCode);
-        int DeleteApply(string wxId, string clubId, out int RetCode);
+        int ModifyApplyStatus(string wxId, string clubId, int applyStatus, out ErrorCode ErrCode);
+        int DeleteApply(string wxId, string clubId, out ErrorCode ErrCode);
 
-        int CreateActivity(string wxId, ActivityInfo activityInfo, out int RetCode);
+        int CreateActivity(string wxId, ActivityInfo activityInfo, out ErrorCode ErrCode);
         int GetActivityList(int index, string wxId, string clubId, out int nextIndex, out vector<map<string, string>> activityList);
-        int UpdateActivity(ActivityInfo activityInfo, out int RetCode);
-        int DeleteActivity(string activityId, out int RetCode);
+        int UpdateActivity(ActivityInfo activityInfo, out ErrorCode ErrCode);
+        int DeleteActivity(string activityId, out ErrorCode ErrCode);
         int GetActivityDetail(string activityId, out ActivityInfo activityInfo);
         
         int GetActivityParticipate(int index, string activityId, out int nextIndex, out vector<ActivityRecord> participateList);
-        int ApplyForActivity(string wxId, string activityId, out int RetCode);
-        int DeleteActivityParticipate(string activityId, string wxId, out int RetCode);
+        int ApplyForActivity(string wxId, string activityId, out ErrorCode ErrCode);
+        int DeleteActivityParticipate(string activityId, string wxId, out ErrorCode ErrCode);
     };
 };

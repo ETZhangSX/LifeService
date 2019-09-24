@@ -11,6 +11,7 @@
 var TarsStream = require("@tars/stream");
 var TarsError  = require("@tars/rpc").error;
 var _TARS_MODULE_A_ = require("./DataServiceTars.js");
+var _TARS_MODULE_B_ = require("./ServerStatusTars.js");
 
 var _makeError = function (data, message, type) {
     var error = new Error(message || "");
@@ -67,7 +68,7 @@ var __LifeService_ClubActivityManager$ApplyForActivity$IF = {
         "class" : "string",
         "direction" : "in"
     }, {
-        "name" : "RetCode",
+        "name" : "ErrCode",
         "class" : "int32",
         "direction" : "out"
     }]
@@ -89,7 +90,7 @@ var __LifeService_ClubActivityManager$ApplyForActivity$ID = function (data) {
                 "costtime" : data.request.costtime,
                 "return" : is.readInt32(0, true, 0),
                 "arguments" : {
-                    "RetCode" : is.readInt32(3, true, 0)
+                    "ErrCode" : is.readInt32(3, true, _TARS_MODULE_B_.LifeService.ErrorCode.SUCCESS)
                 }
             }
         };
@@ -115,7 +116,7 @@ var __LifeService_ClubActivityManager$ApplyForActivity$PD = function (data) {
                 "costtime" : data.request.costtime,
                 "return" : tup.readInt32("", 0),
                 "arguments" : {
-                    "RetCode" : tup.readInt32("RetCode")
+                    "ErrCode" : tup.readInt32("ErrCode")
                 }
             }
         };
@@ -150,7 +151,7 @@ var __LifeService_ClubActivityManager$ApplyForClub$IF = {
         "class" : "string",
         "direction" : "in"
     }, {
-        "name" : "RetCode",
+        "name" : "ErrCode",
         "class" : "int32",
         "direction" : "out"
     }]
@@ -172,7 +173,7 @@ var __LifeService_ClubActivityManager$ApplyForClub$ID = function (data) {
                 "costtime" : data.request.costtime,
                 "return" : is.readInt32(0, true, 0),
                 "arguments" : {
-                    "RetCode" : is.readInt32(3, true, 0)
+                    "ErrCode" : is.readInt32(3, true, _TARS_MODULE_B_.LifeService.ErrorCode.SUCCESS)
                 }
             }
         };
@@ -198,7 +199,7 @@ var __LifeService_ClubActivityManager$ApplyForClub$PD = function (data) {
                 "costtime" : data.request.costtime,
                 "return" : tup.readInt32("", 0),
                 "arguments" : {
-                    "RetCode" : tup.readInt32("RetCode")
+                    "ErrCode" : tup.readInt32("ErrCode")
                 }
             }
         };
@@ -233,7 +234,7 @@ var __LifeService_ClubActivityManager$CreateActivity$IF = {
         "class" : "LifeService.ActivityInfo",
         "direction" : "in"
     }, {
-        "name" : "RetCode",
+        "name" : "ErrCode",
         "class" : "int32",
         "direction" : "out"
     }]
@@ -255,7 +256,7 @@ var __LifeService_ClubActivityManager$CreateActivity$ID = function (data) {
                 "costtime" : data.request.costtime,
                 "return" : is.readInt32(0, true, 0),
                 "arguments" : {
-                    "RetCode" : is.readInt32(3, true, 0)
+                    "ErrCode" : is.readInt32(3, true, _TARS_MODULE_B_.LifeService.ErrorCode.SUCCESS)
                 }
             }
         };
@@ -281,7 +282,7 @@ var __LifeService_ClubActivityManager$CreateActivity$PD = function (data) {
                 "costtime" : data.request.costtime,
                 "return" : tup.readInt32("", 0),
                 "arguments" : {
-                    "RetCode" : tup.readInt32("RetCode")
+                    "ErrCode" : tup.readInt32("ErrCode")
                 }
             }
         };
@@ -312,7 +313,7 @@ var __LifeService_ClubActivityManager$CreateClub$IF = {
         "class" : "LifeService.ClubInfo",
         "direction" : "in"
     }, {
-        "name" : "RetCode",
+        "name" : "ErrCode",
         "class" : "int32",
         "direction" : "out"
     }]
@@ -333,7 +334,7 @@ var __LifeService_ClubActivityManager$CreateClub$ID = function (data) {
                 "costtime" : data.request.costtime,
                 "return" : is.readInt32(0, true, 0),
                 "arguments" : {
-                    "RetCode" : is.readInt32(2, true, 0)
+                    "ErrCode" : is.readInt32(2, true, _TARS_MODULE_B_.LifeService.ErrorCode.SUCCESS)
                 }
             }
         };
@@ -358,7 +359,7 @@ var __LifeService_ClubActivityManager$CreateClub$PD = function (data) {
                 "costtime" : data.request.costtime,
                 "return" : tup.readInt32("", 0),
                 "arguments" : {
-                    "RetCode" : tup.readInt32("RetCode")
+                    "ErrCode" : tup.readInt32("ErrCode")
                 }
             }
         };
@@ -393,7 +394,7 @@ var __LifeService_ClubActivityManager$CreateClubManager$IF = {
         "class" : "string",
         "direction" : "in"
     }, {
-        "name" : "RetCode",
+        "name" : "ErrCode",
         "class" : "int32",
         "direction" : "out"
     }]
@@ -415,7 +416,7 @@ var __LifeService_ClubActivityManager$CreateClubManager$ID = function (data) {
                 "costtime" : data.request.costtime,
                 "return" : is.readInt32(0, true, 0),
                 "arguments" : {
-                    "RetCode" : is.readInt32(3, true, 0)
+                    "ErrCode" : is.readInt32(3, true, _TARS_MODULE_B_.LifeService.ErrorCode.SUCCESS)
                 }
             }
         };
@@ -441,7 +442,7 @@ var __LifeService_ClubActivityManager$CreateClubManager$PD = function (data) {
                 "costtime" : data.request.costtime,
                 "return" : tup.readInt32("", 0),
                 "arguments" : {
-                    "RetCode" : tup.readInt32("RetCode")
+                    "ErrCode" : tup.readInt32("ErrCode")
                 }
             }
         };
@@ -472,7 +473,7 @@ var __LifeService_ClubActivityManager$DeleteActivity$IF = {
         "class" : "string",
         "direction" : "in"
     }, {
-        "name" : "RetCode",
+        "name" : "ErrCode",
         "class" : "int32",
         "direction" : "out"
     }]
@@ -493,7 +494,7 @@ var __LifeService_ClubActivityManager$DeleteActivity$ID = function (data) {
                 "costtime" : data.request.costtime,
                 "return" : is.readInt32(0, true, 0),
                 "arguments" : {
-                    "RetCode" : is.readInt32(2, true, 0)
+                    "ErrCode" : is.readInt32(2, true, _TARS_MODULE_B_.LifeService.ErrorCode.SUCCESS)
                 }
             }
         };
@@ -518,7 +519,7 @@ var __LifeService_ClubActivityManager$DeleteActivity$PD = function (data) {
                 "costtime" : data.request.costtime,
                 "return" : tup.readInt32("", 0),
                 "arguments" : {
-                    "RetCode" : tup.readInt32("RetCode")
+                    "ErrCode" : tup.readInt32("ErrCode")
                 }
             }
         };
@@ -553,7 +554,7 @@ var __LifeService_ClubActivityManager$DeleteActivityParticipate$IF = {
         "class" : "string",
         "direction" : "in"
     }, {
-        "name" : "RetCode",
+        "name" : "ErrCode",
         "class" : "int32",
         "direction" : "out"
     }]
@@ -575,7 +576,7 @@ var __LifeService_ClubActivityManager$DeleteActivityParticipate$ID = function (d
                 "costtime" : data.request.costtime,
                 "return" : is.readInt32(0, true, 0),
                 "arguments" : {
-                    "RetCode" : is.readInt32(3, true, 0)
+                    "ErrCode" : is.readInt32(3, true, _TARS_MODULE_B_.LifeService.ErrorCode.SUCCESS)
                 }
             }
         };
@@ -601,7 +602,7 @@ var __LifeService_ClubActivityManager$DeleteActivityParticipate$PD = function (d
                 "costtime" : data.request.costtime,
                 "return" : tup.readInt32("", 0),
                 "arguments" : {
-                    "RetCode" : tup.readInt32("RetCode")
+                    "ErrCode" : tup.readInt32("ErrCode")
                 }
             }
         };
@@ -636,7 +637,7 @@ var __LifeService_ClubActivityManager$DeleteApply$IF = {
         "class" : "string",
         "direction" : "in"
     }, {
-        "name" : "RetCode",
+        "name" : "ErrCode",
         "class" : "int32",
         "direction" : "out"
     }]
@@ -658,7 +659,7 @@ var __LifeService_ClubActivityManager$DeleteApply$ID = function (data) {
                 "costtime" : data.request.costtime,
                 "return" : is.readInt32(0, true, 0),
                 "arguments" : {
-                    "RetCode" : is.readInt32(3, true, 0)
+                    "ErrCode" : is.readInt32(3, true, _TARS_MODULE_B_.LifeService.ErrorCode.SUCCESS)
                 }
             }
         };
@@ -684,7 +685,7 @@ var __LifeService_ClubActivityManager$DeleteApply$PD = function (data) {
                 "costtime" : data.request.costtime,
                 "return" : tup.readInt32("", 0),
                 "arguments" : {
-                    "RetCode" : tup.readInt32("RetCode")
+                    "ErrCode" : tup.readInt32("ErrCode")
                 }
             }
         };
@@ -1083,7 +1084,7 @@ var __LifeService_ClubActivityManager$GetClubList$IF = {
         "class" : "list(LifeService.ClubInfo)",
         "direction" : "out"
     }, {
-        "name" : "RetCode",
+        "name" : "ErrCode",
         "class" : "int32",
         "direction" : "out"
     }]
@@ -1107,7 +1108,7 @@ var __LifeService_ClubActivityManager$GetClubList$ID = function (data) {
                 "arguments" : {
                     "nextIndex" : is.readInt32(3, true, 0),
                     "clubInfoList" : is.readList(4, true, TarsStream.List(_TARS_MODULE_A_.LifeService.ClubInfo)),
-                    "RetCode" : is.readInt32(5, true, 0)
+                    "ErrCode" : is.readInt32(5, true, _TARS_MODULE_B_.LifeService.ErrorCode.SUCCESS)
                 }
             }
         };
@@ -1135,7 +1136,7 @@ var __LifeService_ClubActivityManager$GetClubList$PD = function (data) {
                 "arguments" : {
                     "nextIndex" : tup.readInt32("nextIndex"),
                     "clubInfoList" : tup.readList("clubInfoList", TarsStream.List(_TARS_MODULE_A_.LifeService.ClubInfo)),
-                    "RetCode" : tup.readInt32("RetCode")
+                    "ErrCode" : tup.readInt32("ErrCode")
                 }
             }
         };
@@ -1178,7 +1179,7 @@ var __LifeService_ClubActivityManager$GetManagerClubList$IF = {
         "class" : "list(LifeService.ClubInfo)",
         "direction" : "out"
     }, {
-        "name" : "RetCode",
+        "name" : "ErrCode",
         "class" : "int32",
         "direction" : "out"
     }]
@@ -1202,7 +1203,7 @@ var __LifeService_ClubActivityManager$GetManagerClubList$ID = function (data) {
                 "arguments" : {
                     "nextIndex" : is.readInt32(3, true, 0),
                     "clubInfoList" : is.readList(4, true, TarsStream.List(_TARS_MODULE_A_.LifeService.ClubInfo)),
-                    "RetCode" : is.readInt32(5, true, 0)
+                    "ErrCode" : is.readInt32(5, true, _TARS_MODULE_B_.LifeService.ErrorCode.SUCCESS)
                 }
             }
         };
@@ -1230,7 +1231,7 @@ var __LifeService_ClubActivityManager$GetManagerClubList$PD = function (data) {
                 "arguments" : {
                     "nextIndex" : tup.readInt32("nextIndex"),
                     "clubInfoList" : tup.readList("clubInfoList", TarsStream.List(_TARS_MODULE_A_.LifeService.ClubInfo)),
-                    "RetCode" : tup.readInt32("RetCode")
+                    "ErrCode" : tup.readInt32("ErrCode")
                 }
             }
         };
@@ -1364,7 +1365,7 @@ var __LifeService_ClubActivityManager$ModifyApplyStatus$IF = {
         "class" : "int32",
         "direction" : "in"
     }, {
-        "name" : "RetCode",
+        "name" : "ErrCode",
         "class" : "int32",
         "direction" : "out"
     }]
@@ -1387,7 +1388,7 @@ var __LifeService_ClubActivityManager$ModifyApplyStatus$ID = function (data) {
                 "costtime" : data.request.costtime,
                 "return" : is.readInt32(0, true, 0),
                 "arguments" : {
-                    "RetCode" : is.readInt32(4, true, 0)
+                    "ErrCode" : is.readInt32(4, true, _TARS_MODULE_B_.LifeService.ErrorCode.SUCCESS)
                 }
             }
         };
@@ -1414,7 +1415,7 @@ var __LifeService_ClubActivityManager$ModifyApplyStatus$PD = function (data) {
                 "costtime" : data.request.costtime,
                 "return" : tup.readInt32("", 0),
                 "arguments" : {
-                    "RetCode" : tup.readInt32("RetCode")
+                    "ErrCode" : tup.readInt32("ErrCode")
                 }
             }
         };
@@ -1445,7 +1446,7 @@ var __LifeService_ClubActivityManager$UpdateActivity$IF = {
         "class" : "LifeService.ActivityInfo",
         "direction" : "in"
     }, {
-        "name" : "RetCode",
+        "name" : "ErrCode",
         "class" : "int32",
         "direction" : "out"
     }]
@@ -1466,7 +1467,7 @@ var __LifeService_ClubActivityManager$UpdateActivity$ID = function (data) {
                 "costtime" : data.request.costtime,
                 "return" : is.readInt32(0, true, 0),
                 "arguments" : {
-                    "RetCode" : is.readInt32(2, true, 0)
+                    "ErrCode" : is.readInt32(2, true, _TARS_MODULE_B_.LifeService.ErrorCode.SUCCESS)
                 }
             }
         };
@@ -1491,7 +1492,7 @@ var __LifeService_ClubActivityManager$UpdateActivity$PD = function (data) {
                 "costtime" : data.request.costtime,
                 "return" : tup.readInt32("", 0),
                 "arguments" : {
-                    "RetCode" : tup.readInt32("RetCode")
+                    "ErrCode" : tup.readInt32("ErrCode")
                 }
             }
         };

@@ -1,0 +1,21 @@
+module LifeService
+{
+     enum ErrorCode
+    {
+        SUCCESS          = 200,
+        USEREXIST        = 301001,
+        PHONEEXIST       = 301002,
+        CLUBEXIST        = 301003,
+        MANAGEREXIST     = 301004,
+        USERAPPLIED      = 301005,
+        ACTIVITYEXIST    = 301006,
+        RECORDEXIST      = 301007,
+        USERNOTEXIST     = 404001,
+        CLUBNOTEXIST     = 404002,
+        MANAGERNOTEXIST  = 404003,
+        ACTIVITYNOTEXIST = 404004,
+        APPLYNOTEXIST    = 404005,
+        RECORDNOTEXIST   = 404006,
+        SERVERERROR      = 500,
+    };
+};
