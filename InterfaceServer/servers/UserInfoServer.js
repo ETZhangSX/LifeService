@@ -3,6 +3,7 @@ const Tars = require("@tars/rpc").client;
 
 const UserInfoServicePrx = require("../proxy/UserInfoServiceProxy").LifeService.UserInfoServiceProxy;
 const DataServiceTars    = require("../proxy/DataServiceTars");
+const ErrorCode          = require("../proxy/ServerStatusTars").LifeService.ErrorCode;
 const userInfoObjName    = "LifeService.UserInfoServer.UserInfoServiceObj";
 // 引入util工具
 const DataHandle = require('../tools/util').DataHandle;
@@ -16,11 +17,11 @@ UserInfoServer.test = async ctx => {
         const result = await prx.Test();
         let testStr = result.response.arguments.testStr;
 
-        ctx.body = DataHandle.returnData(200, 'success', {testStr});
+        ctx.body = DataHandle.returnData(ErrorCode.SUCCESS, {testStr});
     }
     catch(e) {
         console.log(e);
-        ctx.body = DataHandle.returnError(400, e.message);
+        ctx.body = DataHandle.returnError(ErrorCode.SERVERERROR, e.message);
     }
 };
 
@@ -31,11 +32,11 @@ UserInfoServer.signIn = async (ctx) => {
         
         let result = await prx.SignIn(wx_id);
         let userInfo = result.response.arguments.userInfo;
-        ctx.body = DataHandle.returnData(200, 'success', userInfo.toObject());
+        ctx.body = DataHandle.returnData(ErrorCode.SUCCESS, userInfo.toObject());
 
     } catch(e) {
         console.log(e);
-        ctx.body = DataHandle.returnError(400, e.message);
+        ctx.body = DataHandle.returnError(ErrorCode.SERVERERROR, e.message);
     }
 };
 
@@ -46,11 +47,11 @@ UserInfoServer.getGroupList = async (ctx) => {
         let result    = await prx.GetGroupList();
         let groupInfo = result.response.arguments.groupInfo;
         
-        ctx.body = DataHandle.returnData(200, 'success', groupInfo.toObject());
+        ctx.body = DataHandle.returnData(ErrorCode.SUCCESS, groupInfo.toObject());
     }
     catch(e) {
         console.log(e);
-        ctx.body = DataHandle.returnError(400, e.message);
+        ctx.body = DataHandle.returnError(ErrorCode.SERVERERROR, e.message);
     }
 };
 
@@ -66,13 +67,13 @@ UserInfoServer.isClubManager = async (ctx) => {
         let result        = await prx.IsClubManager(wx_id, club_id);
         let isClubManager = result.response.arguments.isClubManager;
 
-        ctx.body = DataHandle.returnData(200, 'success', {
+        ctx.body = DataHandle.returnData(ErrorCode.SUCCESS, {
             isClubManager,
         });
     }
     catch(e) {
         console.log(e);
-        ctx.body = DataHandle.returnError(400, e.message);
+        ctx.body = DataHandle.returnError(ErrorCode.SERVERERROR, e.message);
     }
 };
 
@@ -89,13 +90,13 @@ UserInfoServer.isInClub = async (ctx) => {
         let result   = await prx.IsInClub(wx_id, club_id, just_in_club);
         let isInClub = result.response.arguments.isIn;
 
-        ctx.body = DataHandle.returnData(200, 'success', {
+        ctx.body = DataHandle.returnData(ErrorCode.SUCCESS, {
             isInClub,
         });
     }
     catch(e) {
         console.log(e);
-        ctx.body = DataHandle.returnError(400, e.message);
+        ctx.body = DataHandle.returnError(ErrorCode.SERVERERROR, e.message);
     }
 };
 
@@ -111,13 +112,13 @@ UserInfoServer.isAppliedActivity = async (ctx) => {
         let result    = await prx.IsAppliedActivity(wx_id, activity_id);
         let isApplied = result.response.arguments.isApplied;
         
-        ctx.body = DataHandle.returnData(200, 'success', {
+        ctx.body = DataHandle.returnData(ErrorCode.SUCCESS, {
             isApplied,
         });
     }
     catch(e) {
         console.log(e);
-        ctx.body = DataHandle.returnError(400, e.message);
+        ctx.body = DataHandle.returnError(ErrorCode.SERVERERROR, e.message);
     }
 };
 
@@ -143,11 +144,11 @@ UserInfoServer.signUp = async (ctx) => {
         const prx = Tars.stringToProxy(UserInfoServicePrx, userInfoObjName);
         
         let result = await prx.SignUp(wx_id, userInfo);
-        ctx.body = DataHandle.returnData(result.response.arguments.retCode, 'success')
+        ctx.body = DataHandle.returnData(result.response.arguments.retCode)
     }
     catch(e) {
         console.log(e);
-        ctx.body = DataHandle.returnError(400, e.message);
+        ctx.body = DataHandle.returnError(ErrorCode.SERVERERROR, e.message);
     }
 };
 
@@ -160,13 +161,13 @@ UserInfoServer.hasPhone = async (ctx) => {
         const prx = Tars.stringToProxy(UserInfoServicePrx, userInfoObjName);
 
         let result = await prx.HasPhone(phone);
-        ctx.body = DataHandle.returnData(200, 'success', {
+        ctx.body = DataHandle.returnData(ErrorCode.SUCCESS, {
             'phoneExist': result.response.arguments.phoneExist,
         })
     }
     catch(e) {
         console.log(e);
-        ctx.body = DataHandle.returnError(400, e.message);
+        ctx.body = DataHandle.returnError(ErrorCode.SERVERERROR, e.message);
     }
 }
 

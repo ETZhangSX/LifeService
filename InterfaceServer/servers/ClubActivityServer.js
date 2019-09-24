@@ -2,7 +2,8 @@
 const Tars = require("@tars/rpc").client;
 // 引入tars代理
 const ClubActivityManagerPrx = require("../proxy/ClubActivityManagerProxy").LifeService.ClubActivityManagerProxy;
-const DataServiceTars         = require("../proxy/DataServiceTars");
+const DataServiceTars        = require("../proxy/DataServiceTars");
+const ErrorCode              = require("../proxy/ServerStatusTars").LifeService.ErrorCode;
 // 服务对象名
 const clubActivityObjName = "LifeService.ClubActivityServer.ClubActivityManagerObj";
 // 引入util工具
@@ -21,11 +22,11 @@ ClubActivityServer.createClubManager = async (ctx) => {
         const prx = Tars.stringToProxy(ClubActivityManagerPrx, clubActivityObjName);
         let result = await prx.CreateClubManager(wx_id, club_id);
         
-        ctx.body = DataHandle.returnData(result.response.arguments.RetCode, DataHandle.Success);
+        ctx.body = DataHandle.returnData(result.response.arguments.RetCode);
     }
     catch(e) {
         console.log(e);
-        ctx.body = DataHandle.returnError(400, e.message);
+        ctx.body = DataHandle.returnError(ErrorCode.SERVERERROR, e.message);
     }
 };
 
@@ -49,11 +50,11 @@ ClubActivityServer.createClub = async (ctx) => {
         const prx = Tars.stringToProxy(ClubActivityManagerPrx, clubActivityObjName);
         let result = await prx.CreateClub(clubInfo);
         
-        ctx.body = DataHandle.returnData(result.response.arguments.RetCode, DataHandle.Success);
+        ctx.body = DataHandle.returnData(result.response.arguments.RetCode);
     }
     catch(e) {
         console.log(e);
-        ctx.body = DataHandle.returnError(400, e.message);
+        ctx.body = DataHandle.returnError(ErrorCode.SERVERERROR, e.message);
     }
 };
 
@@ -67,14 +68,14 @@ ClubActivityServer.getClubList = async (ctx) => {
         const prx = Tars.stringToProxy(ClubActivityManagerPrx, clubActivityObjName);
         let result = await prx.GetClubList(index, wx_id);
 
-        ctx.body = DataHandle.returnData(result.response.arguments.RetCode, DataHandle.Success, {
+        ctx.body = DataHandle.returnData(result.response.arguments.RetCode, {
             'next_index': result.response.arguments.nextIndex,
             'club_list' : result.response.arguments.clubInfoList.toObject(),
         });
     }
     catch(e) {
         console.log(e);
-        ctx.body = DataHandle.returnError(400, e.message);
+        ctx.body = DataHandle.returnError(ErrorCode.SERVERERROR, e.message);
     }
 };
 
@@ -88,14 +89,14 @@ ClubActivityServer.getManagerClubList = async (ctx) => {
         const prx = Tars.stringToProxy(ClubActivityManagerPrx, clubActivityObjName);
         let result = await prx.GetManagerClubList(index, wx_id);
 
-        ctx.body = DataHandle.returnData(result.response.arguments.RetCode, DataHandle.Success, {
+        ctx.body = DataHandle.returnData(result.response.arguments.RetCode, {
             'next_index': result.response.arguments.nextIndex,
             'club_list' : result.response.arguments.clubInfoList.toObject(),
         });
     }
     catch(e) {
         console.log(e);
-        ctx.body = DataHandle.returnError(400, e.message);
+        ctx.body = DataHandle.returnError(ErrorCode.SERVERERROR, e.message);
     }
 };
 
@@ -110,11 +111,11 @@ ClubActivityServer.applyForClub = async (ctx) => {
         const prx = Tars.stringToProxy(ClubActivityManagerPrx, clubActivityObjName);
         let result = await prx.ApplyForClub(wx_id, club_id);
 
-        ctx.body = DataHandle.returnData(result.response.arguments.RetCode, DataHandle.Success);
+        ctx.body = DataHandle.returnData(result.response.arguments.RetCode);
     }
     catch(e) {
         console.log(e);
-        ctx.body = DataHandle.returnError(400, e.message);
+        ctx.body = DataHandle.returnError(ErrorCode.SERVERERROR, e.message);
     }
 };
 
@@ -129,14 +130,14 @@ ClubActivityServer.getClubMembers = async (ctx) => {
         const prx = Tars.stringToProxy(ClubActivityManagerPrx, clubActivityObjName);
         let result = await prx.GetClubApply(club_id, index, 1);
         
-        ctx.body = DataHandle.returnData(200, DataHandle.Success, {
+        ctx.body = DataHandle.returnData(200, {
             'next_index': result.response.arguments.nextIndex,
             'member_list': result.response.arguments.applyList.toObject(),
         });
     }
     catch(e) {
         console.log(e);
-        ctx.body = DataHandle.returnError(400, e.message);
+        ctx.body = DataHandle.returnError(ErrorCode.SERVERERROR, e.message);
     }
 };
 
@@ -151,14 +152,14 @@ ClubActivityServer.getClubApplications = async (ctx) => {
         const prx = Tars.stringToProxy(ClubActivityManagerPrx, clubActivityObjName);
         let result = await prx.GetClubApply(club_id, index, 0);
         
-        ctx.body = DataHandle.returnData(200, DataHandle.Success, {
+        ctx.body = DataHandle.returnData(200, {
             'next_index': result.response.arguments.nextIndex,
             'application_list': result.response.arguments.applyList.toObject(),
         });
     }
     catch(e) {
         console.log(e);
-        ctx.body = DataHandle.returnError(400, e.message);
+        ctx.body = DataHandle.returnError(ErrorCode.SERVERERROR, e.message);
     }
 };
 
@@ -174,14 +175,14 @@ ClubActivityServer.getUserApplications = async (ctx) => {
         const prx = Tars.stringToProxy(ClubActivityManagerPrx, clubActivityObjName);
         let result = await prx.GetUserApply(wx_id, index, apply_status);
 
-        ctx.body = DataHandle.returnData(200, DataHandle.Success, {
+        ctx.body = DataHandle.returnData(200, {
             'next_index': result.response.arguments.nextIndex,
             'application_list': result.response.arguments.applyList.toObject(),
         });
     }
     catch(e) {
         console.log(e);
-        ctx.body = DataHandle.returnError(400, e.message);
+        ctx.body = DataHandle.returnError(ErrorCode.SERVERERROR, e.message);
     }
 };
 
@@ -196,11 +197,11 @@ ClubActivityServer.approveApplication = async (ctx) => {
         const prx = Tars.stringToProxy(ClubActivityManagerPrx, clubActivityObjName);
         let result = await prx.ModifyApplyStatus(wx_id, club_id, 1);
 
-        ctx.body = DataHandle.returnData(result.response.arguments.RetCode, DataHandle.Success);
+        ctx.body = DataHandle.returnData(result.response.arguments.RetCode);
     }
     catch(e) {
         console.log(e);
-        ctx.body = DataHandle.returnError(400, e.message);
+        ctx.body = DataHandle.returnError(ErrorCode.SERVERERROR, e.message);
     }
 };
 
@@ -215,11 +216,11 @@ ClubActivityServer.deleteApplication = async (ctx) => {
         const prx = Tars.stringToProxy(ClubActivityManagerPrx, clubActivityObjName);
         let result = await prx.DeleteApply(wx_id, club_id);
 
-        ctx.body = DataHandle.returnData(result.response.arguments.RetCode, DataHandle.Success)
+        ctx.body = DataHandle.returnData(result.response.arguments.RetCode)
     }
     catch(e) {
         console.log(e);
-        ctx.body = DataHandle.returnError(400, e);
+        ctx.body = DataHandle.returnError(ErrorCode.SERVERERROR, e);
     }
 };
 
@@ -252,11 +253,11 @@ ClubActivityServer.createActivity = async (ctx) => {
         const prx = Tars.stringToProxy(ClubActivityManagerPrx, clubActivityObjName);
         let result = await prx.CreateActivity(sponsor, activityInfo);
 
-        ctx.body = DataHandle.returnData(result.response.arguments.RetCode, DataHandle.Success);
+        ctx.body = DataHandle.returnData(result.response.arguments.RetCode);
     }
     catch(e) {
         console.log(e);
-        ctx.body = DataHandle.returnError(400, e.message);
+        ctx.body = DataHandle.returnError(ErrorCode.SERVERERROR, e.message);
     }
 };
 
@@ -267,14 +268,14 @@ ClubActivityServer.getActivityList = async (ctx) => {
         const prx = Tars.stringToProxy(ClubActivityManagerPrx, clubActivityObjName);
         let result = await prx.GetActivityList(index, "", "");
 
-        ctx.body = DataHandle.returnData(200, DataHandle.Success, {
+        ctx.body = DataHandle.returnData(200, {
             'next_index': result.response.arguments.nextIndex,
             'activity_list' : result.response.arguments.activityList.toObject(),
         })
     }
     catch(e) {
         console.log(e);
-        ctx.body = DataHandle.returnError(400, e.message);
+        ctx.body = DataHandle.returnError(ErrorCode.SERVERERROR, e.message);
     }
 };
 
@@ -304,11 +305,11 @@ ClubActivityServer.updateActivity = async (ctx) => {
         const prx = Tars.stringToProxy(ClubActivityManagerPrx, clubActivityObjName);
         let result = await prx.UpdateActivity(activity_info);
 
-        ctx.body = DataHandle.returnData(result.response.arguments.RetCode, DataHandle.Success);
+        ctx.body = DataHandle.returnData(result.response.arguments.RetCode);
     }
     catch(e) {
         console.log(e);
-        ctx.body = DataHandle.returnError(400, e.message);
+        ctx.body = DataHandle.returnError(ErrorCode.SERVERERROR, e.message);
     }
 }
 
@@ -322,14 +323,14 @@ ClubActivityServer.getUserActivityList = async (ctx) => {
         const prx = Tars.stringToProxy(ClubActivityManagerPrx, clubActivityObjName);
         let result = await prx.GetActivityList(index, wx_id, "");
 
-        ctx.body = DataHandle.returnData(200, DataHandle.Success, {
+        ctx.body = DataHandle.returnData(200, {
             'next_index'    : result.response.arguments.nextIndex,
             'activity_list' : result.response.arguments.activityList.toObject(),
         })
     }
     catch(e) {
         console.log(e);
-        ctx.body = DataHandle.returnError(400, e.message);
+        ctx.body = DataHandle.returnError(ErrorCode.SERVERERROR, e.message);
     }
 };
 
@@ -343,14 +344,14 @@ ClubActivityServer.getClubActivityList = async (ctx) => {
         const prx = Tars.stringToProxy(ClubActivityManagerPrx, clubActivityObjName);
         let result = await prx.GetActivityList(index, "", club_id);
 
-        ctx.body = DataHandle.returnData(200, DataHandle.Success, {
+        ctx.body = DataHandle.returnData(200, {
             'next_index'    : result.response.arguments.nextIndex,
             'activity_list' : result.response.arguments.activityList.toObject(),
         })
     }
     catch(e) {
         console.log(e);
-        ctx.body = DataHandle.returnError(400, e.message);
+        ctx.body = DataHandle.returnError(ErrorCode.SERVERERROR, e.message);
     }
 };
 
@@ -362,11 +363,11 @@ ClubActivityServer.deleteActivity = async (ctx) => {
         const prx = Tars.stringToProxy(ClubActivityManagerPrx, clubActivityObjName);
         let result = await prx.DeleteActivity(activity_id);
 
-        ctx.body = DataHandle.returnData(result.response.arguments.RetCode, DataHandle.Success);
+        ctx.body = DataHandle.returnData(result.response.arguments.RetCode);
     }
     catch(e) {
         console.log(e);
-        ctx.body = DataHandle.returnError(400, e.message);
+        ctx.body = DataHandle.returnError(ErrorCode.SERVERERROR, e.message);
     }
 }
 
@@ -377,11 +378,11 @@ ClubActivityServer.getActivityDetail = async (ctx) => {
         const prx = Tars.stringToProxy(ClubActivityManagerPrx, clubActivityObjName);
         let result = await prx.GetActivityDetail(activity_id);
 
-        ctx.body = DataHandle.returnData(200, DataHandle.Success, result.response.arguments.activityInfo.toObject());
+        ctx.body = DataHandle.returnData(200, result.response.arguments.activityInfo.toObject());
     }
     catch(e) {
         console.log(e);
-        ctx.body = DataHandle.returnError(400, e.message);
+        ctx.body = DataHandle.returnError(ErrorCode.SERVERERROR, e.message);
     }
 };
 
@@ -395,14 +396,14 @@ ClubActivityServer.getActivityParticipate = async (ctx) => {
         const prx = Tars.stringToProxy(ClubActivityManagerPrx, clubActivityObjName);
         let result = await prx.GetActivityParticipate(index, activity_id);
 
-        ctx.body = DataHandle.returnData(200, DataHandle.Success, {
+        ctx.body = DataHandle.returnData(200, {
             "next_index"      : result.response.arguments.nextIndex,
             "participate_list": result.response.arguments.participateList.toObject(),
         })
     }
     catch(e) {
         console.log(e);
-        ctx.body = DataHandle.returnError(400, e.message);
+        ctx.body = DataHandle.returnError(ErrorCode.SERVERERROR, e.message);
     }
 }
 
@@ -417,11 +418,11 @@ ClubActivityServer.applyForActivity = async (ctx) => {
         const prx = Tars.stringToProxy(ClubActivityManagerPrx, clubActivityObjName);
         let result = await prx.ApplyForActivity(wx_id, activity_id);
 
-        ctx.body = DataHandle.returnData(result.response.arguments.RetCode, DataHandle.Success);
+        ctx.body = DataHandle.returnData(result.response.arguments.RetCode);
     }
     catch(e) {
         console.log(e);
-        ctx.body = DataHandle.returnError(400, e.message);
+        ctx.body = DataHandle.returnError(ErrorCode.SERVERERROR, e.message);
     }
 };
 
@@ -435,11 +436,11 @@ ClubActivityServer.deleteActivityParticipate = async (ctx) => {
         const prx = Tars.stringToProxy(ClubActivityManagerPrx, clubActivityObjName);
         let result = prx.DeleteActivityParticipate(activity_id, wx_id);
 
-        ctx.body = DataHandle.returnData(result.response.arguments.RetCode, DataHandle.Success);
+        ctx.body = DataHandle.returnData(result.response.arguments.RetCode);
     }
     catch(e) {
         console.log(e);
-        ctx.body = DataHandle.returnError(400, e.message);
+        ctx.body = DataHandle.returnError(ErrorCode.SERVERERROR, e.message);
     }
 }
 
