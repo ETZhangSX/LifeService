@@ -84,7 +84,7 @@ int DataServiceImp::createClubManager(const string &wx_id, const string &club_id
 {
     int iRet = ClubHandle::getInstance()->InsertClubManager(wx_id, club_id);
     if (iRet != 0)
-        return 300;
+        return -1;
     return 0;
 }
 //////////////////////////////////////////////////////
@@ -169,8 +169,7 @@ int DataServiceImp::deleteApply(const string &wx_id, const string &club_id, tars
 int DataServiceImp::createActivity(const LifeService::ActivityInfo &activityInfo, tars::TarsCurrentPtr current)
 {
     int ret = ActivityHandle::getInstance()->InsertActivityData(activityInfo);
-    if (ret != 0) return 300;
-    return 0;
+    return ret;
 }
 //////////////////////////////////////////////////////
 
