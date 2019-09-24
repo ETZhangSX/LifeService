@@ -3,8 +3,8 @@ const TarsConfig = require('@tars/config');
 const appConf = {
     crt_path: '/home/1_www.etzhang.xyz_bundle.crt',
     key_path: '/home/2_www.etzhang.xyz.key',
-    app_id: 'wx2f3efb98397488ae',
-    app_secret: '386f75a1271dfdbddd18d41d2336f007',
+    app_id: '',
+    app_secret: '',
     // 拉取配置
     loadConfig: function() {
         var that = this;
