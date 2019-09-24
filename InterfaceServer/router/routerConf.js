@@ -6,6 +6,7 @@ const MessageWallServer  = require('../servers/MessageWallServer');
 const apiConf = [
     //WeixinAPI
     ['get' , '/getOpenId'                , WeixinAPI.getOpenId],
+    // ['get' , '/getConf'                  , WeixinAPI.getConf],
     //用户服务接口
     ['get' , '/test'                     , UserInfoServer.test],
     ['get' , '/hasPhone'                 , UserInfoServer.hasPhone],
