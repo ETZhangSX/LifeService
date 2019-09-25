@@ -175,7 +175,7 @@ int ClubHandle::LoadDataFromDb()
             clubInfo.club_id        = oResults[i][vColumns[0]];
             clubInfo.name           = oResults[i][vColumns[1]];
             clubInfo.create_time    = oResults[i][vColumns[2]];
-            clubInfo.chairman       = oResults[i][vColumns[3]];
+            clubInfo.chairman       = UserHandle::getInstance()->getUserNameById(oResults[i][vColumns[3]]);
             clubInfo.introduction   = oResults[i][vColumns[4]];
 
             vClubInfo.push_back(clubInfo);
@@ -309,7 +309,7 @@ int ClubHandle::GetClubList(int index, int batch, const string &wx_id, int &next
             clubInfo.club_id      = oResults[i]["club_id"];
             clubInfo.create_time  = oResults[i][vColumns[1]];
             clubInfo.name         = oResults[i][vColumns[2]];
-            clubInfo.chairman     = oResults[i][vColumns[3]];
+            clubInfo.chairman     = UserHandle::getInstance()->getUserNameById(oResults[i][vColumns[3]]);
             clubInfo.introduction = oResults[i][vColumns[4]];
 
             clubInfoList.push_back(clubInfo);
@@ -522,8 +522,8 @@ int ActivityHandle::InsertActivityData(const LifeService::ActivityInfo activityI
     TC_Mysql::RECORD_DATA mpColumns;
     mpColumns.insert(make_pair("name"               , make_pair(TC_Mysql::DB_STR, activityInfo.name)));
     mpColumns.insert(make_pair("sponsor"            , make_pair(TC_Mysql::DB_STR, activityInfo.sponsor)));
-    mpColumns.insert(make_pair("club_id"            , make_pair(TC_Mysql::DB_STR, activityInfo.club_id)));
-    mpColumns.insert(make_pair("target_id"          , make_pair(TC_Mysql::DB_STR, activityInfo.target_id)));
+    mpColumns.insert(make_pair("club_id"            , make_pair(TC_Mysql::DB_INT, activityInfo.club_id)));
+    mpColumns.insert(make_pair("target_id"          , make_pair(TC_Mysql::DB_INT, activityInfo.target_id)));
     mpColumns.insert(make_pair("start_time"         , make_pair(TC_Mysql::DB_STR, activityInfo.start_time)));
     mpColumns.insert(make_pair("stop_time"          , make_pair(TC_Mysql::DB_STR, activityInfo.stop_time)));
     mpColumns.insert(make_pair("registry_start_time", make_pair(TC_Mysql::DB_STR, activityInfo.registry_start_time)));
@@ -558,7 +558,7 @@ int ClubHandle::SetApplyStatus(const string &wx_id, const string &club_id, int a
 
 int ClubHandle::DeleteApply(const string &wx_id, const string &club_id)
 {
-    string sSql = "delete from apply_for_club where `user_id`='" + wx_id + "' and `club_id`=1";
+    string sSql = "delete from apply_for_club where `user_id`='" + wx_id + "' and `club_id`=" + club_id;
     
     // 将sql语句添加到MDbExecuteRecord类的执行队列中
     MDbExecuteRecord::getInstance()->AddExecuteSql(sSql);
