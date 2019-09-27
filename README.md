@@ -10,47 +10,105 @@
 
 
 # 1. <a id="main-chapter-1"></a>项目逻辑架构
--  该脚本用于快速部署Tars环境，用户仅需使用“脚本+IP地址”即可快速构建Tars Framework环境
+-  整个小程序的逻辑架构如下：
 
 # 2. <a id="main-chapter-2"></a>项目部署架构
-该脚本仅仅使用于物理机部署和虚拟机部署（包括云主机），不适用于容器部署（systemctl start 等语句在容器环境运行会出现错误）
--  操作系统 CentOS 7
--  硬件要求：最低2核2G，建议4核8G
--  网络访问通畅，yum、wget等命令可正常执行
+实际部署部署，采用普通PC做为前端设备，　将具体应用部署在两台服务器上。 其中蓝色表示部署前端小程序, 橘黄色表示部署的应用服务, 绿色表示Tars服务框架.
+其中值得说明的是: 我们将ClubActivityServer, MessageWallServer, UserInfoServer三个服务分别部署在2台服务器上, 实现业务符合分担和高可靠谱性. 
+
+
+
+管理面交互情况如下：
+
 
 # 3. <a id="main-chapter-3"></a>Tars基础环境搭建 
-文件夹中的三个脚本的说明：
--  shellDeploy.sh 为主入口脚本， 进行绝大部分安装操作。 shellDeploy.sh调用了mysqlConfig.sh以及importTarsWebSql.sh
--  mysqlConfig.sh 主要用于mysql数据库的配置，包括：用户名，密码，权限，数据库表项导入等等
--  importTarsWebSql.sh 用于导入TarsWeb的数据库表项
+参见：
+https://github.com/TarsCloud/Tars/blob/master/shellDeploy/introduction.md
+使用一键部署脚本，完成Tars基础环境的部署。
+
 
 # 4. <a id="main-chapter-4"></a>Go环境安装
--  该脚本运行时候，需要使用本机的IP地址做为入参，请先查看本机IP地址。如果是云环境的话，请输入小网IP地址。
--  该脚本中使用Mysql安装环境中的默认密码tars2015作为默认密码，仅供学习和演示使用。实际应用场景，请大家自行修改密码。
--  运行方式：
+https://golang.org/doc/install  下载其中：Linux  X86 64位版本
+
+GO下载和解压
+- 在/usr/local/下载go1.13.1.linux-amd64.tar.gz 
+
 ```
-Step1： yum install -y git
-Step2： mkdir -p /usr/local/tarscode
-Step3： cd /usr/local/tarscode/
-Step4： git clone https://github.com/TarsCloud/Tars.git
-Step5： cd Tars
-Step6： git submodule update --init --recursive
-Step7： cd /usr/local/tarscode/Tars/shellDeploy
-Step8:  chmod 777 *
-Step9:  ./shellDeploy $LocalIPAddr, 其中LocalIPAddr为机器IP地址。例：./shellDeploy 192.168.0.1
+wget https://dl.google.com/go/go1.13.1.linux-amd64.tar.gz
 ```
--  执行完如上脚本之后，tars framework的核心组件已经安装完成，已经可以登入web界面（IP：3000）。
-注：启动Tars Web界面后，会遇到错误弹出，发布完tarsnotify即可消失。详见issue: https://github.com/TarsCloud/Tars/issues/456
--  之后将$CodePath/Tars/framework/build路径下的tarsstat.tgz、tarsnotify.tgz、tarsproperty.tgz、tarslog.tgz、tarsquerystat.tgz、tarsqueryproperty.tgz传到本地电脑上，通过web界面进行发布即可。
--  该脚本中使用Mysql安装环境中的默认密码tars2015作为默认密码，仅供学习和演示使用。实际应用场景，请大家自行修改密码。
+
+- 然后：
+```
+mkdir -p /usr/local/go
+cd /usr/local
+tar -C /usr/local -xzf go1.13.1.linux-amd64.tar.gz
+```
+
+
+配置环境变量
+- 在/etc/profile中，增加：
+```
+export PATH=$PATH:/usr/local/go/bin 
+export GOPATH=$HOME/go 
+export GOROOT=/usr/local/go
+```
+
+然后保存，并执行
+```
+source /etc/profile
+```
 
 # 5. <a id="main-chapter-4"></a> TAR GO安装
--  该脚本运行时，会在/usr/local/tarscode/Tars/shellDeploy目录下生成deploy_log文件，该文件中记录了脚本运行过程中的诊断信息，便于故障的定位和解决。
+安装tars： 
+```
+go get github.com/TarsCloud/TarsGo/tars
+```
+
+
+编译tars协议转Golang工具：
+```
+cd $GOPATH/src/github.com/TarsCloud/TarsGo/tars/tools/tars2go && go build . 
+cp tars2go $GOPATH/bin/
+```
 
 # 6. <a id="main-chapter-4"></a> 后端服务代码下载和编译
--  该脚本运行时，会在/usr/local/tarscode/Tars/shellDeploy目录下生成deploy_log文件，该文件中记录了脚本运行过程中的诊断信息，便于故障的定位和解决。
+
+Fork 如下Git链接（后续会合入Tars主要分支）
+
+https://github.com/qiuxin/MessageWallServer
+
+https://github.com/qiuxin/UserInfoServer
+
+https://github.com/qiuxin/ClubActivityServer
+
+
+```
+mkdir -p /root/go/src/
+```
+
+然后进入/root/go/src/目录，将如上代码下载到该目录：
+
+```
+git clone https://github.com/qiuxin/MessageWallServer
+
+git clone https://github.com/qiuxin/UserInfoServer
+
+git clone https://github.com/qiuxin/ClubActivityServer
+```
+
+分别进入ClubActivityServer，MessageWallServer，UserInfoServer目录，执行make tar.
+
+可以看到在三个目录下，分别生成ClubActivityServer.tgz，MessageWallServer.tgz， UserInfoServer.tgz三个文件。 
+
+
 
 
 
 # 7. <a id="main-chapter-4"></a> 后端服务通过Tars部署
--  该脚本运行时，会在/usr/local/tarscode/Tars/shellDeploy目录下生成deploy_log文件，该文件中记录了脚本运行过程中的诊断信息，便于故障的定位和解决。
+将生成的ClubActivityServer.tgz，MessageWallServer.tgz， UserInfoServer.tgz三个文件传到本地电脑上，进行部署。
+
+部署时候，需要使用的参数如下：
+- UserInfoServery    	LifeService	UserInfoServer	UserInfoServiceObj	Tars Go	默认模板
+- ClubActivityServer	LifeService	ClubActivityServer	ClubActivityManagerObj	Tars Go	默认模板
+- MessageWallServer	LifeService	MessageWallServer	MessageWallObj	Tars Go	默认模板
+
