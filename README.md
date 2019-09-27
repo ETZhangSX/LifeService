@@ -110,9 +110,15 @@ git clone https://github.com/qiuxin/ClubActivityServer
 
 部署时候，需要使用的参数如下：
 
-| 表格      | 第一列     | 第二列     |
-| ---------- | :-----------:  | :-----------: |
-| 第一行     | 第一列     | 第二列     |
+| 部署服务      | 应用名称     | 服务名称     | Obj名称     | 服务类型     |模板     |
+| ---------- | :-----------:  | :-----------: |:-----------: |:-----------: |:-----------: |
+| UserInfoServery     | LifeService    | UserInfoServer     |UserInfoServiceObj     |Tars Go     |
+| ---------- | :-----------:  | :-----------: |:-----------: |:-----------: |:-----------: |
+| ClubActivityServer     | LifeService     | ClubActivityServer     |ClubActivityManagerObj     |Tars Go     |
+| ---------- | :-----------:  | :-----------: |:-----------: |:-----------: |:-----------: |
+| MessageWallServer     | LifeService     | MessageWallServer     |MessageWallObj     |Tars Go     |
+
+
 
 - UserInfoServery    	LifeService	UserInfoServer	UserInfoServiceObj	Tars Go	默认模板
 - ClubActivityServer	LifeService	ClubActivityServer	ClubActivityManagerObj	Tars Go	默认模板
