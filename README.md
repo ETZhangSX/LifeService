@@ -117,11 +117,6 @@ git clone https://github.com/qiuxin/ClubActivityServer
 | MessageWallServer     | LifeService     | MessageWallServer     |MessageWallObj     |Tars Go     |默认模板     |
 
 
-
-- UserInfoServery    	LifeService	UserInfoServer	UserInfoServiceObj	Tars Go	默认模板
-- ClubActivityServer	LifeService	ClubActivityServer	ClubActivityManagerObj	Tars Go	默认模板
-- MessageWallServer	LifeService	MessageWallServer	MessageWallObj	Tars Go	默认模板
-
 通过“运维管理”界面进行部署，以UserInfoServer为例部署填写参数如下，其余服务发布按照上表修改参数即可。
 ![image](https://github.com/qiuxin/LifeService/blob/master/ReadMePicture/ServiceDeploy.png)
 
