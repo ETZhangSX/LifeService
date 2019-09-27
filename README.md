@@ -25,6 +25,7 @@
 参见：
 https://github.com/TarsCloud/Tars/blob/master/shellDeploy/introduction.md
 使用一键部署脚本，完成Tars基础环境的部署。
+![image](https://github.com/qiuxin/LifeService/blob/master/ReadMePicture/tarsFrameworkBasicPic.png)
 
 
 # 4. <a id="main-chapter-4"></a>Go环境安装
