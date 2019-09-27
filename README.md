@@ -16,11 +16,10 @@
 # 2. <a id="main-chapter-2"></a>项目部署架构
 实际部署部署，采用普通PC做为前端设备，　将具体应用部署在两台服务器上。 其中蓝色表示部署前端小程序, 橘黄色表示部署的应用服务, 绿色表示Tars服务框架.
 其中值得说明的是: 我们将ClubActivityServer, MessageWallServer, UserInfoServer三个服务分别部署在2台服务器上, 实现业务符合分担和高可靠谱性. 
-
-
+![image](https://github.com/qiuxin/LifeService/blob/master/ReadMePicture/DataArchitecture.jpg)
 
 管理面交互情况如下：
-
+![image](https://github.com/qiuxin/LifeService/blob/master/ReadMePicture/ManagementArchitecture.jpg)
 
 # 3. <a id="main-chapter-3"></a>Tars基础环境搭建 
 参见：
