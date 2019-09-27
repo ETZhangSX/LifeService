@@ -109,6 +109,12 @@ git clone https://github.com/qiuxin/ClubActivityServer
 将生成的ClubActivityServer.tgz，MessageWallServer.tgz， UserInfoServer.tgz三个文件传到本地电脑上，进行部署。
 
 部署时候，需要使用的参数如下：
+
+| 表格      | 第一列     | 第二列     |
+| ---------- | :-----------:  | :-----------: |
+| 第一行     | 第一列     | 第二列     |
+
+
 - UserInfoServery    	LifeService	UserInfoServer	UserInfoServiceObj	Tars Go	默认模板
 - ClubActivityServer	LifeService	ClubActivityServer	ClubActivityManagerObj	Tars Go	默认模板
 - MessageWallServer	LifeService	MessageWallServer	MessageWallObj	Tars Go	默认模板
