@@ -10,7 +10,8 @@
 
 
 # 1. <a id="main-chapter-1"></a>项目逻辑架构
--  整个小程序的逻辑架构如下：
+整个小程序的逻辑架构如下：
+![image](https://github.com/qiuxin/LifeService/blob/master/ReadMePicture/logicArchitecture.png)
 
 # 2. <a id="main-chapter-2"></a>项目部署架构
 实际部署部署，采用普通PC做为前端设备，　将具体应用部署在两台服务器上。 其中蓝色表示部署前端小程序, 橘黄色表示部署的应用服务, 绿色表示Tars服务框架.
