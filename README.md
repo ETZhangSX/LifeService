@@ -113,3 +113,14 @@ git clone https://github.com/qiuxin/ClubActivityServer
 - ClubActivityServer	LifeService	ClubActivityServer	ClubActivityManagerObj	Tars Go	默认模板
 - MessageWallServer	LifeService	MessageWallServer	MessageWallObj	Tars Go	默认模板
 
+通过“运维管理”界面进行部署，以UserInfoServer为例部署填写参数如下，其余服务发布按照上表修改参数即可。
+![image](https://github.com/qiuxin/LifeService/blob/master/ReadMePicture/ServiceDeploy.png)
+
+部署完成之后， 在“服务管理” 下面的“发布管理”中上传发布包，进行发布。
+![image](https://github.com/qiuxin/LifeService/blob/master/ReadMePicture/ServiceDistribution.png)
+
+发布成功之后，可以看到如下界面：
+![image](https://github.com/qiuxin/LifeService/blob/master/ReadMePicture/OneServiceDeployAndDisSuccessful.png)
+
+以此类推，同样的方法，发布另外2个服务。发布完成之后，效果如下图：
+![image](https://github.com/qiuxin/LifeService/blob/master/ReadMePicture/MultipleServiceDeployAndDisSuccessful.png)
