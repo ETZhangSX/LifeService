@@ -584,7 +584,7 @@ int ClubHandle::GetApplyCount(const string &wx_id, const string &club_id, int ap
 
 int ClubHandle::DeleteApply(const string &wx_id, const string &club_id)
 {
-    string sCondition = "where `user_id`='" + wx_id + "' and `club_id`=1";
+    string sCondition = "where `user_id`='" + wx_id + "' and `club_id`=" + club_id;
     int affectRows = 0;
     
     try 
