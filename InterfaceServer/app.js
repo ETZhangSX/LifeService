@@ -5,7 +5,7 @@ const fs      = require('fs');
 const appConf = require('./config/appConf');
 
 // 拉取配置到配置文件中
-appConf.loadConfig();
+// appConf.loadConfig();
 
 // 证书密钥路径
 const crt_path = appConf.crt_path;
@@ -23,6 +23,7 @@ const app = new Koa();
 const hostname = process.env.IP || '127.0.0.1';
 const port = process.env.PORT || 8888;
 
+// 解析的body类型
 app.use(koaBody({
     extendTypes: {
         json: ['text/xml']
@@ -33,10 +34,10 @@ app.use(koaBody({
 apiRouter = require('./router');
 app.use(apiRouter.routes());
 
-// 启动服务
 app.host = hostname;
 app.port = port;
 
+// 启动服务
 const https_server = https.createServer(options, app.callback()).listen(app.port, app.host, () => {
     console.log('Koa server listening on %s %d', https_server.address().address, https_server.address().port);
 });

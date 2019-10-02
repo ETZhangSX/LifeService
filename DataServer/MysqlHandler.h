@@ -17,6 +17,9 @@
 
 using namespace tars;
 
+/**
+ * @brief MySQL工具单件类，用于获取TC_Mysql对象
+ */
 class MDbQueryRecord: public TC_Singleton<MDbQueryRecord>
 {
 public:
@@ -38,14 +41,31 @@ private:
     map<unsigned int, tars::TC_Mysql *> MysqlMap;       // 线程id对应的TC_Mysql对象
 };
 
+/**
+ * @brief MySQL工具单件类，用于顺序执行SQL语句，所有通过该类的执行操作，
+ *        对应的SQL语句都会放到队列中，定期执行队列中的所有SQL语句，因此
+ *        无法获取SQL语句执行状态，执行错误通过LOG打印和向Notify节点汇报
+ */
 class MDbExecuteRecord: public tars::TC_Thread, public tars::TC_Singleton<MDbExecuteRecord>
 {
 public:
+    /**
+     * @brief 类初始化函数
+     */
     bool Init();
+    /**
+     * @brief 添加要执行的SQL语句
+     */
     void AddExecuteSql(const string &strSql);
+    /**
+     * @brief 执行队列中所有的SQL语句
+     */
     void Execute();
 
 protected:
+     /**
+     * @brief 定期执行Execute
+     */
     virtual void run();
 
 private:

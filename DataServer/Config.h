@@ -20,11 +20,15 @@ public:
     int     maxMatch;
 
 public:
-    void LoadConfig(const std::string &strCongFileName)
+    /**
+     * @brief 加载配置文件
+     * @param strConfFileName 要解析的配置文件名
+     */
+    void LoadConfig(const std::string &strConfFileName)
     {
         tars::TC_Config tcConfig;
         // 解析配置文件
-        tcConfig.parseFile(strCongFileName);
+        tcConfig.parseFile(strConfFileName);
         // 配置节点位置
         string s1 = "/LifeService/";
         // 获取配置属性

@@ -2,7 +2,12 @@
 #include <vector>
 #include "util/tc_common.h"
 
-
+/**
+ * @brief Mysql 排序顺序
+ * @DEFAULT 默认, 不显式指定顺序
+ * @ASC     升序
+ * @DESC    降序
+ */
 enum MYSQL_Order
 {
     DEFAULT,
@@ -10,6 +15,12 @@ enum MYSQL_Order
     DESC
 };
 
+/**
+ * @brief Mysql join类型
+ * @INNERJOIN  内连接
+ * @LEFTJOIN   左连接
+ * @RIGHTJOIN  右连接
+ */
 enum MYSQL_JoinType
 {
     INNERJOIN,

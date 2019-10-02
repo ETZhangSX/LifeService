@@ -27,12 +27,6 @@ DataServer::initialize()
     UserHandle::getInstance()->LoadDataFromDb();
     ClubHandle::getInstance()->LoadDataFromDb();
 
-    // InitDbConf(SConfig::getInstance()->strDbHost.c_str(),
-    //            SConfig::getInstance()->usPort,
-    //            SConfig::getInstance()->strUserName.c_str(),
-    //            SConfig::getInstance()->strPassWord.c_str(),
-    //            SConfig::getInstance()->strDbName.c_str());
-
     addServant<DataServiceImp>(ServerConfig::Application + "." + ServerConfig::ServerName + ".DataServiceObj");
 }
 /////////////////////////////////////////////////////////////////
