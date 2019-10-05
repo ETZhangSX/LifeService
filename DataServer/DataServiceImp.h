@@ -135,9 +135,9 @@ public:
      * @param wx_id        用户微信id
      * @param club_id      社团id
      * @param apply_status 申请状态
-     * @out   iRetCode     返回状态码
+     * @out   affectRows   影响行数
      */
-    virtual int setApplyStatus(const std::string &wx_id, const std::string &club_id, tars::Int32 apply_status, tars::Int32 &iRetCode, tars::TarsCurrentPtr current);
+    virtual int setApplyStatus(const std::string &wx_id, const std::string &club_id, tars::Int32 apply_status, tars::Int32 &affectRows, tars::TarsCurrentPtr current);
     
     /**
      * @brief 获取社团申请数量
@@ -149,11 +149,11 @@ public:
     virtual int getApplyCount(const std::string &wx_id, const std::string &club_id, tars::Int32 apply_status, tars::Int32 &count, tars::TarsCurrentPtr current);
     /**
      * @brief 删除申请
-     * @param wx_id    用户微信id
-     * @param club_id  社团id
-     * @out   iRetCode 返回状态码
+     * @param wx_id      用户微信id
+     * @param club_id    社团id
+     * @out   affectRows 影响行数
      */
-    virtual int deleteApply(const std::string &wx_id, const std::string &club_id, tars::Int32 &iRetCode, tars::TarsCurrentPtr current);
+    virtual int deleteApply(const std::string &wx_id, const std::string &club_id, tars::Int32 &affectRows, tars::TarsCurrentPtr current);
 
     /**
      * @brief 新建活动
@@ -174,16 +174,16 @@ public:
     /**
      * @brief 更新活动信息
      * @param activityInfo 活动信息(tars文件中定义), 只需传入activity_id, name, start_time, stop_time, registry_start_time, registry_stop_time, content。只修改上述除activity_id外的信息
-     * @out   iRetCode     返回状态码
+     * @out   affectRows   影响行数
      */
-    virtual int updateActivity(const LifeService::ActivityInfo &activityInfo, tars::Int32 &iRetCode, tars::TarsCurrentPtr current);
+    virtual int updateActivity(const LifeService::ActivityInfo &activityInfo, tars::Int32 &affectRows, tars::TarsCurrentPtr current);
     
     /**
      * @brief 删除活动
      * @param activity_id 活动id
-     * @out   iRetCode    返回状态码
+     * @out   affectRows  影响行数
      */
-    virtual int deleteActivity(const std::string &activity_id, tars::Int32 &iRetCode, tars::TarsCurrentPtr current);
+    virtual int deleteActivity(const std::string &activity_id, tars::Int32 &affectRows, tars::TarsCurrentPtr current);
     
     /**
      * @brief 获取活动详情
@@ -221,9 +221,9 @@ public:
      * @brief 删除活动记录
      * @param activity_id 活动id
      * @param wx_id       用户微信id
-     * @out   iRetCode    返回状态码
+     * @out   affectRows  影响行数
      */
-    virtual int deleteActivityRecord(const std::string &activity_id, const std::string &wx_id, tars::Int32 &iRetcode, tars::TarsCurrentPtr current);
+    virtual int deleteActivityRecord(const std::string &activity_id, const std::string &wx_id, tars::Int32 &affectRows, tars::TarsCurrentPtr current);
     /**
      * @brief 插入留言
      * @param msg 表白墙留言信息, Message在tars文件中定义
