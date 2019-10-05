@@ -387,6 +387,50 @@ int ClubHandle::GetClubManagerCount(const string &wx_id, const string &club_id)
 }
 //////////////////////////////////////////////////////
 
+int ClubHandle::DeleteClub(const string &club_id)
+{
+    int affectRows = 0;
+    try
+    {
+        MDbQueryRecord::getInstance()->GetMysqlObject()->deleteRecord("apply_for_club", "where `club_id`=" + club_id);
+        MDbQueryRecord::getInstance()->GetMysqlObject()->deleteRecord("activities"    , "where `club_id`=" + club_id);
+        affectRows = MDbQueryRecord::getInstance()->GetMysqlObject()->deleteRecord("clubs"         , "where `club_id`=" + club_id);
+    }
+    catch(exception &e)
+    {
+        LOG->error() << "ClubHandle::DeleteClub Delete Error: " << e.what() << endl;
+        return -1;
+    }
+    {
+        TC_ThreadWLock wlock(_pRWLocker);
+        vClubInfo.erase(vClubInfo.begin() + mClub[club_id]);
+        for (int i = mClub[club_id]; i < vClubInfo.size(); ++i)
+        {
+            mClub[vClubInfo[i].club_id] = i;
+        }
+    }
+    LOG->debug() << "ClubHandle::DeleteClub Delete Club: " << vClubInfo[mClub[club_id]].name << endl;
+    return affectRows;
+}
+//////////////////////////////////////////////////////
+
+int ClubHandle::DeleteClubManager(const string &wx_id, const string &club_id)
+{
+    int affectRows = 0;
+    try
+    {
+        affectRows = MDbQueryRecord::getInstance()->GetMysqlObject()->deleteRecord("club_managers", "where `wx_id`='" + wx_id + "' and `club_id`=" + club_id);
+    }
+    catch (exception &e)
+    {
+        LOG->error() << "ClubHandle::DeleteClubManager Error: " << e.what() << endl;
+        return -1;
+    }
+    LOG->debug() << "ClubHandle::DeleteClubManager wx_id:" << wx_id << " club_id:" << club_id << endl;
+    return affectRows;
+}
+//////////////////////////////////////////////////////
+
 int ClubHandle::InsertApplyData(const string &wx_id, const string &club_id)
 {
     string sTableName = "apply_for_club";

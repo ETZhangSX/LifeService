@@ -67,6 +67,10 @@ public:
     int GetManagerClubList(int index, int batch, const std::string &wx_id, int &nextIndex, vector<LifeService::ClubInfo> &clubInfoList);
     // 获取社团管理者记录数
     int GetClubManagerCount(const std::string &wx_id, const std::string &club_id);
+    // 删除社团
+    int DeleteClub(const std::string &club_id);
+    // 删除管理员
+    int DeleteClubManager(const std::string &wx_id, const std::string &club_id);
     // 插入社团申请信息
     int InsertApplyData(const std::string &wx_id, const std::string &club_id);
     // 获取特定社团的申请

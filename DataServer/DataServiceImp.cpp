@@ -123,6 +123,20 @@ int DataServiceImp::getClubManagerCount(const string &wx_id, const string &club_
 }
 //////////////////////////////////////////////////////
 
+int DataServiceImp::deleteClub(const string &club_id, tars::Int32 &affectRows, tars::TarsCurrentPtr current)
+{
+    affectRows = ClubHandle::getInstance()->DeleteClub(club_id);
+    return 0;
+}
+//////////////////////////////////////////////////////
+
+int DataServiceImp::deleteClubManager(const string &wx_id, const string &club_id, tars::Int32 &affectRows, tars::TarsCurrentPtr current)
+{
+    affectRows = ClubHandle::getInstance()->DeleteClubManager(wx_id, club_id);
+    return 0;
+}
+//////////////////////////////////////////////////////
+
 int DataServiceImp::createApply(const string &wx_id, const string &club_id, tars::TarsCurrentPtr current)
 {
     int ret = ClubHandle::getInstance()->InsertApplyData(wx_id, club_id);

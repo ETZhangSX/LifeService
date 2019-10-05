@@ -101,6 +101,22 @@ public:
      * @out   count   记录数
      */
     virtual int getClubManagerCount(const std::string &wx_id, const std::string &club_id, tars::Int32 &count, tars::TarsCurrentPtr current);
+    
+    /**
+     * @brief 删除社团
+     * @param club_id    社团id
+     * @out   affectRows 影响记录数
+     */
+    virtual int deleteClub(const std::string &club_id, tars::Int32 &affectRows, tars::TarsCurrentPtr current);
+    
+    /**
+     * @brief 删除社团管理
+     * @param wx_id      用户id
+     * @param club_id    社团id
+     * @out   affectRows 影响记录数
+     */
+    virtual int deleteClubManager(const std::string &wx_id, const std::string &club_id, tars::Int32 &affectRows, tars::TarsCurrentPtr current);
+
     /**
      * @brief 创建社团申请
      * @param wx_id   用户微信id
