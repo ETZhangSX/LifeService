@@ -371,7 +371,7 @@ int ClubHandle::GetManagerClubList(int index, int batch, const string &wx_id, in
 int ClubHandle::GetClubManagerCount(const string &wx_id, const string &club_id)
 {
     string sTableName = "club_managers";
-    string sCondition = "where `wx_id`='" + wx_id + "' and `club_id`=" + club_id;
+    string sCondition = "where `wx_id`='" + wx_id + (club_id==""? "'" : ("' and `club_id`=" + club_id));
     int count = 0;
     try
     {
