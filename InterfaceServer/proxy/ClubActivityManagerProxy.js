@@ -708,6 +708,166 @@ LifeService.ClubActivityManagerProxy.prototype.DeleteApply = function (wxId, clu
 };
 LifeService.ClubActivityManagerProxy.DeleteApply = __LifeService_ClubActivityManager$DeleteApply$IF;
 
+var __LifeService_ClubActivityManager$DeleteClub$IF = {
+    "name" : "DeleteClub",
+    "return" : "int32",
+    "arguments" : [{
+        "name" : "clubId",
+        "class" : "string",
+        "direction" : "in"
+    }, {
+        "name" : "ErrCode",
+        "class" : "int32",
+        "direction" : "out"
+    }]
+};
+
+var __LifeService_ClubActivityManager$DeleteClub$IE = function (clubId) {
+    var os = new TarsStream.TarsOutputStream();
+    os.writeString(1, clubId);
+    return os.getBinBuffer();
+};
+
+var __LifeService_ClubActivityManager$DeleteClub$ID = function (data) {
+    try {
+        var is = new TarsStream.TarsInputStream(data.response.sBuffer);
+        return {
+            "request" : data.request,
+            "response" : {
+                "costtime" : data.request.costtime,
+                "return" : is.readInt32(0, true, 0),
+                "arguments" : {
+                    "ErrCode" : is.readInt32(2, true, _TARS_MODULE_B_.LifeService.ErrorCode.SUCCESS)
+                }
+            }
+        };
+    } catch (e) {
+        throw _makeError(data, e.message, TarsError.CLIENT.DECODE_ERROR);
+    }
+};
+
+var __LifeService_ClubActivityManager$DeleteClub$PE = function (clubId, __$PROTOCOL$VERSION) {
+    var tup = new TarsStream.UniAttribute();
+    tup.tupVersion = __$PROTOCOL$VERSION;
+    tup.writeString("clubId", clubId);
+    return tup;
+};
+
+var __LifeService_ClubActivityManager$DeleteClub$PD = function (data) {
+    try {
+        var tup = data.response.tup;
+        return {
+            "request" : data.request,
+            "response" : {
+                "costtime" : data.request.costtime,
+                "return" : tup.readInt32("", 0),
+                "arguments" : {
+                    "ErrCode" : tup.readInt32("ErrCode")
+                }
+            }
+        };
+    } catch (e) {
+        throw _makeError(data, e.message, TarsError.CLIENT.DECODE_ERROR);
+    }
+};
+
+var __LifeService_ClubActivityManager$DeleteClub$ER = function (data) {
+    throw _makeError(data, "Call ClubActivityManager::DeleteClub failed");
+};
+
+LifeService.ClubActivityManagerProxy.prototype.DeleteClub = function (clubId) {
+    var version = this._worker.version;
+    if (version === TarsStream.Tup.TUP_SIMPLE || version === TarsStream.Tup.TUP_COMPLEX) {
+        return this._worker.tup_invoke("DeleteClub", __LifeService_ClubActivityManager$DeleteClub$PE(clubId, version), arguments[arguments.length - 1], __LifeService_ClubActivityManager$DeleteClub$IF).then(__LifeService_ClubActivityManager$DeleteClub$PD, __LifeService_ClubActivityManager$DeleteClub$ER);
+    } else {
+        return this._worker.tars_invoke("DeleteClub", __LifeService_ClubActivityManager$DeleteClub$IE(clubId), arguments[arguments.length - 1], __LifeService_ClubActivityManager$DeleteClub$IF).then(__LifeService_ClubActivityManager$DeleteClub$ID, __LifeService_ClubActivityManager$DeleteClub$ER);
+    }
+};
+LifeService.ClubActivityManagerProxy.DeleteClub = __LifeService_ClubActivityManager$DeleteClub$IF;
+
+var __LifeService_ClubActivityManager$DeleteClubManager$IF = {
+    "name" : "DeleteClubManager",
+    "return" : "int32",
+    "arguments" : [{
+        "name" : "wxId",
+        "class" : "string",
+        "direction" : "in"
+    }, {
+        "name" : "clubId",
+        "class" : "string",
+        "direction" : "in"
+    }, {
+        "name" : "ErrCode",
+        "class" : "int32",
+        "direction" : "out"
+    }]
+};
+
+var __LifeService_ClubActivityManager$DeleteClubManager$IE = function (wxId, clubId) {
+    var os = new TarsStream.TarsOutputStream();
+    os.writeString(1, wxId);
+    os.writeString(2, clubId);
+    return os.getBinBuffer();
+};
+
+var __LifeService_ClubActivityManager$DeleteClubManager$ID = function (data) {
+    try {
+        var is = new TarsStream.TarsInputStream(data.response.sBuffer);
+        return {
+            "request" : data.request,
+            "response" : {
+                "costtime" : data.request.costtime,
+                "return" : is.readInt32(0, true, 0),
+                "arguments" : {
+                    "ErrCode" : is.readInt32(3, true, _TARS_MODULE_B_.LifeService.ErrorCode.SUCCESS)
+                }
+            }
+        };
+    } catch (e) {
+        throw _makeError(data, e.message, TarsError.CLIENT.DECODE_ERROR);
+    }
+};
+
+var __LifeService_ClubActivityManager$DeleteClubManager$PE = function (wxId, clubId, __$PROTOCOL$VERSION) {
+    var tup = new TarsStream.UniAttribute();
+    tup.tupVersion = __$PROTOCOL$VERSION;
+    tup.writeString("wxId", wxId);
+    tup.writeString("clubId", clubId);
+    return tup;
+};
+
+var __LifeService_ClubActivityManager$DeleteClubManager$PD = function (data) {
+    try {
+        var tup = data.response.tup;
+        return {
+            "request" : data.request,
+            "response" : {
+                "costtime" : data.request.costtime,
+                "return" : tup.readInt32("", 0),
+                "arguments" : {
+                    "ErrCode" : tup.readInt32("ErrCode")
+                }
+            }
+        };
+    } catch (e) {
+        throw _makeError(data, e.message, TarsError.CLIENT.DECODE_ERROR);
+    }
+};
+
+var __LifeService_ClubActivityManager$DeleteClubManager$ER = function (data) {
+    throw _makeError(data, "Call ClubActivityManager::DeleteClubManager failed");
+};
+
+LifeService.ClubActivityManagerProxy.prototype.DeleteClubManager = function (wxId, clubId) {
+    var version = this._worker.version;
+    if (version === TarsStream.Tup.TUP_SIMPLE || version === TarsStream.Tup.TUP_COMPLEX) {
+        return this._worker.tup_invoke("DeleteClubManager", __LifeService_ClubActivityManager$DeleteClubManager$PE(wxId, clubId, version), arguments[arguments.length - 1], __LifeService_ClubActivityManager$DeleteClubManager$IF).then(__LifeService_ClubActivityManager$DeleteClubManager$PD, __LifeService_ClubActivityManager$DeleteClubManager$ER);
+    } else {
+        return this._worker.tars_invoke("DeleteClubManager", __LifeService_ClubActivityManager$DeleteClubManager$IE(wxId, clubId), arguments[arguments.length - 1], __LifeService_ClubActivityManager$DeleteClubManager$IF).then(__LifeService_ClubActivityManager$DeleteClubManager$ID, __LifeService_ClubActivityManager$DeleteClubManager$ER);
+    }
+};
+LifeService.ClubActivityManagerProxy.DeleteClubManager = __LifeService_ClubActivityManager$DeleteClubManager$IF;
+
 var __LifeService_ClubActivityManager$GetActivityDetail$IF = {
     "name" : "GetActivityDetail",
     "return" : "int32",

@@ -32,7 +32,7 @@ UserInfoServer.signIn = async (ctx) => {
         
         let result = await prx.SignIn(wx_id);
         let userInfo = result.response.arguments.userInfo;
-        ctx.body = DataHandle.returnData(ErrorCode.SUCCESS, userInfo.toObject());
+        ctx.body = DataHandle.returnData(result.response.arguments.errCode, userInfo.toObject());
 
     } catch(e) {
         console.log(e);
@@ -144,7 +144,7 @@ UserInfoServer.signUp = async (ctx) => {
         const prx = Tars.stringToProxy(UserInfoServicePrx, userInfoObjName);
         
         let result = await prx.SignUp(wx_id, userInfo);
-        ctx.body = DataHandle.returnData(result.response.arguments.retCode)
+        ctx.body = DataHandle.returnData(result.response.arguments.errCode)
     }
     catch(e) {
         console.log(e);

@@ -22,7 +22,7 @@ ClubActivityServer.createClubManager = async (ctx) => {
         const prx = Tars.stringToProxy(ClubActivityManagerPrx, clubActivityObjName);
         let result = await prx.CreateClubManager(wx_id, club_id);
         
-        ctx.body = DataHandle.returnData(result.response.arguments.RetCode);
+        ctx.body = DataHandle.returnData(result.response.arguments.ErrCode);
     }
     catch(e) {
         console.log(e);
@@ -50,7 +50,7 @@ ClubActivityServer.createClub = async (ctx) => {
         const prx = Tars.stringToProxy(ClubActivityManagerPrx, clubActivityObjName);
         let result = await prx.CreateClub(clubInfo);
         
-        ctx.body = DataHandle.returnData(result.response.arguments.RetCode);
+        ctx.body = DataHandle.returnData(result.response.arguments.ErrCode);
     }
     catch(e) {
         console.log(e);
@@ -68,7 +68,7 @@ ClubActivityServer.getClubList = async (ctx) => {
         const prx = Tars.stringToProxy(ClubActivityManagerPrx, clubActivityObjName);
         let result = await prx.GetClubList(index, wx_id);
 
-        ctx.body = DataHandle.returnData(result.response.arguments.RetCode, {
+        ctx.body = DataHandle.returnData(result.response.arguments.ErrCode, {
             'next_index': result.response.arguments.nextIndex,
             'club_list' : result.response.arguments.clubInfoList.toObject(),
         });
@@ -89,7 +89,7 @@ ClubActivityServer.getManagerClubList = async (ctx) => {
         const prx = Tars.stringToProxy(ClubActivityManagerPrx, clubActivityObjName);
         let result = await prx.GetManagerClubList(index, wx_id);
 
-        ctx.body = DataHandle.returnData(result.response.arguments.RetCode, {
+        ctx.body = DataHandle.returnData(result.response.arguments.ErrCode, {
             'next_index': result.response.arguments.nextIndex,
             'club_list' : result.response.arguments.clubInfoList.toObject(),
         });
@@ -99,6 +99,41 @@ ClubActivityServer.getManagerClubList = async (ctx) => {
         ctx.body = DataHandle.returnError(ErrorCode.SERVERERROR, e.message);
     }
 };
+
+// 删除社团
+ClubActivityServer.deleteClub = async (ctx) => {
+    const {club_id} = ctx.request.body;
+
+    try {
+        const prx = Tars.stringToProxy(ClubActivityManagerPrx, clubActivityObjName);
+        let result = await prx.DeleteClub(club_id);
+
+        ctx.body = DataHandle.returnData(result.response.arguments.ErrCode);
+    }
+    catch(e) {
+        console.log(e);
+        ctx.body = DataHandle.returnError(Errorcode.SERVERERROR, e.message);
+    }
+};
+
+// 删除社团管理员
+ClubActivityServer.deleteClubManager = async (crx) => {
+    const {
+        wx_id,
+        club_id,
+    } = ctx.request.body;
+
+    try {
+        const prx = Tars.stringToProxy(ClubActivityManagerPrx, clubActivityObjName);
+        let result = await prx.DeleteClubManager(wx_id, club_id);
+
+        ctx.body = DataHandle.returnData(result.response.arguments.ErrCode);
+    }
+    catch(e) {
+        console.log(e);
+        ctx.body = DataHandle.returnError(ErrorCode.SERVERERROR, e.message);
+    }
+}
 
 // 申请社团
 ClubActivityServer.applyForClub = async (ctx) => {
@@ -111,7 +146,7 @@ ClubActivityServer.applyForClub = async (ctx) => {
         const prx = Tars.stringToProxy(ClubActivityManagerPrx, clubActivityObjName);
         let result = await prx.ApplyForClub(wx_id, club_id);
 
-        ctx.body = DataHandle.returnData(result.response.arguments.RetCode);
+        ctx.body = DataHandle.returnData(result.response.arguments.ErrCode);
     }
     catch(e) {
         console.log(e);
@@ -130,7 +165,7 @@ ClubActivityServer.getClubMembers = async (ctx) => {
         const prx = Tars.stringToProxy(ClubActivityManagerPrx, clubActivityObjName);
         let result = await prx.GetClubApply(club_id, index, 1);
         
-        ctx.body = DataHandle.returnData(200, {
+        ctx.body = DataHandle.returnData(ErrorCode.SUCCESS, {
             'next_index': result.response.arguments.nextIndex,
             'member_list': result.response.arguments.applyList.toObject(),
         });
@@ -152,7 +187,7 @@ ClubActivityServer.getClubApplications = async (ctx) => {
         const prx = Tars.stringToProxy(ClubActivityManagerPrx, clubActivityObjName);
         let result = await prx.GetClubApply(club_id, index, 0);
         
-        ctx.body = DataHandle.returnData(200, {
+        ctx.body = DataHandle.returnData(ErrorCode.SUCCESS, {
             'next_index': result.response.arguments.nextIndex,
             'application_list': result.response.arguments.applyList.toObject(),
         });
@@ -175,7 +210,7 @@ ClubActivityServer.getUserApplications = async (ctx) => {
         const prx = Tars.stringToProxy(ClubActivityManagerPrx, clubActivityObjName);
         let result = await prx.GetUserApply(wx_id, index, apply_status);
 
-        ctx.body = DataHandle.returnData(200, {
+        ctx.body = DataHandle.returnData(ErrorCode.SUCCESS, {
             'next_index': result.response.arguments.nextIndex,
             'application_list': result.response.arguments.applyList.toObject(),
         });
@@ -197,7 +232,7 @@ ClubActivityServer.approveApplication = async (ctx) => {
         const prx = Tars.stringToProxy(ClubActivityManagerPrx, clubActivityObjName);
         let result = await prx.ModifyApplyStatus(wx_id, club_id, 1);
 
-        ctx.body = DataHandle.returnData(result.response.arguments.RetCode);
+        ctx.body = DataHandle.returnData(result.response.arguments.ErrCode);
     }
     catch(e) {
         console.log(e);
@@ -216,7 +251,7 @@ ClubActivityServer.deleteApplication = async (ctx) => {
         const prx = Tars.stringToProxy(ClubActivityManagerPrx, clubActivityObjName);
         let result = await prx.DeleteApply(wx_id, club_id);
 
-        ctx.body = DataHandle.returnData(result.response.arguments.RetCode)
+        ctx.body = DataHandle.returnData(result.response.arguments.ErrCode)
     }
     catch(e) {
         console.log(e);
@@ -253,7 +288,7 @@ ClubActivityServer.createActivity = async (ctx) => {
         const prx = Tars.stringToProxy(ClubActivityManagerPrx, clubActivityObjName);
         let result = await prx.CreateActivity(sponsor, activityInfo);
 
-        ctx.body = DataHandle.returnData(result.response.arguments.RetCode);
+        ctx.body = DataHandle.returnData(result.response.arguments.ErrCode);
     }
     catch(e) {
         console.log(e);
@@ -268,7 +303,7 @@ ClubActivityServer.getActivityList = async (ctx) => {
         const prx = Tars.stringToProxy(ClubActivityManagerPrx, clubActivityObjName);
         let result = await prx.GetActivityList(index, "", "");
 
-        ctx.body = DataHandle.returnData(200, {
+        ctx.body = DataHandle.returnData(ErrorCode.SUCCESS, {
             'next_index': result.response.arguments.nextIndex,
             'activity_list' : result.response.arguments.activityList.toObject(),
         })
@@ -305,7 +340,7 @@ ClubActivityServer.updateActivity = async (ctx) => {
         const prx = Tars.stringToProxy(ClubActivityManagerPrx, clubActivityObjName);
         let result = await prx.UpdateActivity(activity_info);
 
-        ctx.body = DataHandle.returnData(result.response.arguments.RetCode);
+        ctx.body = DataHandle.returnData(result.response.arguments.ErrCode);
     }
     catch(e) {
         console.log(e);
@@ -323,7 +358,7 @@ ClubActivityServer.getUserActivityList = async (ctx) => {
         const prx = Tars.stringToProxy(ClubActivityManagerPrx, clubActivityObjName);
         let result = await prx.GetActivityList(index, wx_id, "");
 
-        ctx.body = DataHandle.returnData(200, {
+        ctx.body = DataHandle.returnData(ErrorCode.SUCCESS, {
             'next_index'    : result.response.arguments.nextIndex,
             'activity_list' : result.response.arguments.activityList.toObject(),
         })
@@ -344,7 +379,7 @@ ClubActivityServer.getClubActivityList = async (ctx) => {
         const prx = Tars.stringToProxy(ClubActivityManagerPrx, clubActivityObjName);
         let result = await prx.GetActivityList(index, "", club_id);
 
-        ctx.body = DataHandle.returnData(200, {
+        ctx.body = DataHandle.returnData(ErrorCode.SUCCESS, {
             'next_index'    : result.response.arguments.nextIndex,
             'activity_list' : result.response.arguments.activityList.toObject(),
         })
@@ -363,7 +398,7 @@ ClubActivityServer.deleteActivity = async (ctx) => {
         const prx = Tars.stringToProxy(ClubActivityManagerPrx, clubActivityObjName);
         let result = await prx.DeleteActivity(activity_id);
 
-        ctx.body = DataHandle.returnData(result.response.arguments.RetCode);
+        ctx.body = DataHandle.returnData(result.response.arguments.ErrCode);
     }
     catch(e) {
         console.log(e);
@@ -378,7 +413,7 @@ ClubActivityServer.getActivityDetail = async (ctx) => {
         const prx = Tars.stringToProxy(ClubActivityManagerPrx, clubActivityObjName);
         let result = await prx.GetActivityDetail(activity_id);
 
-        ctx.body = DataHandle.returnData(200, result.response.arguments.activityInfo.toObject());
+        ctx.body = DataHandle.returnData(ErrorCode.SUCCESS, result.response.arguments.activityInfo.toObject());
     }
     catch(e) {
         console.log(e);
@@ -396,7 +431,7 @@ ClubActivityServer.getActivityParticipate = async (ctx) => {
         const prx = Tars.stringToProxy(ClubActivityManagerPrx, clubActivityObjName);
         let result = await prx.GetActivityParticipate(index, activity_id);
 
-        ctx.body = DataHandle.returnData(200, {
+        ctx.body = DataHandle.returnData(ErrorCode.SUCCESS, {
             "next_index"      : result.response.arguments.nextIndex,
             "participate_list": result.response.arguments.participateList.toObject(),
         })
@@ -418,7 +453,7 @@ ClubActivityServer.applyForActivity = async (ctx) => {
         const prx = Tars.stringToProxy(ClubActivityManagerPrx, clubActivityObjName);
         let result = await prx.ApplyForActivity(wx_id, activity_id);
 
-        ctx.body = DataHandle.returnData(result.response.arguments.RetCode);
+        ctx.body = DataHandle.returnData(result.response.arguments.ErrCode);
     }
     catch(e) {
         console.log(e);
@@ -436,7 +471,7 @@ ClubActivityServer.deleteActivityParticipate = async (ctx) => {
         const prx = Tars.stringToProxy(ClubActivityManagerPrx, clubActivityObjName);
         let result = prx.DeleteActivityParticipate(activity_id, wx_id);
 
-        ctx.body = DataHandle.returnData(result.response.arguments.RetCode);
+        ctx.body = DataHandle.returnData(result.response.arguments.ErrCode);
     }
     catch(e) {
         console.log(e);

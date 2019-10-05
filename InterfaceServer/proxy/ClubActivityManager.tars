@@ -7,6 +7,8 @@ module LifeService{
         int CreateClub(ClubInfo clubInfo, out ErrorCode ErrCode);
         int GetClubList(int index, string wxId, out int nextIndex, out vector<ClubInfo> clubInfoList, out ErrorCode ErrCode);
         int GetManagerClubList(int index, string wxId, out int nextIndex, out vector<ClubInfo> clubInfoList, out ErrorCode ErrCode);
+        int DeleteClub(string clubId, out ErrorCode ErrCode);
+        int DeleteClubManager(string wxId, string clubId, out ErrorCode ErrCode);
         
         int ApplyForClub(string wxId, string clubId, out ErrorCode ErrCode);
         int GetClubApply(string clubId, int index, int applyStatus, out int nextIndex, out vector<ApplyInfo> applyList);

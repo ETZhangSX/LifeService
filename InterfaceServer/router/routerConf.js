@@ -6,7 +6,6 @@ const MessageWallServer  = require('../servers/MessageWallServer');
 const apiConf = [
     //WeixinAPI
     ['get' , '/getOpenId'                , WeixinAPI.getOpenId],
-    // ['get' , '/getConf'                  , WeixinAPI.getConf],
     //用户服务接口
     ['get' , '/test'                     , UserInfoServer.test],
     ['get' , '/hasPhone'                 , UserInfoServer.hasPhone],
@@ -21,6 +20,8 @@ const apiConf = [
     ['post', '/createClub'               , ClubActivityServer.createClub],
     ['get' , '/getClubList'              , ClubActivityServer.getClubList],
     ['get' , '/getManagerClubList'       , ClubActivityServer.getManagerClubList],
+    ['post', '/deleteClub'               , ClubActivityServer.deleteClub],
+    ['post', '/deleteClubManager'        , ClubActivityServer.deleteClubManager],
     ['post', '/applyForClub'             , ClubActivityServer.applyForClub],
     ['get' , '/getClubMembers'           , ClubActivityServer.getClubMembers],
     ['get' , '/getClubApplications'      , ClubActivityServer.getClubApplications],
