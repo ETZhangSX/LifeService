@@ -283,7 +283,7 @@ int ClubHandle::GetClubList(int index, int batch, const string &wx_id, int &next
     string sTableRight = "clubs";
     // 两张表有相同字段club_id
     vector<string> vColumns = {"apply_for_club.club_id", "create_time", "name", "chairman", "introduction"};
-    string sOnFilter = sTableLeft + ".club_id=" + sTableRight + ".club_id where user_id='" + wx_id + "' and apply_for_club.club_id>" + TC_Common::tostr<int>(index);
+    string sOnFilter = sTableLeft + ".club_id=" + sTableRight + ".club_id where user_id='" + wx_id + "' and `apply_status`=1 and apply_for_club.club_id>" + TC_Common::tostr<int>(index);
     // 构建join语句
     string sSql = buildJoinSQL(sTableLeft, sTableRight, LEFTJOIN, vColumns, sOnFilter, "club_id", DEFAULT, batch);
     
