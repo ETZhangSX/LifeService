@@ -16,14 +16,14 @@ DataHandle.returnSuccess = function(status, errmsg, data = {}) {
         'status': status,
         'errmsg': errmsg,
           'data':   data,
-    }
-}
+    };
+};
 
 DataHandle.returnError = function(status, errmsg) {
     return {
         'status': status,
         'errmsg': errmsg,
-    }
+    };
 };
 
 DataHandle._getErrMsg = function(errCode) {
@@ -57,6 +57,6 @@ DataHandle._getErrMsg = function(errCode) {
         case errorCode.SERVERERROR:
             return "Server ERROR";
         default:
-            return "Unknow ERROR"
+            return "Unknow ERROR";
     }
-}
+};

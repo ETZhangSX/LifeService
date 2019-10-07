@@ -169,6 +169,6 @@ UserInfoServer.hasPhone = async (ctx) => {
         console.log(e);
         ctx.body = DataHandle.returnError(ErrorCode.SERVERERROR, e.message);
     }
-}
+};
 
 module.exports = UserInfoServer;
