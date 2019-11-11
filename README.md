@@ -1,5 +1,6 @@
-# LifeService
-# 目录
+# Tars案例--大学生活服务平台
+
+## 目录
 > * [1.项目逻辑架构](#main-chapter-1)
 > * [2.项目部署架构](#main-chapter-2)
 > * [3.Tars基础环境搭建](#main-chapter-3)
@@ -9,26 +10,26 @@
 > * [7.后端服务通过Tars部署](#main-chapter-7)
 
 
-# 1. <a id="main-chapter-1"></a>项目逻辑架构
+## 1. <a id="main-chapter-1"></a>项目逻辑架构
 整个小程序的逻辑架构如下：
-![image](https://github.com/qiuxin/LifeService/blob/master/ReadMePicture/logicArchitecture.png)
+![image](/ReadMePicture/logicArchitecture.png)
 
-# 2. <a id="main-chapter-2"></a>项目部署架构
+## 2. <a id="main-chapter-2"></a>项目部署架构
 实际部署部署，采用普通PC做为前端设备，　将具体应用部署在两台服务器上。 其中蓝色表示部署前端小程序, 橘黄色表示部署的应用服务, 绿色表示Tars服务框架.
 其中值得说明的是: 我们将ClubActivityServer, MessageWallServer, UserInfoServer三个服务分别部署在2台服务器上, 实现业务符合分担和高可靠谱性. 
-![image](https://github.com/qiuxin/LifeService/blob/master/ReadMePicture/DataArchitecture.jpg)
+![image](/ReadMePicture/DataArchitecture.jpg)
 
 管理面交互情况如下：
-![image](https://github.com/qiuxin/LifeService/blob/master/ReadMePicture/ManagementArchitecture.jpg)
+![image](/ReadMePicture/ManagementArchitecture.jpg)
 
-# 3. <a id="main-chapter-3"></a>Tars基础环境搭建 
+## 3. <a id="main-chapter-3"></a>Tars基础环境搭建 
 参见：
 https://github.com/TarsCloud/Tars/blob/master/shellDeploy/introduction.md
 使用一键部署脚本，完成Tars基础环境的部署。
-![image](https://github.com/qiuxin/LifeService/blob/master/ReadMePicture/tarsFrameworkBasicPic.png)
+![image](/ReadMePicture/tarsFrameworkBasicPic.png)
 
 
-# 4. <a id="main-chapter-4"></a>Go环境安装
+## 4. <a id="main-chapter-4"></a>Go环境安装
 https://golang.org/doc/install  下载其中：Linux  X86 64位版本
 
 GO下载和解压
@@ -59,7 +60,7 @@ export GOROOT=/usr/local/go
 source /etc/profile
 ```
 
-# 5. <a id="main-chapter-4"></a> TAR GO安装
+## 5. <a id="main-chapter-4"></a> TAR GO安装
 安装tars： 
 ```
 go get github.com/TarsCloud/TarsGo/tars
@@ -72,7 +73,7 @@ cd $GOPATH/src/github.com/TarsCloud/TarsGo/tars/tools/tars2go && go build .
 cp tars2go $GOPATH/bin/
 ```
 
-# 6. <a id="main-chapter-4"></a> 后端服务代码下载和编译
+## 6. <a id="main-chapter-4"></a> 后端服务代码下载和编译
 
 Fork 如下Git链接（后续会合入Tars主要分支）
 
@@ -105,7 +106,7 @@ git clone https://github.com/qiuxin/ClubActivityServer
 
 
 
-# 7. <a id="main-chapter-4"></a> 后端服务通过Tars部署
+## 7. <a id="main-chapter-4"></a> 后端服务通过Tars部署
 将生成的ClubActivityServer.tgz，MessageWallServer.tgz， UserInfoServer.tgz三个文件传到本地电脑上，进行部署。
 
 部署时候，需要使用的参数如下：
@@ -118,13 +119,13 @@ git clone https://github.com/qiuxin/ClubActivityServer
 
 
 通过“运维管理”界面进行部署，以UserInfoServer为例部署填写参数如下，其余服务发布按照上表修改参数即可。
-![image](https://github.com/qiuxin/LifeService/blob/master/ReadMePicture/ServiceDeploy.png)
+![image](/ReadMePicture/ServiceDeploy.png)
 
 部署完成之后， 在“服务管理” 下面的“发布管理”中上传发布包，进行发布。
-![image](https://github.com/qiuxin/LifeService/blob/master/ReadMePicture/ServiceDistribution.png)
+![image](/ReadMePicture/ServiceDistribution.png)
 
 发布成功之后，可以看到如下界面：
-![image](https://github.com/qiuxin/LifeService/blob/master/ReadMePicture/OneServiceDeployAndDisSuccessful.png)
+![image](/ReadMePicture/OneServiceDeployAndDisSuccessful.png)
 
 以此类推，同样的方法，发布另外2个服务。发布完成之后，效果如下图：
-![image](https://github.com/qiuxin/LifeService/blob/master/ReadMePicture/MultipleServiceDeployAndDisSuccessful.png)
+![image](/ReadMePicture/MultipleServiceDeployAndDisSuccessful.png)
