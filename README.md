@@ -31,7 +31,8 @@
 
 ### <a id="introduction-function"></a>功能
 小程序可以分为三个功能模块，用户模块、表白墙、社团活动，各模块包含的具体功能如下
-![](/ReadMePicture/IntroductionFunction.png)
+<!-- ![](/ReadMePicture/IntroductionFunction.png) -->
+<img width="400" src="https://github.com/ETZhangSX/LifeService/blob/master/ReadMePicture/IntroductionFunction.png?raw=true">
 
 小程序UI效果图：
 
@@ -141,7 +142,7 @@ ssh root@1.2.3.4 -p 3366
 ```
 回车后输入密码即可进入服务器终端，进行Tars框架安装、应用开发、部署等操作。
 
-## <a id="main-chapter-3"></a>Tars基础环境搭建 
+## <a id="tars-framework-installation"></a>Tars基础环境搭建 
 参见：
 https://github.com/TarsCloud/Tars/blob/master/shellDeploy/introduction.md
 使用一键部署脚本，完成Tars基础环境的部署。
