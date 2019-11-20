@@ -2,6 +2,8 @@
 Tars框架和应用需要运行在Linux上，同时小程序的发布、上线也需要有符合要求的云环境，本节会讲述一个上云的完整流程。如果不打算上线发布应用，只想在本地服务器中尝试的话，可以跳过本部分，使用虚拟机代替。
 
 * [云服务器购买](#server-purchase)
+* [域名注册](#domain-registry)
+* [域名解析](#dns)
 * [连接服务器](#connect-server)
 
 ## <a id="server-purchase"></a>云服务器购买
@@ -57,6 +59,38 @@ Tars框架和应用需要运行在Linux上，同时小程序的发布、上线�
 ![](/ReadMePicture/AliyunConsole.png)
 * 点击实例的`操作>更多>密码/密钥>重置实例密码`，即可重置实例密码
 ![](/ReadMePicture/AliyunConsoleEcs.png)
+
+## <a id="domain-registry"></a>域名注册
+### 腾讯云
+在主页找到`产品>企业应用>域名注册`打开域名注册页
+![](/ReadMePicture/CloudMigrationTencentCloudIndexToDomain.png)
+
+输入自己需要或喜欢的域名进行搜索
+![](/ReadMePicture/CloudMigrationTencentCloudDomainSearch.png)
+
+然后从搜索结果中选取自己喜欢的并且没有被注册的域名点击`加入购物车`并点击右侧的`立即购买`。
+> 一般`com`和`cn`域名会贵一些，`xyz`, `club`等会便宜一些
+
+![](/ReadMePicture/CloudMigrationTencentCloudDomainSelect.png)
+
+提交订单时，用户类型选择`个人用户`，并按照要求填写个人信息，再点击`提交订单`，付款即完成域名注册
+![](/ReadMePicture/CloudMigrationTencentCloudDomainBuying.png)
+
+### 阿里云
+在主页找到`产品分类>企业应用>域名注册`打开域名注册页
+![](/ReadMePicture/CloudMigrationAliyunIndexToDomain.png)
+
+输入自己需要或喜欢的域名进行搜索
+![](/ReadMePicture/CloudMigrationAliyunDomainSearch.png)
+
+然后从搜索结果中选取自己喜欢的并且没有被注册的域名点击`加入清单`并点击右侧的`立即结算`。
+![](/ReadMePicture/CloudMigrationAliyunDomainSelect.png)
+
+提交订单时，域名持有者选择`个人`，点`创建信息模板`并按照要求填写个人信息，再点击`立即购买`，付款即完成域名注册
+![](/ReadMePicture/CloudMigrationAliyunDomainBuying.png)
+
+## <a id="dns"></a>域名解析
+待完善……
 
 ## <a id="connect-server"></a>连接服务器
 
