@@ -62,31 +62,31 @@ Tars框架和应用需要运行在Linux上，同时小程序的发布、上线�
 
 ## <a id="domain-registry"></a>域名注册
 ### 腾讯云
-在主页找到`产品>企业应用>域名注册`打开域名注册页
+#### 在主页找到`产品>企业应用>域名注册`打开域名注册页
 ![](/ReadMePicture/CloudMigrationTencentCloudIndexToDomain.png)
 
-输入自己需要或喜欢的域名进行搜索
+#### 输入自己需要或喜欢的域名进行搜索
 ![](/ReadMePicture/CloudMigrationTencentCloudDomainSearch.png)
 
-然后从搜索结果中选取自己喜欢的并且没有被注册的域名点击`加入购物车`并点击右侧的`立即购买`。
+#### 然后从搜索结果中选取自己喜欢的并且没有被注册的域名点击`加入购物车`并点击右侧的`立即购买`。
 > 一般`com`和`cn`域名会贵一些，`xyz`, `club`等会便宜一些
 
 ![](/ReadMePicture/CloudMigrationTencentCloudDomainSelect.png)
 
-提交订单时，用户类型选择`个人用户`，并按照要求填写个人信息，再点击`提交订单`，付款即完成域名注册
+#### 提交订单时，用户类型选择`个人用户`，并按照要求填写个人信息，再点击`提交订单`，付款即完成域名注册
 ![](/ReadMePicture/CloudMigrationTencentCloudDomainBuying.png)
 
 ### 阿里云
-在主页找到`产品分类>企业应用>域名注册`打开域名注册页
+#### 在主页找到`产品分类>企业应用>域名注册`打开域名注册页
 ![](/ReadMePicture/CloudMigrationAliyunIndexToDomain.png)
 
-输入自己需要或喜欢的域名进行搜索
+#### 输入自己需要或喜欢的域名进行搜索
 ![](/ReadMePicture/CloudMigrationAliyunDomainSearch.png)
 
-然后从搜索结果中选取自己喜欢的并且没有被注册的域名点击`加入清单`并点击右侧的`立即结算`。
+#### 然后从搜索结果中选取自己喜欢的并且没有被注册的域名点击`加入清单`并点击右侧的`立即结算`。
 ![](/ReadMePicture/CloudMigrationAliyunDomainSelect.png)
 
-提交订单时，域名持有者选择`个人`，点`创建信息模板`并按照要求填写个人信息，再点击`立即购买`，付款即完成域名注册
+#### 提交订单时，域名持有者选择`个人`，点`创建信息模板`并按照要求填写个人信息，再点击`立即购买`，付款即完成域名注册
 ![](/ReadMePicture/CloudMigrationAliyunDomainBuying.png)
 
 ## <a id="dns"></a>域名解析
